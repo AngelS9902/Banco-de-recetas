@@ -699,6 +699,28 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   padding:2px 8px;border-radius:10px;margin-left:6px;
 }
 
+/* Selector de porciones a contar en el día (aparece en la card activa) */
+.day-servings-picker{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(76,175,80,.10);border:1px solid rgba(76,175,80,.3);
+  border-radius:10px;padding:4px 8px;
+  font-size:12px;font-weight:600;color:var(--text);
+}
+.day-servings-label{color:var(--muted);font-size:11px;font-weight:500}
+.day-servings-picker button{
+  width:24px;height:24px;border:none;background:transparent;
+  cursor:pointer;font-size:14px;font-weight:700;color:var(--green);
+  border-radius:6px;
+}
+.day-servings-picker button:hover{background:rgba(76,175,80,.18)}
+.day-servings-picker input{
+  width:42px;text-align:center;border:none;background:transparent;
+  font-size:13px;font-weight:600;color:var(--text);padding:2px 0;
+}
+.day-servings-picker input::-webkit-outer-spin-button,
+.day-servings-picker input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.day-servings-of{font-size:11px;color:var(--muted);font-weight:500}
+
 /* Chip de receta en lista compras: con selector de porciones */
 .lc-chip-servings{
   display:inline-flex;align-items:center;gap:4px;

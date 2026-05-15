@@ -47,6 +47,7 @@ const DEFAULT_PROFILE_TMPL = {age:25, weight:70, height:170, sex:'male', activit
 let CURRENT_USER = null;
 let data = EMPTY_DATA;
 const selected = {};
+const daySelectedServings = {}; // porciones a contar en el día por categoría
 const editingMap = {};
 let profile = { name: '', ...DEFAULT_PROFILE_TMPL };
 let macroTargets = null;
@@ -247,12 +248,26 @@ function cardHTML(r, cat) {
   const ingrHTML = (r.ingredients||[]).map(i => `<li>${escapeHtml(i)}</li>`).join('');
   const stepsHTML = (r.steps||[]).map(s => `<li>${escapeHtml(s)}</li>`).join('');
   const tipHTML = r.tip ? `<div class="tip">${escapeHtml(r.tip)}</div>` : '';
+  const baseS = r.base_servings || 1;
+  const isActive = selected[cat] === r.id;
+  const dayS = daySelectedServings[cat] || 1;
+  const dayBtnLabel = isActive ? '✓ En el día' : '＋ Agregar al día';
+  const dayBtnClass = isActive ? 'btn-day active' : 'btn-day';
+  const portionPickerHTML = (isActive && baseS > 1) ? `
+    <div class="day-servings-picker" id="day-pick-${cat}">
+      <span class="day-servings-label">Porciones hoy:</span>
+      <button type="button" onclick="adjustDayServings('${cat}',-1)">−</button>
+      <input type="number" id="day-serv-${cat}" min="0.5" max="${baseS}" step="0.5" value="${dayS}" onchange="setDayServings('${cat}', this.value)">
+      <button type="button" onclick="adjustDayServings('${cat}',1)">+</button>
+      <span class="day-servings-of">/ ${baseS}</span>
+    </div>` : '';
   return `
 <div class="card" id="card-${r.id}" data-id="${r.id}" data-cat="${cat}" data-kcal="${r.kcal}" data-prot="${r.prot}" data-carbs="${r.carbs}" data-fat="${r.fat}">
   <div class="card-actions">
-    <button class="btn-day" onclick="toggleDay('${r.id}','${cat}',this)">＋ Agregar al día</button>
+    <button class="${dayBtnClass}" onclick="toggleDay('${r.id}','${cat}',this)">${dayBtnLabel}</button>
     <button class="btn-shop" onclick="toggleShop('${r.id}','${cat}',this)">🛒 Lista de compras</button>
   </div>
+  ${portionPickerHTML}
   <div class="card-title">${escapeHtml(r.name)}<span class="recipe-servings-badge" title="Porciones que rinde la receta">🍽 ${r.base_servings || 1} porc.</span></div>
   ${badgesHTML ? `<div class="badges">${badgesHTML}</div>` : ''}
   <div class="divider"></div>
@@ -315,6 +330,9 @@ function toggleDay(id, cat, btn) {
 
   if (selected[cat] === id) {
     selected[cat] = null;
+    delete daySelectedServings[cat];
+    const oldPick = document.getElementById('day-pick-' + cat);
+    if (oldPick) oldPick.remove();
     btn.textContent = '＋ Agregar al día';
     btn.classList.remove('active');
 
@@ -354,10 +372,29 @@ function toggleDay(id, cat, btn) {
     if (selected[cat]) {
       const prev = document.querySelector(`#card-${selected[cat]} .btn-day`);
       if (prev) { prev.textContent = '＋ Agregar al día'; prev.classList.remove('active'); }
+      const prevPick = document.getElementById('day-pick-' + cat);
+      if (prevPick) prevPick.remove();
     }
     selected[cat] = id;
+    daySelectedServings[cat] = 1;
     btn.textContent = '✓ En el día';
     btn.classList.add('active');
+    // Insertar picker si la receta rinde más de 1 porción
+    const r = (data[cat]||[]).find(x => x.id === id);
+    const baseS = r && (r.base_servings || 1);
+    if (baseS > 1 && !document.getElementById('day-pick-' + cat)) {
+      const actions = selectedCard.querySelector('.card-actions');
+      if (actions) {
+        actions.insertAdjacentHTML('afterend', `
+    <div class="day-servings-picker" id="day-pick-${cat}">
+      <span class="day-servings-label">Porciones hoy:</span>
+      <button type="button" onclick="adjustDayServings('${cat}',-1)">−</button>
+      <input type="number" id="day-serv-${cat}" min="0.5" max="${baseS}" step="0.5" value="1" onchange="setDayServings('${cat}', this.value)">
+      <button type="button" onclick="adjustDayServings('${cat}',1)">+</button>
+      <span class="day-servings-of">/ ${baseS}</span>
+    </div>`);
+      }
+    }
 
     const selFirst = selectedCard.getBoundingClientRect();
 
@@ -410,10 +447,22 @@ function updateTotals() {
     if (!id) return;
     const r = (data[cat]||[]).find(x=>x.id===id);
     if (!r) return;
-    kcal+=r.kcal; prot+=r.prot; carbs+=r.carbs; fat+=r.fat;
-    names.push(r.name);
+    const baseS = r.base_servings || 1;
+    const dayS = daySelectedServings[cat] || 1;
+    const factor = dayS / baseS;
+    kcal  += r.kcal  * factor;
+    prot  += r.prot  * factor;
+    carbs += r.carbs * factor;
+    fat   += r.fat   * factor;
+    const portionLabel = (baseS > 1) ? ` (${dayS}/${baseS})` : '';
+    names.push(r.name + portionLabel);
     any = true;
   });
+
+  kcal  = Math.round(kcal);
+  prot  = Math.round(prot);
+  carbs = Math.round(carbs);
+  fat   = Math.round(fat);
 
   document.getElementById('selectedMealsText').textContent = any ? names.join(' · ') : 'Sin selecciones';
 
@@ -442,6 +491,27 @@ function updateTotals() {
   setVal('prot', prot, t.protMin, t.protMax, 'g');
   setVal('carbs', carbs, t.carbsMin, t.carbsMax, 'g');
   setVal('fat', fat, t.fatMin, t.fatMax, 'g');
+}
+
+// ─── DAY SERVINGS (porciones a contar en el día) ─────────────────────────────
+function setDayServings(cat, val) {
+  const id = selected[cat];
+  if (!id) return;
+  const r = (data[cat]||[]).find(x => x.id === id);
+  const baseS = (r && r.base_servings) || 1;
+  let v = parseFloat(val);
+  if (isNaN(v) || v <= 0) v = 1;
+  v = Math.min(baseS, Math.max(0.5, v));
+  v = Math.round(v * 2) / 2; // snap a 0.5
+  daySelectedServings[cat] = v;
+  const input = document.getElementById('day-serv-' + cat);
+  if (input) input.value = v;
+  updateTotals();
+}
+
+function adjustDayServings(cat, delta) {
+  const cur = daySelectedServings[cat] || 1;
+  setDayServings(cat, cur + delta);
 }
 
 // ─── SHOPPING ────────────────────────────────────────────────────────────────

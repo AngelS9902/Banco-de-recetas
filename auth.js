@@ -43,15 +43,38 @@ async function signupUser(email, password, username) {
       data: { name: username || email.split('@')[0] }
     }
   });
-  if (error) throw new Error(error.message);
+  if (error) throw new Error('Signup: ' + error.message);
   return data.user;
 }
 
 async function loginUser(email, password) {
   email = (email || '').trim();
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) throw new Error('Usuario o contraseña incorrectos');
+  if (error) throw new Error('Login: ' + error.message);
+  // Si es primera vez, crea el profile en user_data
+  await ensureProfileExists(data.user);
   return data.user;
+}
+
+async function ensureProfileExists(user) {
+  if (!user) return;
+  const { data, error } = await supabaseClient
+    .from('user_data')
+    .select('key')
+    .eq('user_id', user.id)
+    .eq('key', 'profile')
+    .maybeSingle();
+  if (data) return; // ya existe
+  // Crear profile inicial
+  const name = (user.user_metadata && user.user_metadata.name) || (user.email || '').split('@')[0];
+  await supabaseClient.from('user_data').insert({
+    user_id: user.id,
+    key: 'profile',
+    value: {
+      name, age: 25, weight: 70, height: 170,
+      sex: 'male', activity: 'moderate', role: 'user'
+    }
+  });
 }
 
 async function logout() {

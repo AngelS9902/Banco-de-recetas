@@ -64,26 +64,34 @@
 
 <div class="footer">Panel de administrador</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cloudStorage.js"></script>
 <script src="auth.js"></script>
 <script>
-requireAuth();
-if (!isAdmin()) {
-  alert('Solo administradores pueden acceder a este panel.');
-  location.replace('plan_angel_2.html');
-}
-
-document.getElementById('impersonateBannerSlot').innerHTML = impersonationBannerHTML();
-mountTopBarAndDrawer({ showCart: true, cartCount: 0 });
+(async () => {
+  await requireAuth();
+  await initCloudStorage();
+  await refreshSession();
+  if (!isAdmin()) {
+    alert('Solo administradores pueden acceder a este panel.');
+    location.replace('plan_angel_2.html');
+    return;
+  }
+  mountTopBarAndDrawer({ showCart: true, cartCount: 0 });
+  renderUsers();
+})();
 
 function userStats(id) {
-  const prefix = `user_${id}_`;
-  let recipes = 0, weeks = 0, customFoods = 0;
-  try {
-    const r = JSON.parse(localStorage.getItem(prefix + 'recipes') || '{}');
-    ['desayunos','comidas','cenas','colaciones'].forEach(c => { recipes += (r[c]||[]).length; });
-  } catch(e){}
-  try { weeks = JSON.parse(localStorage.getItem(prefix + 'shop_history') || '[]').length; } catch(e){}
-  try { customFoods = JSON.parse(localStorage.getItem(prefix + 'custom_foods') || '[]').length; } catch(e){}
+  // En modo cloud no podemos leer stats de otros usuarios sin service_role.
+  // Solo mostramos del usuario actual.
+  const me = getCurrentUser();
+  if (!me || me.id !== id) return {recipes: '—', weeks: '—', customFoods: '—'};
+  const recipes_data = cloudGet('recipes', {});
+  let recipes = 0;
+  ['desayunos','comidas','cenas','colaciones'].forEach(c => { recipes += (recipes_data[c]||[]).length; });
+  const weeks = (cloudGet('shop_history', []) || []).length;
+  const customFoods = (cloudGet('custom_foods', []) || []).length;
   return {recipes, weeks, customFoods};
 }
 
@@ -95,8 +103,8 @@ function fmtDate(ts) {
   return new Date(ts).toLocaleDateString('es-MX', {day:'numeric', month:'short', year:'numeric'});
 }
 
-function renderUsers() {
-  const users = getUsers().slice().sort((a,b) => a.createdAt - b.createdAt);
+async function renderUsers() {
+  const users = (await getUsers()).slice().sort((a,b) => a.createdAt - b.createdAt);
   document.getElementById('usersCount').textContent = `${users.length} cuenta${users.length===1?'':'s'}`;
   const me = getCurrentUser();
   const cont = document.getElementById('usersList');
@@ -128,9 +136,7 @@ function renderUsers() {
               <td>${s.customFoods}</td>
               <td>
                 <div class="admin-actions">
-                  ${isMe ? '' : `<button class="btn-cancel admin-btn" onclick="doImpersonate('${u.id}')" title="Iniciar sesión como este usuario">👁 Acceder como</button>`}
-                  <button class="btn-cancel admin-btn" onclick="doChangePass('${u.id}','${escapeHtmlA(u.username)}')">🔑 Contraseña</button>
-                  ${isMe ? '' : `<button class="btn-delete admin-btn" onclick="doDelete('${u.id}','${escapeHtmlA(u.username)}')">🗑 Eliminar</button>`}
+                  <button class="btn-cancel admin-btn" onclick="doChangeMyPass()">🔑 Cambiar mi contraseña</button>
                 </div>
               </td>
             </tr>
@@ -142,55 +148,30 @@ function renderUsers() {
   `;
 }
 
-function doImpersonate(id) {
-  try {
-    impersonate(id);
-    location.href = 'plan_angel_2.html';
-  } catch(e) { alert(e.message); }
-}
-
-async function doChangePass(id, username) {
-  const pw = prompt(`Nueva contraseña para "${username}":`);
+async function doChangeMyPass() {
+  const pw = prompt('Nueva contraseña (mínimo 6 caracteres):');
   if (!pw) return;
   try {
-    await changeUserPassword(id, pw);
+    await changeMyPassword(pw);
     alert('✓ Contraseña actualizada');
   } catch(e) { alert(e.message); }
 }
 
-function doDelete(id, username) {
-  if (!confirm(`¿Eliminar al usuario "${username}" y TODOS sus datos (recetas, listas, historial)?\n\nEsta acción no se puede deshacer.`)) return;
-  try {
-    deleteUser(id);
-    renderUsers();
-  } catch(e) { alert(e.message); }
-}
-
 async function createNewUser() {
-  const username = document.getElementById('newUsername').value.trim();
+  const email = document.getElementById('newUsername').value.trim();
   const password = document.getElementById('newPassword').value;
-  const role = document.getElementById('newRole').value;
   const err = document.getElementById('createErr');
   err.style.display = 'none';
   try {
-    const u = await signupUser(username, password);
-    // Si role=admin, lo ajustamos manualmente
-    if (role === 'admin') {
-      const users = getUsers();
-      const x = users.find(x => x.id === u.id);
-      x.role = 'admin';
-      setUsers(users);
-    }
+    await signupUser(email, password, email.split('@')[0]);
     document.getElementById('newUsername').value = '';
     document.getElementById('newPassword').value = '';
-    renderUsers();
+    alert('✓ Usuario creado. Debe confirmar email si está activado.');
   } catch(e) {
     err.textContent = e.message;
     err.style.display = '';
   }
 }
-
-renderUsers();
 </script>
 </body>
 </html>

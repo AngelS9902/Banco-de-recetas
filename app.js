@@ -40,43 +40,46 @@ const SEED = {
   ]
 };
 
-// ─── AUTH GUARD ───────────────────────────────────────────────────────────────
-// auth.js debe estar cargado antes que este script
-requireAuth();
-const CURRENT_USER = getCurrentUser();
-
-// ─── STATE ────────────────────────────────────────────────────────────────────
+// ─── STATE (poblado en initApp tras cargar cloudStorage) ──────────────────────
 const EMPTY_DATA = {desayunos:[], comidas:[], cenas:[], colaciones:[]};
-// Admin con migración tiene su data ya en localStorage; admin nuevo y usuarios
-// regulares empiezan vacíos. SEED se conserva como referencia/demo opcional.
-let data = JSON.parse(localStorage.getItem(userKey('recipes')) || 'null') || EMPTY_DATA;
-const selected = {}; // {desayunos: id, comidas: id, cenas: id, colaciones: id}
-const editingMap = {}; // {cat: recipeId} — receta en edición por categoría
+const DEFAULT_PROFILE_TMPL = {age:25, weight:70, height:170, sex:'male', activity:'light'};
 
-const DEFAULT_PROFILE = {name: CURRENT_USER.username, age:25, weight:70, height:170, sex:'male', activity:'light'};
-let profile = JSON.parse(localStorage.getItem(userKey('profile')) || 'null') || DEFAULT_PROFILE;
+let CURRENT_USER = null;
+let data = EMPTY_DATA;
+const selected = {};
+const editingMap = {};
+let profile = { name: '', ...DEFAULT_PROFILE_TMPL };
 let macroTargets = null;
 
-// Base de datos de alimentos: USDA (foods.js) + custom (localStorage)
+// Base de datos de alimentos
 const BASE_FOODS = (window.FOODS_DB && window.FOODS_DB.foods) ? window.FOODS_DB.foods : [];
-let CUSTOM_FOODS = JSON.parse(localStorage.getItem(userKey('custom_foods')) || '[]');
-let FOODS = [...BASE_FOODS, ...CUSTOM_FOODS];
+let CUSTOM_FOODS = [];
+let FOODS = [...BASE_FOODS];
 let FOODS_BY_ID = Object.fromEntries(FOODS.map(f => [f.id, f]));
 
-function save() { localStorage.setItem(userKey('recipes'), JSON.stringify(data)); }
-function saveProfileLS() { localStorage.setItem(userKey('profile'), JSON.stringify(profile)); }
-function saveCustomFoods() { localStorage.setItem(userKey('custom_foods'), JSON.stringify(CUSTOM_FOODS)); }
+// Entry point — llamado por el <script> de plan_angel_2.html tras initCloudStorage
+function initApp() {
+  CURRENT_USER = getCurrentUser();
+  data = cloudGet('recipes', null) || JSON.parse(JSON.stringify(EMPTY_DATA));
+  profile = cloudGet('profile', null) || { name: CURRENT_USER.username, ...DEFAULT_PROFILE_TMPL };
+  CUSTOM_FOODS = cloudGet('custom_foods', []) || [];
+  rebuildFoodsIndex();
+  renderProfile();
+  renderAll();
+  updateTotals();
+}
 
-// ─── SHOPPING LIST (GLOBAL, PERSISTIDA) ──────────────────────────────────────
-// La lista de compras se guarda en localStorage y se comparte con lista_compras.html
+function save() { cloudSet('recipes', data); }
+function saveProfileLS() { cloudSet('profile', profile); }
+function saveCustomFoods() { cloudSet('custom_foods', CUSTOM_FOODS); }
+
+// ─── SHOPPING LIST (GLOBAL, PERSISTIDA EN LA NUBE) ────────────────────────────
 function shopListGet() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(userKey('shop_list')) || 'null');
-    if (raw && Array.isArray(raw.recipes)) return raw;
-  } catch(e) {}
+  const raw = cloudGet('shop_list', null);
+  if (raw && Array.isArray(raw.recipes)) return raw;
   return { recipes: [], inventory: {}, prices: {}, store: '', weekStart: '' };
 }
-function shopListSet(obj) { localStorage.setItem(userKey('shop_list'), JSON.stringify(obj)); }
+function shopListSet(obj) { cloudSet('shop_list', obj); }
 function isRecipeInShop(id) { return shopListGet().recipes.some(r => r.id === id); }
 function addRecipeToShop(id, cat) {
   const list = shopListGet();
@@ -1040,7 +1043,5 @@ function saveNewFood() {
   closeNewFoodModal();
 }
 
-// INIT
-renderProfile();
-renderAll();
-updateTotals();
+// INIT — se llama desde la página HTML después de initCloudStorage()
+// (Ver función initApp() arriba)

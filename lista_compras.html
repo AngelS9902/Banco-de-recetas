@@ -124,14 +124,22 @@
   Lista de Compras · Suma · Resta · Compara
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cloudStorage.js"></script>
 <script src="auth.js"></script>
 <script src="foods.js"></script>
 <script src="lista_compras.js"></script>
 <script>
-  // Banner de impersonation + menú lateral
-  document.getElementById('impersonateBannerSlot').innerHTML = impersonationBannerHTML();
+(async () => {
+  await requireAuth();
+  const ok = await initCloudStorage();
+  if (!ok) { alert('No se pudieron cargar tus datos. Reintenta.'); return; }
+  await refreshSession();
   // En la propia lista de compras no mostramos el botón "Lista" (ya estamos ahí)
   mountTopBarAndDrawer({ showCart: false });
+  initLista();
+})();
 </script>
 </body>
 </html>

@@ -5,20 +5,25 @@
 // calcula gasto y guarda historial por tienda/semana.
 // ═══════════════════════════════════════════════════════════════════════════
 
-// auth.js debe estar cargado antes
-requireAuth();
-const CURRENT_USER = getCurrentUser();
-
-// ─── FOODS INDEX ─────────────────────────────────────────────────────────────
+// ─── STATE (poblado por initLista) ───────────────────────────────────────────
+let CURRENT_USER = null;
 const BASE_FOODS = (window.FOODS_DB && window.FOODS_DB.foods) ? window.FOODS_DB.foods : [];
-let CUSTOM_FOODS = JSON.parse(localStorage.getItem(userKey('custom_foods')) || '[]');
-let FOODS = [...BASE_FOODS, ...CUSTOM_FOODS];
+let CUSTOM_FOODS = [];
+let FOODS = [...BASE_FOODS];
 let FOODS_BY_ID = Object.fromEntries(FOODS.map(f => [f.id, f]));
-
-// ─── DATA SOURCES ────────────────────────────────────────────────────────────
-const RECETAS_DATA = JSON.parse(localStorage.getItem(userKey('recipes')) || '{}');
+let RECETAS_DATA = {};
 
 const DEFAULT_STORES = ['Walmart', 'HEB', 'Soriana', 'Aurrera', 'Costco', 'Mercado'];
+
+// Entry point — llamado desde lista_compras.html tras initCloudStorage
+function initLista() {
+  CURRENT_USER = getCurrentUser();
+  CUSTOM_FOODS = cloudGet('custom_foods', []) || [];
+  FOODS = [...BASE_FOODS, ...CUSTOM_FOODS];
+  FOODS_BY_ID = Object.fromEntries(FOODS.map(f => [f.id, f]));
+  RECETAS_DATA = cloudGet('recipes', {}) || {};
+  renderAll();
+}
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function escapeHtml(s) {
@@ -72,36 +77,26 @@ function convertToGrams(qty, unit, food) {
   }
 }
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
+// ─── STATE (cloud-backed) ────────────────────────────────────────────────────
 function shopGet() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(userKey('shop_list')) || 'null');
-    if (raw && Array.isArray(raw.recipes)) return raw;
-  } catch(e){}
+  const raw = cloudGet('shop_list', null);
+  if (raw && Array.isArray(raw.recipes)) return raw;
   return { recipes: [], inventory: {}, prices: {}, store: '', weekStart: '' };
 }
-function shopSet(s) { localStorage.setItem(userKey('shop_list'), JSON.stringify(s)); }
+function shopSet(s) { cloudSet('shop_list', s); }
 
-function historyGet() {
-  try { return JSON.parse(localStorage.getItem(userKey('shop_history')) || '[]') || []; }
-  catch(e) { return []; }
-}
-function historySet(h) { localStorage.setItem(userKey('shop_history'), JSON.stringify(h)); }
+function historyGet() { return cloudGet('shop_history', []) || []; }
+function historySet(h) { cloudSet('shop_history', h); }
 
-function priceDbGet() {
-  try { return JSON.parse(localStorage.getItem(userKey('price_db')) || '{}') || {}; }
-  catch(e) { return {}; }
-}
-function priceDbSet(db) { localStorage.setItem(userKey('price_db'), JSON.stringify(db)); }
+function priceDbGet() { return cloudGet('price_db', {}) || {}; }
+function priceDbSet(db) { cloudSet('price_db', db); }
 
 function storesGet() {
-  try {
-    const s = JSON.parse(localStorage.getItem(userKey('stores')) || 'null');
-    if (Array.isArray(s) && s.length) return s;
-  } catch(e){}
+  const s = cloudGet('stores', null);
+  if (Array.isArray(s) && s.length) return s;
   return DEFAULT_STORES.slice();
 }
-function storesSet(arr) { localStorage.setItem(userKey('stores'), JSON.stringify(arr)); }
+function storesSet(arr) { cloudSet('stores', arr); }
 
 // ─── AGGREGATION ─────────────────────────────────────────────────────────────
 function aggregateIngredients() {
@@ -686,5 +681,4 @@ function renderAll() {
   renderHistory();
   renderComparator();
 }
-
-renderAll();
+// NOTA: La página llama initLista() después de cargar cloudStorage

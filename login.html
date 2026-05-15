@@ -23,8 +23,12 @@
 
     <form id="authForm" class="login-form" onsubmit="event.preventDefault();handleSubmit();">
       <div class="form-group">
-        <label>Usuario</label>
-        <input type="text" id="username" autocomplete="username" required>
+        <label>Email</label>
+        <input type="email" id="email" autocomplete="email" required>
+      </div>
+      <div class="form-group" id="usernameGroup" style="display:none">
+        <label>Nombre (cómo te llamamos)</label>
+        <input type="text" id="username" autocomplete="name">
       </div>
       <div class="form-group">
         <label>Contraseña</label>
@@ -44,13 +48,16 @@
   </div>
 
   <div class="login-footer">
-    Banco de Recetas · App local · Datos guardados en tu navegador
+    Banco de Recetas · Sincronizado en la nube
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cloudStorage.js"></script>
 <script src="auth.js"></script>
 <script>
-let mode = 'login'; // 'login' | 'signup' | 'setup_admin_fresh' | 'setup_admin_migrate'
+let mode = 'login'; // 'login' | 'signup'
 
 function setMode(m) {
   mode = m;
@@ -58,31 +65,19 @@ function setMode(m) {
   const help = document.getElementById('loginHelp');
   const submit = document.getElementById('submitBtn');
   const p2group = document.getElementById('password2Group');
+  const ugroup = document.getElementById('usernameGroup');
   const toggleRow = document.getElementById('toggleRow');
-  const username = document.getElementById('username');
+  const email = document.getElementById('email');
   const password = document.getElementById('password');
 
   document.getElementById('errBox').style.display = 'none';
 
-  if (m === 'setup_admin_migrate') {
-    title.textContent = 'Crear cuenta administrador';
-    help.innerHTML = `Detectamos datos de un banco de recetas existente. Crea las credenciales para acceder a esa cuenta — quedará como <strong>administrador</strong>.`;
-    submit.textContent = 'Crear admin y continuar';
-    p2group.style.display = '';
-    toggleRow.innerHTML = '';
-    password.autocomplete = 'new-password';
-  } else if (m === 'setup_admin_fresh') {
-    title.textContent = 'Configura tu cuenta';
-    help.innerHTML = `Bienvenido. Esta es la primera cuenta — quedará como <strong>administrador</strong>.`;
-    submit.textContent = 'Crear cuenta';
-    p2group.style.display = '';
-    toggleRow.innerHTML = '';
-    password.autocomplete = 'new-password';
-  } else if (m === 'signup') {
+  if (m === 'signup') {
     title.textContent = 'Crear cuenta';
     help.innerHTML = `Crea un usuario nuevo. Empezarás con un banco de recetas vacío.`;
     submit.textContent = 'Crear cuenta';
     p2group.style.display = '';
+    ugroup.style.display = '';
     toggleRow.innerHTML = `¿Ya tienes cuenta? <a href="#" onclick="event.preventDefault();setMode('login')">Iniciar sesión</a>`;
     password.autocomplete = 'new-password';
   } else { // login
@@ -90,10 +85,11 @@ function setMode(m) {
     help.innerHTML = '';
     submit.textContent = 'Entrar';
     p2group.style.display = 'none';
+    ugroup.style.display = 'none';
     toggleRow.innerHTML = `¿Eres nuevo? <a href="#" onclick="event.preventDefault();setMode('signup')">Crea una cuenta</a>`;
     password.autocomplete = 'current-password';
   }
-  username.focus();
+  email.focus();
 }
 
 function showError(msg) {
@@ -103,27 +99,27 @@ function showError(msg) {
 }
 
 async function handleSubmit() {
+  const email = document.getElementById('email').value.trim();
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value;
   const password2 = document.getElementById('password2').value;
 
   try {
     if (mode === 'login') {
-      await loginUser(username, password);
-      location.replace('plan_angel_2.html');
-      return;
-    }
-    // signup / setup
-    if (password !== password2) throw new Error('Las contraseñas no coinciden');
-    if (mode === 'setup_admin_migrate' || mode === 'setup_admin_fresh') {
-      await setupAdmin(username, password);
+      await loginUser(email, password);
       location.replace('plan_angel_2.html');
       return;
     }
     if (mode === 'signup') {
-      await signupUser(username, password);
-      await loginUser(username, password);
-      location.replace('plan_angel_2.html');
+      if (password !== password2) throw new Error('Las contraseñas no coinciden');
+      await signupUser(email, password, username);
+      // Intenta login automático. Si confirmación de email está activa, fallará.
+      try {
+        await loginUser(email, password);
+        location.replace('plan_angel_2.html');
+      } catch (e) {
+        showError('Cuenta creada. Revisa tu email para confirmar antes de iniciar sesión.');
+      }
       return;
     }
   } catch (e) {
@@ -131,14 +127,14 @@ async function handleSubmit() {
   }
 }
 
-// Init: detectar modo
-(function init() {
+(async function init() {
   // Si ya hay sesión, salta directo a la app
-  if (getCurrentUserId()) {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (user) {
     location.replace('plan_angel_2.html');
     return;
   }
-  setMode(authInitialState() === 'login' ? 'login' : authInitialState());
+  setMode('login');
 })();
 </script>
 </body>

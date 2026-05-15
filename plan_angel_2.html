@@ -168,14 +168,25 @@
 <!-- MODAL: Crear producto nuevo -->
 <div class="modal-overlay" id="newFoodModal"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cloudStorage.js"></script>
 <script src="auth.js"></script>
 <script src="foods.js"></script>
 <script src="app.js"></script>
 <script>
-  // Inyecta banner de impersonation y top-bar (menú hamburguesa + carrito)
-  document.getElementById('impersonateBannerSlot').innerHTML = impersonationBannerHTML();
-  // El cartCount real lo actualiza app.js cuando renderiza
-  mountTopBarAndDrawer({ showCart: true, cartCount: (typeof shopListGet === 'function' ? shopListGet().recipes.length : 0) });
+(async () => {
+  // 1) Verifica sesión, redirige a login si no hay
+  const user = await requireAuth();
+  // 2) Carga todos los datos del usuario desde Supabase
+  const ok = await initCloudStorage();
+  if (!ok) { alert('No se pudieron cargar tus datos. Reintenta.'); return; }
+  // 3) Refresca info del usuario con datos cloud (profile.role)
+  await refreshSession();
+  // 4) Inyecta top-bar (menú hamburguesa + carrito) y arranca la app
+  mountTopBarAndDrawer({ showCart: true, cartCount: (shopListGet().recipes || []).length });
+  initApp();
+})();
 </script>
 </body>
 </html>

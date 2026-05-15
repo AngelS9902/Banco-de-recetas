@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Banco de Recetas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="impersonateBannerSlot"></div>
+
+<div class="header">
+  <div class="header-label">Panel de administrador</div>
+  <h1>Usuarios</h1>
+  <div class="header-meta" id="headerMetaSlot">
+    <a class="meta-pill meta-edit" href="home.html">← Banco</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E3EDF9">👥</div>
+      <div class="section-title">Cuentas registradas</div>
+      <div class="section-count" id="usersCount">0</div>
+    </div>
+    <div id="usersList"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E2F0E8">＋</div>
+      <div class="section-title">Crear usuario nuevo</div>
+    </div>
+    <div class="add-form open" style="display:block">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Usuario</label>
+          <input type="text" id="newUsername" placeholder="ej: maria">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="newPassword" placeholder="mínimo 4 caracteres">
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <select id="newRole">
+            <option value="user">Usuario</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-submit" onclick="createNewUser()">Crear usuario</button>
+        <div class="login-error" id="createErr" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Panel de administrador</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cloudStorage.js"></script>
+<script src="auth.js"></script>
+<script>
+(async () => {
+  await requireAuth();
+  await initCloudStorage();
+  await refreshSession();
+  if (!isAdmin()) {
+    alert('Solo administradores pueden acceder a este panel.');
+    location.replace('home.html');
+    return;
+  }
+  mountTopBarAndDrawer({ showCart: true, cartCount: 0 });
+  renderUsers();
+})();
+
+function userStats(id) {
+  // En modo cloud no podemos leer stats de otros usuarios sin service_role.
+  // Solo mostramos del usuario actual.
+  const me = getCurrentUser();
+  if (!me || me.id !== id) return {recipes: '—', weeks: '—', customFoods: '—'};
+  const recipes_data = cloudGet('recipes', {});
+  let recipes = 0;
+  ['desayunos','comidas','cenas','colaciones'].forEach(c => { recipes += (recipes_data[c]||[]).length; });
+  const weeks = (cloudGet('shop_history', []) || []).length;
+  const customFoods = (cloudGet('custom_foods', []) || []).length;
+  return {recipes, weeks, customFoods};
+}
+
+function escapeHtmlA(s) {
+  return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function fmtDate(ts) {
+  return new Date(ts).toLocaleDateString('es-MX', {day:'numeric', month:'short', year:'numeric'});
+}
+
+async function renderUsers() {
+  const users = (await getUsers()).slice().sort((a,b) => a.createdAt - b.createdAt);
+  document.getElementById('usersCount').textContent = `${users.length} cuenta${users.length===1?'':'s'}`;
+  const me = getCurrentUser();
+  const cont = document.getElementById('usersList');
+  cont.innerHTML = `
+    <div class="lc-table-wrap">
+    <table class="lc-table">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th>Creado</th>
+          <th>Recetas</th>
+          <th>Semanas</th>
+          <th>Productos custom</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${users.map(u => {
+          const s = userStats(u.id);
+          const isMe = u.id === me.id;
+          return `
+            <tr>
+              <td><strong>${escapeHtmlA(u.username)}</strong> ${isMe?'<span class="user-role-tag">tú</span>':''}</td>
+              <td>${u.role === 'admin' ? '<span class="user-role-tag">admin</span>' : '<span class="user-role-tag user-role-user">usuario</span>'}</td>
+              <td class="lc-sub">${fmtDate(u.createdAt)}</td>
+              <td>${s.recipes}</td>
+              <td>${s.weeks}</td>
+              <td>${s.customFoods}</td>
+              <td>
+                <div class="admin-actions">
+                  <button class="btn-cancel admin-btn" onclick="doChangeMyPass()">🔑 Cambiar mi contraseña</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+    </div>
+  `;
+}
+
+async function doChangeMyPass() {
+  const pw = prompt('Nueva contraseña (mínimo 6 caracteres):');
+  if (!pw) return;
+  try {
+    await changeMyPassword(pw);
+    alert('✓ Contraseña actualizada');
+  } catch(e) { alert(e.message); }
+}
+
+async function createNewUser() {
+  const email = document.getElementById('newUsername').value.trim();
+  const password = document.getElementById('newPassword').value;
+  const err = document.getElementById('createErr');
+  err.style.display = 'none';
+  try {
+    await signupUser(email, password, email.split('@')[0]);
+    document.getElementById('newUsername').value = '';
+    document.getElementById('newPassword').value = '';
+    alert('✓ Usuario creado. Debe confirmar email si está activado.');
+  } catch(e) {
+    err.textContent = e.message;
+    err.style.display = '';
+  }
+}
+</script>
+</body>
+</html>

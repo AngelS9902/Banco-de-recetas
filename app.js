@@ -58,7 +58,7 @@ let CUSTOM_FOODS = [];
 let FOODS = [...BASE_FOODS];
 let FOODS_BY_ID = Object.fromEntries(FOODS.map(f => [f.id, f]));
 
-// Entry point — llamado por el <script> de plan_angel_2.html tras initCloudStorage
+// Entry point — llamado por el <script> de home.html tras initCloudStorage
 function initApp() {
   CURRENT_USER = getCurrentUser();
   data = cloudGet('recipes', null) || JSON.parse(JSON.stringify(EMPTY_DATA));

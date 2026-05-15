@@ -104,7 +104,7 @@ async function handleSubmit() {
   try {
     if (mode === 'login') {
       await loginUser(email, password);
-      location.replace('plan_angel_2.html');
+      location.replace('home.html');
       return;
     }
     if (mode === 'signup') {
@@ -113,7 +113,7 @@ async function handleSubmit() {
       // Intenta login automático. Si confirmación de email está activa, fallará.
       try {
         await loginUser(email, password);
-        location.replace('plan_angel_2.html');
+        location.replace('home.html');
       } catch (e) {
         showError('Cuenta creada. Revisa tu email para confirmar antes de iniciar sesión.');
       }
@@ -128,7 +128,7 @@ async function handleSubmit() {
   // Si ya hay sesión, salta directo a la app
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (user) {
-    location.replace('plan_angel_2.html');
+    location.replace('home.html');
     return;
   }
   setMode('login');

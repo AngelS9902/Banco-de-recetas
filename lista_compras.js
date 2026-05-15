@@ -193,7 +193,7 @@ function renderRecipes() {
   const cont = document.getElementById('recipesChips');
   document.getElementById('recipesCount').textContent = `${shop.recipes.length} receta${shop.recipes.length===1?'':'s'}`;
   if (shop.recipes.length === 0) {
-    cont.innerHTML = `<div class="empty-state" style="padding:1rem">Sin recetas. Vuelve al <a href="plan_angel_2.html" style="color:var(--accent)">banco</a> y agrega con el botón 🛒.</div>`;
+    cont.innerHTML = `<div class="empty-state" style="padding:1rem">Sin recetas. Vuelve al <a href="home.html" style="color:var(--accent)">banco</a> y agrega con el botón 🛒.</div>`;
     return;
   }
   cont.innerHTML = shop.recipes.map(r => {

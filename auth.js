@@ -164,7 +164,7 @@ function menuDrawerHTML() {
         </div>
       </div>
       <div class="menu-section-label">Navegación</div>
-      <a class="menu-item" href="plan_angel_2.html"><span class="menu-item-icon">🍽</span> Banco de recetas</a>
+      <a class="menu-item" href="home.html"><span class="menu-item-icon">🍽</span> Banco de recetas</a>
       <a class="menu-item" href="lista_compras.html"><span class="menu-item-icon">🛒</span> Lista de compras</a>
       <a class="menu-item" href="mi_cuenta.html"><span class="menu-item-icon">👤</span> Mi cuenta</a>
       <div class="menu-divider"></div>

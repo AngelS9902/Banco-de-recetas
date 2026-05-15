@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi cuenta — Banco de Recetas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Configuración</div>
+  <h1>Mi cuenta</h1>
+  <div class="header-meta">
+    <span class="meta-pill" id="accountEmailPill">—</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- INFO -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E3EDF9">👤</div>
+      <div class="section-title">Información</div>
+    </div>
+    <div class="add-form open" style="display:block">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="text" id="accEmail" disabled>
+        </div>
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="accName" disabled>
+        </div>
+        <div class="form-group">
+          <label>Cuenta creada</label>
+          <input type="text" id="accCreated" disabled>
+        </div>
+        <div class="form-group">
+          <label>Rol</label>
+          <input type="text" id="accRole" disabled>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTRASEÑA -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FAE8DC">🔑</div>
+      <div class="section-title">Cambiar contraseña</div>
+    </div>
+    <div class="add-form open" style="display:block">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Contraseña nueva</label>
+          <input type="password" id="newPw" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label>Confirma la contraseña</label>
+          <input type="password" id="newPw2" autocomplete="new-password">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-submit" onclick="doChangeMyPass()">Actualizar contraseña</button>
+        <div class="login-error" id="pwErr" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORTAR -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E2F0E8">📦</div>
+      <div class="section-title">Exportar mis datos</div>
+    </div>
+    <div class="lc-help">Descarga un respaldo en JSON con todas tus recetas, lista de compras, historial y productos custom. Útil como backup.</div>
+    <div class="form-actions">
+      <button class="btn-submit" onclick="exportData()">⬇ Descargar respaldo</button>
+    </div>
+  </div>
+
+  <!-- ZONA DE PELIGRO -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FAE3E3">⚠️</div>
+      <div class="section-title">Zona de peligro</div>
+    </div>
+    <div class="lc-help">Cerrar sesión es seguro — tus datos quedan guardados en la nube. Eliminar la cuenta borra todo permanentemente.</div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="logout()">⎋ Cerrar sesión</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Banco de Recetas · Mi cuenta</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cloudStorage.js"></script>
+<script src="auth.js"></script>
+<script>
+(async () => {
+  await requireAuth();
+  await initCloudStorage();
+  await refreshSession();
+  mountTopBarAndDrawer({ showCart: true, cartCount: (cloudGet('shop_list', {recipes:[]}).recipes || []).length });
+  renderAccount();
+})();
+
+function fmtDate(ts) {
+  return new Date(ts).toLocaleDateString('es-MX', {day:'numeric', month:'long', year:'numeric'});
+}
+
+function renderAccount() {
+  const u = getCurrentUser();
+  const prof = cloudGet('profile', {});
+  document.getElementById('accountEmailPill').textContent = u.email;
+  document.getElementById('accEmail').value = u.email;
+  document.getElementById('accName').value = prof.name || u.username;
+  document.getElementById('accCreated').value = fmtDate(u.createdAt);
+  document.getElementById('accRole').value = u.role === 'admin' ? 'Administrador' : 'Usuario';
+}
+
+async function doChangeMyPass() {
+  const pw = document.getElementById('newPw').value;
+  const pw2 = document.getElementById('newPw2').value;
+  const err = document.getElementById('pwErr');
+  err.style.display = 'none';
+  try {
+    if (pw !== pw2) throw new Error('Las contraseñas no coinciden');
+    await changeMyPassword(pw);
+    alert('✓ Contraseña actualizada');
+    document.getElementById('newPw').value = '';
+    document.getElementById('newPw2').value = '';
+  } catch(e) {
+    err.textContent = e.message;
+    err.style.display = '';
+  }
+}
+
+async function exportData() {
+  const u = getCurrentUser();
+  const { data, error } = await supabaseClient
+    .from('user_data').select('key, value, updated_at')
+    .eq('user_id', u.id);
+  if (error) { alert('Error al exportar: ' + error.message); return; }
+  const dump = {
+    exported_at: new Date().toISOString(),
+    email: u.email,
+    data: Object.fromEntries((data||[]).map(r => [r.key, r.value])),
+  };
+  const blob = new Blob([JSON.stringify(dump, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `banco-recetas-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

@@ -152,9 +152,6 @@ function menuDrawerHTML() {
   const u = getCurrentUser();
   if (!u) return '';
   const initials = (u.username || '?').slice(0, 2).toUpperCase();
-  const adminItem = u.role === 'admin'
-    ? `<a class="menu-item" href="admin.html"><span class="menu-item-icon">⚙</span> Panel admin</a>`
-    : '';
   return `
     <div class="menu-drawer-overlay" id="menuDrawerOverlay" onclick="toggleMenu()"></div>
     <div class="menu-drawer" id="menuDrawer">
@@ -169,7 +166,7 @@ function menuDrawerHTML() {
       <div class="menu-section-label">Navegación</div>
       <a class="menu-item" href="plan_angel_2.html"><span class="menu-item-icon">🍽</span> Banco de recetas</a>
       <a class="menu-item" href="lista_compras.html"><span class="menu-item-icon">🛒</span> Lista de compras</a>
-      ${adminItem}
+      <a class="menu-item" href="mi_cuenta.html"><span class="menu-item-icon">👤</span> Mi cuenta</a>
       <div class="menu-divider"></div>
       <button class="menu-item menu-item-logout" onclick="logout()"><span class="menu-item-icon">⎋</span> Cerrar sesión</button>
     </div>

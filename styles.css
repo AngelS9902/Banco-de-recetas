@@ -721,6 +721,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .day-servings-picker input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .day-servings-of{font-size:11px;color:var(--muted);font-weight:500}
 
+/* Lista de productos custom en Mi cuenta */
+.custom-foods-list{display:flex;flex-direction:column;gap:8px;margin-top:.5rem}
+.custom-food-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:.75rem 1rem;
+}
+.custom-food-info{flex:1;min-width:0}
+.custom-food-name{
+  font-size:14px;font-weight:600;color:var(--text);
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+}
+.custom-food-cat{
+  font-size:10px;font-weight:500;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.custom-food-macros{
+  display:flex;gap:10px;margin-top:4px;
+  font-size:12px;color:var(--muted);font-weight:500;flex-wrap:wrap;
+}
+.custom-food-macros span{color:var(--text)}
+.custom-food-macros .cf-per{color:var(--muted);font-weight:400}
+.custom-food-actions{display:flex;gap:6px;flex-shrink:0}
+.custom-food-actions .btn-edit,
+.custom-food-actions .btn-delete{
+  font-size:11px;padding:6px 10px;border-radius:8px;
+  border:1px solid var(--border);background:var(--bg);cursor:pointer;
+  font-family:inherit;font-weight:600;
+}
+.custom-food-actions .btn-edit{color:var(--muted)}
+.custom-food-actions .btn-edit:hover{border-color:var(--blue);color:var(--blue)}
+.custom-food-actions .btn-delete{color:var(--muted)}
+.custom-food-actions .btn-delete:hover{border-color:#d9534f;color:#d9534f}
+@media(max-width:600px){
+  .custom-food-row{flex-direction:column;align-items:stretch}
+  .custom-food-actions{justify-content:flex-end}
+}
+
 /* Chip de receta en lista compras: con selector de porciones */
 .lc-chip-servings{
   display:inline-flex;align-items:center;gap:4px;

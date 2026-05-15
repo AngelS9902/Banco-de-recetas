@@ -83,6 +83,41 @@
     </div>
   </div>
 
+  <!-- IMPORTAR -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#EEE9F9">📥</div>
+      <div class="section-title">Importar respaldo</div>
+    </div>
+    <div class="lc-help">Sube un archivo JSON exportado previamente. <strong>Reemplazará tus datos actuales</strong> (recetas, lista de compras, etc.) — exporta primero si quieres conservarlos.</div>
+    <div class="form-grid">
+      <div class="form-group form-full">
+        <label>Archivo de respaldo (.json)</label>
+        <input type="file" id="importFile" accept=".json,application/json">
+      </div>
+      <div class="form-group form-full">
+        <label style="display:flex;gap:8px;align-items:center;cursor:pointer">
+          <input type="checkbox" id="mergeMode" style="width:auto">
+          <span style="text-transform:none;letter-spacing:0;font-weight:400">Modo fusión: combina con datos actuales (en lugar de reemplazar)</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-submit" onclick="importData()">⬆ Importar respaldo</button>
+      <div class="login-error" id="importErr" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- MIS PRODUCTOS CUSTOM -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FFF3CD">🥫</div>
+      <div class="section-title">Mis productos custom</div>
+    </div>
+    <div class="lc-help">Productos que has creado y se usan en tus recetas para calcular macros. Puedes editarlos o eliminarlos. Si un producto está en uso en alguna receta, no se podrá eliminar hasta quitarlo de ahí.</div>
+    <div id="customFoodsList" class="custom-foods-list"></div>
+  </div>
+
   <!-- ZONA DE PELIGRO -->
   <div class="section">
     <div class="section-header">
@@ -97,6 +132,9 @@
 
 </div>
 
+<!-- Modal edición producto custom -->
+<div class="modal-overlay" id="editFoodModal"></div>
+
 <div class="footer">Banco de Recetas · Mi cuenta</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -110,7 +148,149 @@
   await refreshSession();
   mountTopBarAndDrawer({ showCart: true, cartCount: (cloudGet('shop_list', {recipes:[]}).recipes || []).length });
   renderAccount();
+  renderCustomFoodsList();
 })();
+
+function escapeHtmlAcc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderCustomFoodsList(){
+  const list = cloudGet('custom_foods', []) || [];
+  const box = document.getElementById('customFoodsList');
+  if (!list.length){
+    box.innerHTML = '<div class="empty-state" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">Aún no has creado productos custom. Cuando agregues un ingrediente nuevo desde una receta, aparecerá aquí.</div>';
+    return;
+  }
+  box.innerHTML = list.map(f => {
+    const p = f.por_100g || {};
+    return `
+    <div class="custom-food-row">
+      <div class="custom-food-info">
+        <div class="custom-food-name">${escapeHtmlAcc(f.nombre)}<span class="custom-food-cat">${escapeHtmlAcc(f.categoria||'')}${f.estado?' · '+escapeHtmlAcc(f.estado):''}</span></div>
+        <div class="custom-food-macros">
+          <span>${(p.kcal||0)} kcal</span>
+          <span>P ${(p.prot||0)}g</span>
+          <span>C ${(p.carbs||0)}g</span>
+          <span>G ${(p.fat||0)}g</span>
+          <span class="cf-per">/ 100g</span>
+        </div>
+      </div>
+      <div class="custom-food-actions">
+        <button class="btn-edit" onclick="openEditFoodModal('${f.id}')">✎ Editar</button>
+        <button class="btn-delete" onclick="deleteCustomFood('${f.id}')">🗑 Eliminar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function findRecipesUsingFood(foodId){
+  const recipes = cloudGet('recipes', null) || {};
+  const matches = [];
+  ['desayunos','comidas','cenas','colaciones'].forEach(cat => {
+    (recipes[cat]||[]).forEach(r => {
+      if (Array.isArray(r.ingredients_structured) && r.ingredients_structured.some(i => i.food_id === foodId)){
+        matches.push(r.name);
+      }
+    });
+  });
+  return matches;
+}
+
+function deleteCustomFood(id){
+  const list = cloudGet('custom_foods', []) || [];
+  const food = list.find(f => f.id === id);
+  if (!food) return;
+  const usedIn = findRecipesUsingFood(id);
+  if (usedIn.length){
+    alert(`No puedes eliminar "${food.nombre}" porque está en uso en ${usedIn.length} receta(s):\n\n• ${usedIn.join('\n• ')}\n\nQuítalo de esas recetas primero.`);
+    return;
+  }
+  if (!confirm(`¿Eliminar "${food.nombre}"? Esta acción no se puede deshacer.`)) return;
+  const next = list.filter(f => f.id !== id);
+  cloudSet('custom_foods', next);
+  renderCustomFoodsList();
+}
+
+function openEditFoodModal(id){
+  const list = cloudGet('custom_foods', []) || [];
+  const f = list.find(x => x.id === id);
+  if (!f) return;
+  const p = f.por_100g || {};
+  const cats = ['pollo','res','cerdo','pescado','huevo','lacteo','grano','legumbre','verdura','fruta','semilla','grasa','endulzante','condimento','especia','otro'];
+  const catsHTML = cats.map(c => `<option value="${c}"${c===(f.categoria||'otro')?' selected':''}>${c[0].toUpperCase()+c.slice(1)}</option>`).join('');
+  const modal = document.getElementById('editFoodModal');
+  modal.innerHTML = `
+    <div class="modal">
+      <h3>Editar producto</h3>
+      <div class="modal-sub">Cambios se aplican a todas las recetas que usen este producto. Valores por <strong>100 g</strong>.</div>
+      <input type="hidden" id="ef_id" value="${escapeHtmlAcc(f.id)}">
+      <div class="modal-grid">
+        <div class="form-group form-full">
+          <label>Nombre *</label>
+          <input type="text" id="ef_nombre" value="${escapeHtmlAcc(f.nombre)}">
+        </div>
+        <div class="form-group">
+          <label>Categoría</label>
+          <select id="ef_categoria">${catsHTML}</select>
+        </div>
+        <div class="form-group">
+          <label>Estado (opc)</label>
+          <input type="text" id="ef_estado" value="${escapeHtmlAcc(f.estado||'')}">
+        </div>
+        <div class="form-group"><label>Kcal / 100g *</label><input type="number" id="ef_kcal" min="0" step="0.1" value="${p.kcal??''}"></div>
+        <div class="form-group"><label>Proteína g *</label><input type="number" id="ef_prot" min="0" step="0.1" value="${p.prot??''}"></div>
+        <div class="form-group"><label>Carbos g *</label><input type="number" id="ef_carbs" min="0" step="0.1" value="${p.carbs??''}"></div>
+        <div class="form-group"><label>Grasa g *</label><input type="number" id="ef_fat" min="0" step="0.1" value="${p.fat??''}"></div>
+        <div class="form-group"><label>Fibra g</label><input type="number" id="ef_fiber" min="0" step="0.1" value="${p.fiber??''}"></div>
+        <div class="form-group"><label>Azúcares g</label><input type="number" id="ef_sugars" min="0" step="0.1" value="${p.sugars??''}"></div>
+        <div class="form-group"><label>Sodio mg</label><input type="number" id="ef_sodium" min="0" step="0.1" value="${p.sodium_mg??''}"></div>
+        <div class="form-group form-full">
+          <label>Gramos por unidad (opc)</label>
+          <input type="number" id="ef_gxu" min="0" step="0.1" value="${f.gramos_por_unidad??''}">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-submit" onclick="saveEditedFood()">💾 Guardar cambios</button>
+        <button class="btn-cancel" onclick="closeEditFoodModal()">Cancelar</button>
+      </div>
+    </div>`;
+  modal.classList.add('open');
+}
+
+function closeEditFoodModal(){
+  document.getElementById('editFoodModal').classList.remove('open');
+}
+
+function saveEditedFood(){
+  const id = document.getElementById('ef_id').value;
+  const nombre = document.getElementById('ef_nombre').value.trim();
+  if (!nombre) { alert('El nombre es obligatorio.'); return; }
+  const kcal = parseFloat(document.getElementById('ef_kcal').value);
+  const prot = parseFloat(document.getElementById('ef_prot').value);
+  const carbs = parseFloat(document.getElementById('ef_carbs').value);
+  const fat = parseFloat(document.getElementById('ef_fat').value);
+  if ([kcal,prot,carbs,fat].some(v => isNaN(v))) { alert('Kcal, proteína, carbos y grasa son obligatorios.'); return; }
+  const fiber = parseFloat(document.getElementById('ef_fiber').value) || 0;
+  const sugars = parseFloat(document.getElementById('ef_sugars').value) || 0;
+  const sodium_mg = parseFloat(document.getElementById('ef_sodium').value) || 0;
+  const categoria = document.getElementById('ef_categoria').value;
+  const estado = document.getElementById('ef_estado').value.trim();
+  const gxu = parseFloat(document.getElementById('ef_gxu').value);
+
+  const list = cloudGet('custom_foods', []) || [];
+  const idx = list.findIndex(f => f.id === id);
+  if (idx < 0) { alert('Producto no encontrado.'); return; }
+  const updated = {
+    ...list[idx],
+    nombre, categoria,
+    por_100g: { kcal, prot, carbs, fat, fiber, sugars, sodium_mg },
+  };
+  if (estado) updated.estado = estado; else delete updated.estado;
+  if (!isNaN(gxu) && gxu > 0) updated.gramos_por_unidad = gxu; else delete updated.gramos_por_unidad;
+  list[idx] = updated;
+  cloudSet('custom_foods', list);
+  closeEditFoodModal();
+  renderCustomFoodsList();
+}
 
 function fmtDate(ts) {
   return new Date(ts).toLocaleDateString('es-MX', {day:'numeric', month:'long', year:'numeric'});
@@ -137,6 +317,70 @@ async function doChangeMyPass() {
     alert('✓ Contraseña actualizada');
     document.getElementById('newPw').value = '';
     document.getElementById('newPw2').value = '';
+  } catch(e) {
+    err.textContent = e.message;
+    err.style.display = '';
+  }
+}
+
+async function importData() {
+  const fileInput = document.getElementById('importFile');
+  const merge = document.getElementById('mergeMode').checked;
+  const err = document.getElementById('importErr');
+  err.style.display = 'none';
+  try {
+    if (!fileInput.files || fileInput.files.length === 0) {
+      throw new Error('Selecciona un archivo .json primero');
+    }
+    const file = fileInput.files[0];
+    const text = await file.text();
+    let parsed;
+    try { parsed = JSON.parse(text); }
+    catch(e) { throw new Error('El archivo no es JSON válido'); }
+    if (!parsed.data || typeof parsed.data !== 'object') {
+      throw new Error('Estructura inválida — esperaba un objeto con "data"');
+    }
+    const keys = Object.keys(parsed.data);
+    if (keys.length === 0) throw new Error('El respaldo está vacío');
+
+    const action = merge ? 'fusionar con' : 'REEMPLAZAR';
+    const msg = `Vas a ${action} tus datos actuales con ${keys.length} sección(es) del respaldo:\n\n${keys.join(', ')}\n\n¿Continuar?`;
+    if (!confirm(msg)) return;
+
+    const u = getCurrentUser();
+    const rows = [];
+
+    for (const key of keys) {
+      let value = parsed.data[key];
+      if (merge) {
+        // Fusión específica por tipo
+        const current = cloudGet(key, null);
+        if (key === 'recipes' && current) {
+          // Combina arrays por categoría
+          const combined = {};
+          ['desayunos','comidas','cenas','colaciones'].forEach(c => {
+            const a = (current[c] || []);
+            const b = (value[c] || []);
+            const ids = new Set(a.map(r => r.id));
+            combined[c] = [...a, ...b.filter(r => !ids.has(r.id))];
+          });
+          value = combined;
+        } else if (key === 'custom_foods' && Array.isArray(current) && Array.isArray(value)) {
+          const ids = new Set(current.map(f => f.id));
+          value = [...current, ...value.filter(f => !ids.has(f.id))];
+        } else if (key === 'shop_history' && Array.isArray(current) && Array.isArray(value)) {
+          value = [...current, ...value];
+        }
+        // profile, shop_list, stores, price_db → respaldo gana en modo fusión simple
+      }
+      rows.push({ user_id: u.id, key, value, updated_at: new Date().toISOString() });
+    }
+
+    const { error } = await supabaseClient.from('user_data').upsert(rows, { onConflict: 'user_id,key' });
+    if (error) throw new Error(error.message);
+
+    alert(`✓ Importadas ${keys.length} sección(es). Recargando…`);
+    location.reload();
   } catch(e) {
     err.textContent = e.message;
     err.style.display = '';

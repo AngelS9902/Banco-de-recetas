@@ -112,7 +112,7 @@
   <div class="section">
     <div class="section-header">
       <div class="section-icon" style="background:#FFF3CD">🥫</div>
-      <div class="section-title">Mis productos custom</div>
+      <div class="section-title">Mis productos</div>
     </div>
     <div class="lc-help">Productos que has creado y se usan en tus recetas para calcular macros. Puedes editarlos o eliminarlos. Si un producto está en uso en alguna receta, no se podrá eliminar hasta quitarlo de ahí.</div>
     <div id="customFoodsList" class="custom-foods-list"></div>
@@ -160,26 +160,14 @@ function renderCustomFoodsList(){
     box.innerHTML = '<div class="empty-state" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">Aún no has creado productos custom. Cuando agregues un ingrediente nuevo desde una receta, aparecerá aquí.</div>';
     return;
   }
-  box.innerHTML = list.map(f => {
-    const p = f.por_100g || {};
-    return `
+  box.innerHTML = list.map(f => `
     <div class="custom-food-row">
-      <div class="custom-food-info">
-        <div class="custom-food-name">${escapeHtmlAcc(f.nombre)}<span class="custom-food-cat">${escapeHtmlAcc(f.categoria||'')}${f.estado?' · '+escapeHtmlAcc(f.estado):''}</span></div>
-        <div class="custom-food-macros">
-          <span>${(p.kcal||0)} kcal</span>
-          <span>P ${(p.prot||0)}g</span>
-          <span>C ${(p.carbs||0)}g</span>
-          <span>G ${(p.fat||0)}g</span>
-          <span class="cf-per">/ 100g</span>
-        </div>
-      </div>
+      <div class="custom-food-name">${escapeHtmlAcc(f.nombre)}</div>
       <div class="custom-food-actions">
-        <button class="btn-edit" onclick="openEditFoodModal('${f.id}')">✎ Editar</button>
-        <button class="btn-delete" onclick="deleteCustomFood('${f.id}')">🗑 Eliminar</button>
+        <button class="cf-icon-btn cf-edit" onclick="openEditFoodModal('${f.id}')" title="Editar" aria-label="Editar">✎</button>
+        <button class="cf-icon-btn cf-del" onclick="deleteCustomFood('${f.id}')" title="Eliminar" aria-label="Eliminar">🗑</button>
       </div>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
 
 function findRecipesUsingFood(foodId){

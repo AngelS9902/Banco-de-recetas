@@ -160,14 +160,26 @@ function renderCustomFoodsList(){
     box.innerHTML = '<div class="empty-state" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:13px">Aún no has creado productos custom. Cuando agregues un ingrediente nuevo desde una receta, aparecerá aquí.</div>';
     return;
   }
-  box.innerHTML = list.map(f => `
+  box.innerHTML = list.map(f => {
+    const p = f.por_100g || {};
+    return `
     <div class="custom-food-row">
-      <div class="custom-food-name">${escapeHtmlAcc(f.nombre)}</div>
-      <div class="custom-food-actions">
-        <button class="cf-icon-btn cf-edit" onclick="openEditFoodModal('${f.id}')" title="Editar" aria-label="Editar">✎</button>
-        <button class="cf-icon-btn cf-del" onclick="deleteCustomFood('${f.id}')" title="Eliminar" aria-label="Eliminar">🗑</button>
+      <div class="custom-food-info">
+        <div class="custom-food-name">${escapeHtmlAcc(f.nombre)}<span class="custom-food-cat">${escapeHtmlAcc(f.categoria||'')}${f.estado?' · '+escapeHtmlAcc(f.estado):''}</span></div>
+        <div class="custom-food-macros">
+          <span>${(p.kcal||0)} kcal</span>
+          <span>P ${(p.prot||0)}g</span>
+          <span>C ${(p.carbs||0)}g</span>
+          <span>G ${(p.fat||0)}g</span>
+          <span class="cf-per">/ 100g</span>
+        </div>
       </div>
-    </div>`).join('');
+      <div class="custom-food-actions">
+        <button class="btn-edit" onclick="openEditFoodModal('${f.id}')">✎ Editar</button>
+        <button class="btn-delete" onclick="deleteCustomFood('${f.id}')">🗑 Eliminar</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function findRecipesUsingFood(foodId){

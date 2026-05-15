@@ -721,44 +721,55 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .day-servings-picker input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .day-servings-of{font-size:11px;color:var(--muted);font-weight:500}
 
-/* Lista de productos custom en Mi cuenta — caja scrollable */
+/* Lista de productos custom en Mi cuenta — caja scrollable con info completa */
 .custom-foods-list{
   margin-top:.5rem;
   background:#fff;
   border:1px solid var(--border);
   border-radius:12px;
-  max-height:320px;
+  max-height:380px;
   overflow-y:auto;
   padding:4px;
 }
 .custom-food-row{
   display:flex;align-items:center;gap:12px;
-  padding:.55rem .85rem;border-radius:8px;
+  padding:.75rem 1rem;border-radius:8px;
   transition:background .15s;
 }
-.custom-food-row + .custom-food-row{
-  border-top:1px solid var(--border);
-}
+.custom-food-row + .custom-food-row{border-top:1px solid var(--border)}
 .custom-food-row:hover{background:rgba(0,0,0,.025)}
+.custom-food-info{flex:1;min-width:0}
 .custom-food-name{
-  flex:1;min-width:0;
-  font-size:14px;font-weight:500;color:var(--text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-size:14px;font-weight:600;color:var(--text);
+  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
 }
-.custom-food-actions{display:flex;gap:4px;flex-shrink:0}
-.cf-icon-btn{
-  width:30px;height:30px;
-  display:inline-flex;align-items:center;justify-content:center;
-  border:none;background:transparent;cursor:pointer;
-  font-size:14px;border-radius:6px;
-  color:var(--muted);transition:all .15s;
+.custom-food-cat{
+  font-size:10px;font-weight:500;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.5px;
 }
-.cf-icon-btn:hover{background:rgba(0,0,0,.06)}
-.cf-edit:hover{color:var(--blue)}
-.cf-del:hover{color:#d9534f}
-/* Empty state dentro de la lista */
+.custom-food-macros{
+  display:flex;gap:10px;margin-top:4px;
+  font-size:12px;color:var(--muted);font-weight:500;flex-wrap:wrap;
+}
+.custom-food-macros span{color:var(--text)}
+.custom-food-macros .cf-per{color:var(--muted);font-weight:400}
+.custom-food-actions{display:flex;gap:6px;flex-shrink:0}
+.custom-food-actions .btn-edit,
+.custom-food-actions .btn-delete{
+  font-size:11px;padding:6px 10px;border-radius:8px;
+  border:1px solid var(--border);background:var(--bg);cursor:pointer;
+  font-family:inherit;font-weight:600;
+}
+.custom-food-actions .btn-edit{color:var(--muted)}
+.custom-food-actions .btn-edit:hover{border-color:var(--blue);color:var(--blue)}
+.custom-food-actions .btn-delete{color:var(--muted)}
+.custom-food-actions .btn-delete:hover{border-color:#d9534f;color:#d9534f}
 .custom-foods-list .empty-state{
   padding:1.25rem !important;border:none !important;background:transparent !important;
+}
+@media(max-width:600px){
+  .custom-food-row{flex-direction:column;align-items:stretch}
+  .custom-food-actions{justify-content:flex-end}
 }
 
 /* Chip de receta en lista compras: con selector de porciones */

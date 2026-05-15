@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Compras</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="impersonateBannerSlot"></div>
+
+<div class="header">
+  <div class="header-label" id="headerLabel">Compras inteligentes</div>
+  <h1>Lista de Compras</h1>
+  <div class="header-meta" id="headerMetaSlot">
+    <span class="meta-pill" id="weekLabel">Semana —</span>
+    <span class="meta-pill" id="storeLabel">Sin tienda</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Tienda + semana -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FAE8DC">🏪</div>
+      <div class="section-title">Tienda y semana</div>
+    </div>
+    <div class="lc-store-grid">
+      <div class="form-group">
+        <label>Tienda</label>
+        <div class="lc-store-row">
+          <select id="storeSelect"></select>
+          <input type="text" id="storeNew" placeholder="+ Nueva tienda">
+          <button class="btn-add-ingr" type="button" onclick="addStore()">＋</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Semana (inicio)</label>
+        <input type="date" id="weekStartInput">
+      </div>
+    </div>
+  </div>
+
+  <!-- Recetas agregadas -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E2F0E8">📋</div>
+      <div class="section-title">Recetas en la lista</div>
+      <div class="section-count" id="recipesCount">0</div>
+    </div>
+    <div id="recipesChips" class="lc-chips"></div>
+  </div>
+
+  <!-- Ingredientes sumados -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E3EDF9">🧮</div>
+      <div class="section-title">Ingredientes a comprar</div>
+      <div class="section-count" id="ingrCount">0</div>
+    </div>
+    <div class="lc-help">Suma cantidades de las recetas, te resta lo que ya tengas en casa y calcula el costo según el precio que pongas.</div>
+    <div id="ingrTableWrap"></div>
+  </div>
+
+  <!-- Ingredientes texto libre (legacy) -->
+  <div class="section" id="legacySection" style="display:none">
+    <div class="section-header">
+      <div class="section-icon" style="background:#EEE9F9">📝</div>
+      <div class="section-title">Ingredientes sin sumar (texto libre)</div>
+      <div class="section-count" id="legacyCount">0</div>
+    </div>
+    <div class="lc-help">Estas recetas tienen ingredientes en formato antiguo. Revísalas y agrégalas manual a tu lista.</div>
+    <div id="legacyList"></div>
+  </div>
+
+  <!-- Resumen / Cerrar semana -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#E2F0E8">💰</div>
+      <div class="section-title">Resumen de gasto</div>
+    </div>
+    <div class="lc-summary">
+      <div class="lc-summary-card">
+        <div class="lc-summary-lbl">Total estimado</div>
+        <div class="lc-summary-val" id="totalEstimado">$0.00</div>
+      </div>
+      <div class="lc-summary-card">
+        <div class="lc-summary-lbl">Items con precio</div>
+        <div class="lc-summary-val" id="itemsConPrecio">0 / 0</div>
+      </div>
+    </div>
+    <div class="lc-summary-actions">
+      <button class="btn-submit" onclick="closeWeek()">✓ Cerrar semana y guardar</button>
+      <button class="btn-cancel" onclick="clearAll()">Vaciar lista</button>
+    </div>
+  </div>
+
+  <!-- Historial -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FAE3E3">📅</div>
+      <div class="section-title">Historial semanal</div>
+      <div class="section-count" id="historyCount">0 semanas</div>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
+  <!-- Comparador de precios -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FAE8DC">⚖️</div>
+      <div class="section-title">Comparador de precios entre tiendas</div>
+    </div>
+    <div class="lc-help">Muestra el mejor precio histórico por producto entre las tiendas donde has comprado.</div>
+    <div id="comparatorWrap"></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Lista de Compras · Suma · Resta · Compara
+</div>
+
+<script src="auth.js"></script>
+<script src="foods.js"></script>
+<script src="lista_compras.js"></script>
+<script>
+  // Banner de impersonation + menú lateral
+  document.getElementById('impersonateBannerSlot').innerHTML = impersonationBannerHTML();
+  // En la propia lista de compras no mostramos el botón "Lista" (ya estamos ahí)
+  mountTopBarAndDrawer({ showCart: false });
+</script>
+</body>
+</html>

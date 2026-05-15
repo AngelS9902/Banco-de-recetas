@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar sesión — Banco de Recetas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-body">
+
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-logo">🍳</div>
+      <div>
+        <div class="login-label">Banco de Recetas</div>
+        <h1 class="login-title" id="loginTitle">Iniciar sesión</h1>
+      </div>
+    </div>
+
+    <div class="login-help" id="loginHelp"></div>
+
+    <form id="authForm" class="login-form" onsubmit="event.preventDefault();handleSubmit();">
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" id="username" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="password" autocomplete="current-password" required>
+      </div>
+      <div class="form-group" id="password2Group" style="display:none">
+        <label>Confirma la contraseña</label>
+        <input type="password" id="password2" autocomplete="new-password">
+      </div>
+
+      <div class="login-error" id="errBox" style="display:none"></div>
+
+      <button class="btn-submit login-submit" type="submit" id="submitBtn">Entrar</button>
+    </form>
+
+    <div class="login-toggle" id="toggleRow"></div>
+  </div>
+
+  <div class="login-footer">
+    Banco de Recetas · App local · Datos guardados en tu navegador
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+let mode = 'login'; // 'login' | 'signup' | 'setup_admin_fresh' | 'setup_admin_migrate'
+
+function setMode(m) {
+  mode = m;
+  const title = document.getElementById('loginTitle');
+  const help = document.getElementById('loginHelp');
+  const submit = document.getElementById('submitBtn');
+  const p2group = document.getElementById('password2Group');
+  const toggleRow = document.getElementById('toggleRow');
+  const username = document.getElementById('username');
+  const password = document.getElementById('password');
+
+  document.getElementById('errBox').style.display = 'none';
+
+  if (m === 'setup_admin_migrate') {
+    title.textContent = 'Crear cuenta administrador';
+    help.innerHTML = `Detectamos datos de un banco de recetas existente. Crea las credenciales para acceder a esa cuenta — quedará como <strong>administrador</strong>.`;
+    submit.textContent = 'Crear admin y continuar';
+    p2group.style.display = '';
+    toggleRow.innerHTML = '';
+    password.autocomplete = 'new-password';
+  } else if (m === 'setup_admin_fresh') {
+    title.textContent = 'Configura tu cuenta';
+    help.innerHTML = `Bienvenido. Esta es la primera cuenta — quedará como <strong>administrador</strong>.`;
+    submit.textContent = 'Crear cuenta';
+    p2group.style.display = '';
+    toggleRow.innerHTML = '';
+    password.autocomplete = 'new-password';
+  } else if (m === 'signup') {
+    title.textContent = 'Crear cuenta';
+    help.innerHTML = `Crea un usuario nuevo. Empezarás con un banco de recetas vacío.`;
+    submit.textContent = 'Crear cuenta';
+    p2group.style.display = '';
+    toggleRow.innerHTML = `¿Ya tienes cuenta? <a href="#" onclick="event.preventDefault();setMode('login')">Iniciar sesión</a>`;
+    password.autocomplete = 'new-password';
+  } else { // login
+    title.textContent = 'Iniciar sesión';
+    help.innerHTML = '';
+    submit.textContent = 'Entrar';
+    p2group.style.display = 'none';
+    toggleRow.innerHTML = `¿Eres nuevo? <a href="#" onclick="event.preventDefault();setMode('signup')">Crea una cuenta</a>`;
+    password.autocomplete = 'current-password';
+  }
+  username.focus();
+}
+
+function showError(msg) {
+  const box = document.getElementById('errBox');
+  box.textContent = msg;
+  box.style.display = '';
+}
+
+async function handleSubmit() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const password2 = document.getElementById('password2').value;
+
+  try {
+    if (mode === 'login') {
+      await loginUser(username, password);
+      location.replace('plan_angel_2.html');
+      return;
+    }
+    // signup / setup
+    if (password !== password2) throw new Error('Las contraseñas no coinciden');
+    if (mode === 'setup_admin_migrate' || mode === 'setup_admin_fresh') {
+      await setupAdmin(username, password);
+      location.replace('plan_angel_2.html');
+      return;
+    }
+    if (mode === 'signup') {
+      await signupUser(username, password);
+      await loginUser(username, password);
+      location.replace('plan_angel_2.html');
+      return;
+    }
+  } catch (e) {
+    showError(e.message || 'Error desconocido');
+  }
+}
+
+// Init: detectar modo
+(function init() {
+  // Si ya hay sesión, salta directo a la app
+  if (getCurrentUserId()) {
+    location.replace('plan_angel_2.html');
+    return;
+  }
+  setMode(authInitialState() === 'login' ? 'login' : authInitialState());
+})();
+</script>
+</body>
+</html>

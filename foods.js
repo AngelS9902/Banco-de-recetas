@@ -1,0 +1,5008 @@
+// Base de datos de alimentos — generada de foods.json
+// Fuente: USDA FoodData Central SR Legacy 2018
+window.FOODS_DB = {
+  "meta": {
+    "version": "2.1",
+    "fuente_principal": "USDA FoodData Central — SR Legacy (April 2018)",
+    "fuente_url": "https://fdc.nal.usda.gov/download-datasets/",
+    "unidades": "Valores por 100g de alimento comestible. Sodio en mg, resto en gramos (excepto kcal).",
+    "total_alimentos": 216,
+    "nota_especias": "Especias incluidas para completitud. En cantidades típicas (<5g por receta) su aporte calórico es despreciable (<10 kcal), pero el sodio sí puede importar.",
+    "campos_opcionales": {
+      "marca": "Solo presente cuando tipo=branded. Indica marca específica (Lala, FUD, etc.)",
+      "gramos_por_unidad": "Peso en gramos de \"1 unidad\" cuando el alimento se cuenta por pieza (1 huevo=50g, 1 limón=67g, etc.)",
+      "densidades": "Conversiones g por cucharada/cucharadita/taza específicas del alimento. Si no presente: usar genéricas (cda=15g, cdita=5g, taza=240g)."
+    },
+    "nota_marca": "Por defecto todos los alimentos son tipo \"generic\" con fuente USDA. Cuando agregues una marca específica, copia la entrada y cambia tipo a \"branded\", agrega \"marca\" y reemplaza los valores con los de la etiqueta."
+  },
+  "foods": [
+    {
+      "id": "manzana",
+      "nombre": "Manzana (con cáscara)",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 52.0,
+        "prot": 0.26,
+        "carbs": 13.81,
+        "fat": 0.17,
+        "fiber": 2.4,
+        "sugars": 10.39,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171688",
+        "descripcion_usda": "Apples, raw, with skin (Includes foods for USDA's Food Distribution Program)",
+        "url": "https://fdc.nal.usda.gov/food-details/171688/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 182
+    },
+    {
+      "id": "platano",
+      "nombre": "Plátano",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 89.0,
+        "prot": 1.09,
+        "carbs": 22.84,
+        "fat": 0.33,
+        "fiber": 2.6,
+        "sugars": 12.23,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173944",
+        "descripcion_usda": "Bananas, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/173944/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 118
+    },
+    {
+      "id": "naranja",
+      "nombre": "Naranja",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 47.0,
+        "prot": 0.94,
+        "carbs": 11.75,
+        "fat": 0.12,
+        "fiber": 2.4,
+        "sugars": 9.35,
+        "sodium_mg": 0.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169097",
+        "descripcion_usda": "Oranges, raw, all commercial varieties",
+        "url": "https://fdc.nal.usda.gov/food-details/169097/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 131
+    },
+    {
+      "id": "mandarina",
+      "nombre": "Mandarina",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 53.0,
+        "prot": 0.81,
+        "carbs": 13.34,
+        "fat": 0.31,
+        "fiber": 1.8,
+        "sugars": 10.58,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169105",
+        "descripcion_usda": "Tangerines, (mandarin oranges), raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169105/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 88
+    },
+    {
+      "id": "limon_verde",
+      "nombre": "Limón verde (persa)",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 30.0,
+        "prot": 0.7,
+        "carbs": 10.54,
+        "fat": 0.2,
+        "fiber": 2.8,
+        "sugars": 1.69,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168155",
+        "descripcion_usda": "Limes, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168155/nutrients"
+      },
+      "nota": "USDA \"Limes\" = limón verde MX",
+      "tipo": "generic",
+      "gramos_por_unidad": 67
+    },
+    {
+      "id": "limon_amarillo",
+      "nombre": "Limón amarillo",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 29.0,
+        "prot": 1.1,
+        "carbs": 9.32,
+        "fat": 0.3,
+        "fiber": 2.8,
+        "sugars": 2.5,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167746",
+        "descripcion_usda": "Lemons, raw, without peel",
+        "url": "https://fdc.nal.usda.gov/food-details/167746/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 58
+    },
+    {
+      "id": "fresa",
+      "nombre": "Fresa",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 32.0,
+        "prot": 0.67,
+        "carbs": 7.68,
+        "fat": 0.3,
+        "fiber": 2.0,
+        "sugars": 4.89,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167762",
+        "descripcion_usda": "Strawberries, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/167762/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 12
+    },
+    {
+      "id": "frambuesa",
+      "nombre": "Frambuesa",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 52.0,
+        "prot": 1.2,
+        "carbs": 11.94,
+        "fat": 0.65,
+        "fiber": 6.5,
+        "sugars": 4.42,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167755",
+        "descripcion_usda": "Raspberries, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/167755/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "mora_azul",
+      "nombre": "Mora azul (blueberry)",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 57.0,
+        "prot": 0.74,
+        "carbs": 14.49,
+        "fat": 0.33,
+        "fiber": 2.4,
+        "sugars": 9.96,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171711",
+        "descripcion_usda": "Blueberries, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/171711/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "zarzamora",
+      "nombre": "Zarzamora (blackberry)",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 43.0,
+        "prot": 1.39,
+        "carbs": 9.61,
+        "fat": 0.49,
+        "fiber": 5.3,
+        "sugars": 4.88,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173946",
+        "descripcion_usda": "Blackberries, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/173946/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "sandia",
+      "nombre": "Sandía",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 30.0,
+        "prot": 0.61,
+        "carbs": 7.55,
+        "fat": 0.15,
+        "fiber": 0.4,
+        "sugars": 6.2,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167765",
+        "descripcion_usda": "Watermelon, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/167765/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "melon",
+      "nombre": "Melón cantaloupe",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 34.0,
+        "prot": 0.84,
+        "carbs": 8.16,
+        "fat": 0.19,
+        "fiber": 0.9,
+        "sugars": 7.86,
+        "sodium_mg": 16.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169092",
+        "descripcion_usda": "Melons, cantaloupe, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169092/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "papaya",
+      "nombre": "Papaya",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 43.0,
+        "prot": 0.47,
+        "carbs": 10.82,
+        "fat": 0.26,
+        "fiber": 1.7,
+        "sugars": 7.82,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169926",
+        "descripcion_usda": "Papayas, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169926/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "mango",
+      "nombre": "Mango",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 60.0,
+        "prot": 0.82,
+        "carbs": 14.98,
+        "fat": 0.38,
+        "fiber": 1.6,
+        "sugars": 13.66,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169910",
+        "descripcion_usda": "Mangos, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169910/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 207
+    },
+    {
+      "id": "pina",
+      "nombre": "Piña",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 50.0,
+        "prot": 0.54,
+        "carbs": 13.12,
+        "fat": 0.12,
+        "fiber": 1.4,
+        "sugars": 9.85,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169124",
+        "descripcion_usda": "Pineapple, raw, all varieties",
+        "url": "https://fdc.nal.usda.gov/food-details/169124/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "uva",
+      "nombre": "Uva (verde o roja)",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 69.0,
+        "prot": 0.72,
+        "carbs": 18.1,
+        "fat": 0.16,
+        "fiber": 0.9,
+        "sugars": 15.48,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174683",
+        "descripcion_usda": "Grapes, red or green (European type, such as Thompson seedless), raw",
+        "url": "https://fdc.nal.usda.gov/food-details/174683/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pera",
+      "nombre": "Pera",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 57.0,
+        "prot": 0.36,
+        "carbs": 15.23,
+        "fat": 0.14,
+        "fiber": 3.1,
+        "sugars": 9.75,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169118",
+        "descripcion_usda": "Pears, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169118/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 178
+    },
+    {
+      "id": "durazno",
+      "nombre": "Durazno (amarillo)",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 39.0,
+        "prot": 0.91,
+        "carbs": 9.54,
+        "fat": 0.25,
+        "fiber": 1.5,
+        "sugars": 8.39,
+        "sodium_mg": 0.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169928",
+        "descripcion_usda": "Peaches, yellow, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169928/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 150
+    },
+    {
+      "id": "aguacate",
+      "nombre": "Aguacate",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 160.0,
+        "prot": 2.0,
+        "carbs": 8.53,
+        "fat": 14.66,
+        "fiber": 6.7,
+        "sugars": 0.66,
+        "sodium_mg": 7.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171705",
+        "descripcion_usda": "Avocados, raw, all commercial varieties",
+        "url": "https://fdc.nal.usda.gov/food-details/171705/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 201
+    },
+    {
+      "id": "guayaba",
+      "nombre": "Guayaba",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 68.0,
+        "prot": 2.55,
+        "carbs": 14.32,
+        "fat": 0.95,
+        "fiber": 5.4,
+        "sugars": 8.92,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173044",
+        "descripcion_usda": "Guavas, common, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/173044/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 55
+    },
+    {
+      "id": "toronja",
+      "nombre": "Toronja (rosa y blanca)",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 32.0,
+        "prot": 0.63,
+        "carbs": 8.08,
+        "fat": 0.1,
+        "fiber": 1.1,
+        "sugars": 6.98,
+        "sodium_mg": 0.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173033",
+        "descripcion_usda": "Grapefruit, raw, pink and red and white, all areas",
+        "url": "https://fdc.nal.usda.gov/food-details/173033/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 246
+    },
+    {
+      "id": "mamey",
+      "nombre": "Mamey",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 124.0,
+        "prot": 1.45,
+        "carbs": 32.1,
+        "fat": 0.46,
+        "fiber": 5.4,
+        "sugars": 20.14,
+        "sodium_mg": 7.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167760",
+        "descripcion_usda": "Sapote, mamey, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/167760/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "tuna",
+      "nombre": "Tuna (prickly pear)",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 41.0,
+        "prot": 0.73,
+        "carbs": 9.57,
+        "fat": 0.51,
+        "fiber": 3.6,
+        "sugars": 0,
+        "sodium_mg": 5.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167750",
+        "descripcion_usda": "Prickly pears, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/167750/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "ciruela",
+      "nombre": "Ciruela",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 46.0,
+        "prot": 0.7,
+        "carbs": 11.42,
+        "fat": 0.28,
+        "fiber": 1.4,
+        "sugars": 9.92,
+        "sodium_mg": 0.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169949",
+        "descripcion_usda": "Plums, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169949/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 66
+    },
+    {
+      "id": "coco_fresco",
+      "nombre": "Coco fresco",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 354.0,
+        "prot": 3.33,
+        "carbs": 15.23,
+        "fat": 33.49,
+        "fiber": 9.0,
+        "sugars": 6.23,
+        "sodium_mg": 20.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170169",
+        "descripcion_usda": "Nuts, coconut meat, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170169/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "higo",
+      "nombre": "Higo",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 74.0,
+        "prot": 0.75,
+        "carbs": 19.18,
+        "fat": 0.3,
+        "fiber": 2.9,
+        "sugars": 16.26,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173021",
+        "descripcion_usda": "Figs, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/173021/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 50
+    },
+    {
+      "id": "maracuya",
+      "nombre": "Maracuyá",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 97.0,
+        "prot": 2.2,
+        "carbs": 23.38,
+        "fat": 0.7,
+        "fiber": 10.4,
+        "sugars": 11.2,
+        "sodium_mg": 28.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169108",
+        "descripcion_usda": "Passion-fruit, (granadilla), purple, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169108/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "granada",
+      "nombre": "Granada",
+      "categoria": "fruta",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 83.0,
+        "prot": 1.67,
+        "carbs": 18.7,
+        "fat": 1.17,
+        "fiber": 4.0,
+        "sugars": 13.67,
+        "sodium_mg": 3.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169134",
+        "descripcion_usda": "Pomegranates, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169134/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "kiwi",
+      "nombre": "Kiwi",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 61.0,
+        "prot": 1.14,
+        "carbs": 14.66,
+        "fat": 0.52,
+        "fiber": 3.0,
+        "sugars": 8.99,
+        "sodium_mg": 3.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168153",
+        "descripcion_usda": "Kiwifruit, green, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168153/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 69
+    },
+    {
+      "id": "jitomate",
+      "nombre": "Jitomate",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 18.0,
+        "prot": 0.88,
+        "carbs": 3.89,
+        "fat": 0.2,
+        "fiber": 1.2,
+        "sugars": 2.63,
+        "sodium_mg": 5.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170457",
+        "descripcion_usda": "Tomatoes, red, ripe, raw, year round average",
+        "url": "https://fdc.nal.usda.gov/food-details/170457/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 123
+    },
+    {
+      "id": "cebolla",
+      "nombre": "Cebolla blanca",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 40.0,
+        "prot": 1.1,
+        "carbs": 9.34,
+        "fat": 0.1,
+        "fiber": 1.7,
+        "sugars": 4.24,
+        "sodium_mg": 4.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170000",
+        "descripcion_usda": "Onions, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170000/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 110
+    },
+    {
+      "id": "ajo",
+      "nombre": "Ajo",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 149.0,
+        "prot": 6.36,
+        "carbs": 33.06,
+        "fat": 0.5,
+        "fiber": 2.1,
+        "sugars": 1.0,
+        "sodium_mg": 17.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169230",
+        "descripcion_usda": "Garlic, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169230/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 3
+    },
+    {
+      "id": "zanahoria_cruda",
+      "nombre": "Zanahoria",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 41.0,
+        "prot": 0.93,
+        "carbs": 9.58,
+        "fat": 0.24,
+        "fiber": 2.8,
+        "sugars": 4.74,
+        "sodium_mg": 69.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170393",
+        "descripcion_usda": "Carrots, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170393/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 61
+    },
+    {
+      "id": "zanahoria_cocida",
+      "nombre": "Zanahoria",
+      "categoria": "verdura",
+      "estado": "cocida (hervida)",
+      "por_100g": {
+        "kcal": 35.0,
+        "prot": 0.76,
+        "carbs": 8.22,
+        "fat": 0.18,
+        "fiber": 3.0,
+        "sugars": 3.45,
+        "sodium_mg": 58.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170394",
+        "descripcion_usda": "Carrots, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/170394/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "papa_cruda",
+      "nombre": "Papa (con cáscara)",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 77.0,
+        "prot": 2.05,
+        "carbs": 17.49,
+        "fat": 0.09,
+        "fiber": 2.1,
+        "sugars": 0.82,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170026",
+        "descripcion_usda": "Potatoes, flesh and skin, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170026/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 213
+    },
+    {
+      "id": "papa_cocida",
+      "nombre": "Papa (con cáscara)",
+      "categoria": "verdura",
+      "estado": "cocida (hervida)",
+      "por_100g": {
+        "kcal": 87.0,
+        "prot": 1.87,
+        "carbs": 20.13,
+        "fat": 0.1,
+        "fiber": 1.8,
+        "sugars": 0.91,
+        "sodium_mg": 4.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170438",
+        "descripcion_usda": "Potatoes, boiled, cooked in skin, flesh, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/170438/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "camote_crudo",
+      "nombre": "Camote",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 86.0,
+        "prot": 1.57,
+        "carbs": 20.12,
+        "fat": 0.05,
+        "fiber": 3.0,
+        "sugars": 4.18,
+        "sodium_mg": 55.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168482",
+        "descripcion_usda": "Sweet potato, raw, unprepared (Includes foods for USDA's Food Distribution Program)",
+        "url": "https://fdc.nal.usda.gov/food-details/168482/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 130
+    },
+    {
+      "id": "camote_cocido",
+      "nombre": "Camote",
+      "categoria": "verdura",
+      "estado": "cocido (hervido)",
+      "por_100g": {
+        "kcal": 76.0,
+        "prot": 1.37,
+        "carbs": 17.72,
+        "fat": 0.14,
+        "fiber": 2.5,
+        "sugars": 5.74,
+        "sodium_mg": 27.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168484",
+        "descripcion_usda": "Sweet potato, cooked, boiled, without skin",
+        "url": "https://fdc.nal.usda.gov/food-details/168484/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "jalapeno",
+      "nombre": "Chile jalapeño",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 29.0,
+        "prot": 0.91,
+        "carbs": 6.5,
+        "fat": 0.37,
+        "fiber": 2.8,
+        "sugars": 4.12,
+        "sodium_mg": 3.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168576",
+        "descripcion_usda": "Peppers, jalapeno, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168576/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 14
+    },
+    {
+      "id": "serrano",
+      "nombre": "Chile serrano",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 32.0,
+        "prot": 1.74,
+        "carbs": 6.7,
+        "fat": 0.44,
+        "fiber": 3.7,
+        "sugars": 3.83,
+        "sodium_mg": 10.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169395",
+        "descripcion_usda": "Peppers, serrano, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169395/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 6
+    },
+    {
+      "id": "poblano",
+      "nombre": "Chile poblano (verde)",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 40.0,
+        "prot": 2.0,
+        "carbs": 9.46,
+        "fat": 0.2,
+        "fiber": 1.5,
+        "sugars": 5.1,
+        "sodium_mg": 7.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170497",
+        "descripcion_usda": "Peppers, hot chili, green, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170497/nutrients"
+      },
+      "nota": "USDA: match aproximado",
+      "tipo": "generic",
+      "gramos_por_unidad": 60
+    },
+    {
+      "id": "calabacita",
+      "nombre": "Calabacita (zucchini)",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 17.0,
+        "prot": 1.21,
+        "carbs": 3.11,
+        "fat": 0.32,
+        "fiber": 1.0,
+        "sugars": 2.5,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169291",
+        "descripcion_usda": "Squash, summer, zucchini, includes skin, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169291/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 196
+    },
+    {
+      "id": "pepino",
+      "nombre": "Pepino (con cáscara)",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 15.0,
+        "prot": 0.65,
+        "carbs": 3.63,
+        "fat": 0.11,
+        "fiber": 0.5,
+        "sugars": 1.67,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168409",
+        "descripcion_usda": "Cucumber, with peel, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168409/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 301
+    },
+    {
+      "id": "espinaca_cruda",
+      "nombre": "Espinaca",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 23.0,
+        "prot": 2.86,
+        "carbs": 3.63,
+        "fat": 0.39,
+        "fiber": 2.2,
+        "sugars": 0.42,
+        "sodium_mg": 79.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168462",
+        "descripcion_usda": "Spinach, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168462/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "espinaca_cocida",
+      "nombre": "Espinaca",
+      "categoria": "verdura",
+      "estado": "cocida (hervida)",
+      "por_100g": {
+        "kcal": 23.0,
+        "prot": 2.97,
+        "carbs": 3.75,
+        "fat": 0.26,
+        "fiber": 2.4,
+        "sugars": 0.43,
+        "sodium_mg": 70.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168463",
+        "descripcion_usda": "Spinach, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/168463/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "lechuga_romana",
+      "nombre": "Lechuga romana",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 17.0,
+        "prot": 1.23,
+        "carbs": 3.29,
+        "fat": 0.3,
+        "fiber": 2.1,
+        "sugars": 1.19,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169247",
+        "descripcion_usda": "Lettuce, cos or romaine, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169247/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "lechuga_iceberg",
+      "nombre": "Lechuga iceberg",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 14.0,
+        "prot": 0.9,
+        "carbs": 2.97,
+        "fat": 0.14,
+        "fiber": 1.2,
+        "sugars": 1.97,
+        "sodium_mg": 10.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169248",
+        "descripcion_usda": "Lettuce, iceberg (includes crisphead types), raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169248/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "apio",
+      "nombre": "Apio",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 14.0,
+        "prot": 0.69,
+        "carbs": 2.97,
+        "fat": 0.17,
+        "fiber": 1.6,
+        "sugars": 1.34,
+        "sodium_mg": 80.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169988",
+        "descripcion_usda": "Celery, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169988/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "morron_verde",
+      "nombre": "Pimiento morrón verde",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 20.0,
+        "prot": 0.86,
+        "carbs": 4.64,
+        "fat": 0.17,
+        "fiber": 1.7,
+        "sugars": 2.4,
+        "sodium_mg": 3.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170427",
+        "descripcion_usda": "Peppers, sweet, green, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170427/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 119
+    },
+    {
+      "id": "morron_rojo",
+      "nombre": "Pimiento morrón rojo",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 26.0,
+        "prot": 0.99,
+        "carbs": 6.03,
+        "fat": 0.3,
+        "fiber": 2.1,
+        "sugars": 4.2,
+        "sodium_mg": 4.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170108",
+        "descripcion_usda": "Peppers, sweet, red, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170108/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 119
+    },
+    {
+      "id": "morron_amarillo",
+      "nombre": "Pimiento morrón amarillo",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 27.0,
+        "prot": 1.0,
+        "carbs": 6.32,
+        "fat": 0.21,
+        "fiber": 0.9,
+        "sugars": 0,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169383",
+        "descripcion_usda": "Peppers, sweet, yellow, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169383/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "nopal_crudo",
+      "nombre": "Nopal",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 16.0,
+        "prot": 1.32,
+        "carbs": 3.33,
+        "fat": 0.09,
+        "fiber": 2.2,
+        "sugars": 1.15,
+        "sodium_mg": 21.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168571",
+        "descripcion_usda": "Nopales, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168571/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "nopal_cocido",
+      "nombre": "Nopal",
+      "categoria": "verdura",
+      "estado": "cocido (sin sal)",
+      "por_100g": {
+        "kcal": 15.0,
+        "prot": 1.35,
+        "carbs": 3.28,
+        "fat": 0.05,
+        "fiber": 2.0,
+        "sugars": 1.12,
+        "sodium_mg": 20.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169388",
+        "descripcion_usda": "Nopales, cooked, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/169388/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "tomatillo",
+      "nombre": "Tomate verde (tomatillo)",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 32.0,
+        "prot": 0.96,
+        "carbs": 5.84,
+        "fat": 1.02,
+        "fiber": 1.9,
+        "sugars": 3.93,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168566",
+        "descripcion_usda": "Tomatillos, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168566/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 34
+    },
+    {
+      "id": "chayote",
+      "nombre": "Chayote",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 19.0,
+        "prot": 0.82,
+        "carbs": 4.51,
+        "fat": 0.13,
+        "fiber": 1.7,
+        "sugars": 1.66,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170402",
+        "descripcion_usda": "Chayote, fruit, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170402/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 203
+    },
+    {
+      "id": "elote_crudo",
+      "nombre": "Elote (maíz amarillo)",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 86.0,
+        "prot": 3.27,
+        "carbs": 18.7,
+        "fat": 1.35,
+        "fiber": 2.0,
+        "sugars": 6.26,
+        "sodium_mg": 15.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169998",
+        "descripcion_usda": "Corn, sweet, yellow, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169998/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 90
+    },
+    {
+      "id": "elote_cocido",
+      "nombre": "Elote (maíz amarillo)",
+      "categoria": "verdura",
+      "estado": "cocido (hervido)",
+      "por_100g": {
+        "kcal": 96.0,
+        "prot": 3.41,
+        "carbs": 20.98,
+        "fat": 1.5,
+        "fiber": 2.4,
+        "sugars": 4.54,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169999",
+        "descripcion_usda": "Corn, sweet, yellow, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/169999/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "brocoli_crudo",
+      "nombre": "Brócoli",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 34.0,
+        "prot": 2.82,
+        "carbs": 6.64,
+        "fat": 0.37,
+        "fiber": 2.6,
+        "sugars": 1.7,
+        "sodium_mg": 33.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170379",
+        "descripcion_usda": "Broccoli, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170379/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "brocoli_cocido",
+      "nombre": "Brócoli",
+      "categoria": "verdura",
+      "estado": "cocido (hervido)",
+      "por_100g": {
+        "kcal": 35.0,
+        "prot": 2.38,
+        "carbs": 7.18,
+        "fat": 0.41,
+        "fiber": 3.3,
+        "sugars": 1.39,
+        "sodium_mg": 41.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169967",
+        "descripcion_usda": "Broccoli, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/169967/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "coliflor_cruda",
+      "nombre": "Coliflor",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 25.0,
+        "prot": 1.92,
+        "carbs": 4.97,
+        "fat": 0.28,
+        "fiber": 2.0,
+        "sugars": 1.91,
+        "sodium_mg": 30.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169986",
+        "descripcion_usda": "Cauliflower, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169986/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "coliflor_cocida",
+      "nombre": "Coliflor",
+      "categoria": "verdura",
+      "estado": "cocida (hervida)",
+      "por_100g": {
+        "kcal": 23.0,
+        "prot": 1.84,
+        "carbs": 4.11,
+        "fat": 0.45,
+        "fiber": 2.3,
+        "sugars": 2.08,
+        "sodium_mg": 15.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170397",
+        "descripcion_usda": "Cauliflower, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/170397/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "col_cruda",
+      "nombre": "Col (repollo)",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 25.0,
+        "prot": 1.28,
+        "carbs": 5.8,
+        "fat": 0.1,
+        "fiber": 2.5,
+        "sugars": 3.2,
+        "sodium_mg": 18.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169975",
+        "descripcion_usda": "Cabbage, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169975/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "col_cocida",
+      "nombre": "Col (repollo)",
+      "categoria": "verdura",
+      "estado": "cocida (hervida)",
+      "por_100g": {
+        "kcal": 23.0,
+        "prot": 1.27,
+        "carbs": 5.51,
+        "fat": 0.06,
+        "fiber": 1.9,
+        "sugars": 2.79,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169976",
+        "descripcion_usda": "Cabbage, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/169976/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "kale",
+      "nombre": "Col rizada (kale)",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 35.0,
+        "prot": 2.92,
+        "carbs": 4.42,
+        "fat": 1.49,
+        "fiber": 4.1,
+        "sugars": 0.99,
+        "sodium_mg": 53.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168421",
+        "descripcion_usda": "Kale, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168421/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "acelga_cruda",
+      "nombre": "Acelga",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 19.0,
+        "prot": 1.8,
+        "carbs": 3.74,
+        "fat": 0.2,
+        "fiber": 1.6,
+        "sugars": 1.1,
+        "sodium_mg": 213.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169991",
+        "descripcion_usda": "Chard, swiss, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169991/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "acelga_cocida",
+      "nombre": "Acelga",
+      "categoria": "verdura",
+      "estado": "cocida (hervida)",
+      "por_100g": {
+        "kcal": 20.0,
+        "prot": 1.88,
+        "carbs": 4.13,
+        "fat": 0.08,
+        "fiber": 2.1,
+        "sugars": 1.1,
+        "sodium_mg": 179.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170401",
+        "descripcion_usda": "Chard, swiss, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/170401/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "ejote_crudo",
+      "nombre": "Ejote (judía verde)",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 31.0,
+        "prot": 1.83,
+        "carbs": 6.97,
+        "fat": 0.22,
+        "fiber": 2.7,
+        "sugars": 3.26,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169961",
+        "descripcion_usda": "Beans, snap, green, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169961/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "ejote_cocido",
+      "nombre": "Ejote (judía verde)",
+      "categoria": "verdura",
+      "estado": "cocido (hervido)",
+      "por_100g": {
+        "kcal": 35.0,
+        "prot": 1.89,
+        "carbs": 7.88,
+        "fat": 0.28,
+        "fiber": 3.2,
+        "sugars": 3.63,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169141",
+        "descripcion_usda": "Beans, snap, green, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/169141/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "champinon_crudo",
+      "nombre": "Champiñón (blanco)",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 22.0,
+        "prot": 3.09,
+        "carbs": 3.26,
+        "fat": 0.34,
+        "fiber": 1.0,
+        "sugars": 1.98,
+        "sodium_mg": 5.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169251",
+        "descripcion_usda": "Mushrooms, white, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169251/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "champinon_cocido",
+      "nombre": "Champiñón (blanco)",
+      "categoria": "verdura",
+      "estado": "cocido (hervido)",
+      "por_100g": {
+        "kcal": 28.0,
+        "prot": 2.17,
+        "carbs": 5.29,
+        "fat": 0.47,
+        "fiber": 2.2,
+        "sugars": 2.34,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169252",
+        "descripcion_usda": "Mushrooms, white, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/169252/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "berenjena_cruda",
+      "nombre": "Berenjena",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 25.0,
+        "prot": 0.98,
+        "carbs": 5.88,
+        "fat": 0.18,
+        "fiber": 3.0,
+        "sugars": 3.53,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169228",
+        "descripcion_usda": "Eggplant, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169228/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "berenjena_cocida",
+      "nombre": "Berenjena",
+      "categoria": "verdura",
+      "estado": "cocida (hervida)",
+      "por_100g": {
+        "kcal": 35.0,
+        "prot": 0.83,
+        "carbs": 8.73,
+        "fat": 0.23,
+        "fiber": 2.5,
+        "sugars": 3.2,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169229",
+        "descripcion_usda": "Eggplant, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/169229/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "calabaza_castilla",
+      "nombre": "Calabaza de castilla (pumpkin)",
+      "categoria": "verdura",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 26.0,
+        "prot": 1.0,
+        "carbs": 6.5,
+        "fat": 0.1,
+        "fiber": 0.5,
+        "sugars": 2.76,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168448",
+        "descripcion_usda": "Pumpkin, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168448/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "calabaza_castilla_cocida",
+      "nombre": "Calabaza de castilla (pumpkin)",
+      "categoria": "verdura",
+      "estado": "cocida (hervida)",
+      "por_100g": {
+        "kcal": 20.0,
+        "prot": 0.72,
+        "carbs": 4.9,
+        "fat": 0.07,
+        "fiber": 1.1,
+        "sugars": 2.08,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168449",
+        "descripcion_usda": "Pumpkin, cooked, boiled, drained, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/168449/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "betabel_crudo",
+      "nombre": "Betabel",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 43.0,
+        "prot": 1.61,
+        "carbs": 9.56,
+        "fat": 0.17,
+        "fiber": 2.8,
+        "sugars": 6.76,
+        "sodium_mg": 78.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169145",
+        "descripcion_usda": "Beets, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169145/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "rabano",
+      "nombre": "Rábano",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 16.0,
+        "prot": 0.68,
+        "carbs": 3.4,
+        "fat": 0.1,
+        "fiber": 1.6,
+        "sugars": 1.86,
+        "sodium_mg": 39.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169276",
+        "descripcion_usda": "Radishes, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169276/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "esparrago_crudo",
+      "nombre": "Espárrago",
+      "categoria": "verdura",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 20.0,
+        "prot": 2.2,
+        "carbs": 3.88,
+        "fat": 0.12,
+        "fiber": 2.1,
+        "sugars": 1.88,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168389",
+        "descripcion_usda": "Asparagus, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168389/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "frijol_negro",
+      "nombre": "Frijol negro",
+      "categoria": "legumbre",
+      "estado": "cocido (sin sal)",
+      "por_100g": {
+        "kcal": 132.0,
+        "prot": 8.86,
+        "carbs": 23.71,
+        "fat": 0.54,
+        "fiber": 8.7,
+        "sugars": 0.32,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173735",
+        "descripcion_usda": "Beans, black, mature seeds, cooked, boiled, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/173735/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "frijol_pinto",
+      "nombre": "Frijol pinto",
+      "categoria": "legumbre",
+      "estado": "cocido (sin sal)",
+      "por_100g": {
+        "kcal": 143.0,
+        "prot": 9.01,
+        "carbs": 26.22,
+        "fat": 0.65,
+        "fiber": 9.0,
+        "sugars": 0.34,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175200",
+        "descripcion_usda": "Beans, pinto, mature seeds, cooked, boiled, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/175200/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "frijol_bayo",
+      "nombre": "Frijol bayo (kidney)",
+      "categoria": "legumbre",
+      "estado": "cocido (sin sal)",
+      "por_100g": {
+        "kcal": 127.0,
+        "prot": 8.67,
+        "carbs": 22.8,
+        "fat": 0.5,
+        "fiber": 6.4,
+        "sugars": 0.32,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173740",
+        "descripcion_usda": "Beans, kidney, all types, mature seeds, cooked, boiled, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/173740/nutrients"
+      },
+      "nota": "USDA: kidney beans (equivalente a bayo)",
+      "tipo": "generic"
+    },
+    {
+      "id": "lenteja_cocida",
+      "nombre": "Lenteja",
+      "categoria": "legumbre",
+      "estado": "cocida (sin sal)",
+      "por_100g": {
+        "kcal": 116.0,
+        "prot": 9.02,
+        "carbs": 20.13,
+        "fat": 0.38,
+        "fiber": 7.9,
+        "sugars": 1.8,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172421",
+        "descripcion_usda": "Lentils, mature seeds, cooked, boiled, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/172421/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "garbanzo_cocido",
+      "nombre": "Garbanzo",
+      "categoria": "legumbre",
+      "estado": "cocido (sin sal)",
+      "por_100g": {
+        "kcal": 164.0,
+        "prot": 8.86,
+        "carbs": 27.42,
+        "fat": 2.59,
+        "fiber": 7.6,
+        "sugars": 4.8,
+        "sodium_mg": 7.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173757",
+        "descripcion_usda": "Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/173757/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "soya_cocida",
+      "nombre": "Soya / edamame",
+      "categoria": "legumbre",
+      "estado": "cocida (sin sal)",
+      "por_100g": {
+        "kcal": 172.0,
+        "prot": 18.21,
+        "carbs": 8.36,
+        "fat": 8.97,
+        "fiber": 6.0,
+        "sugars": 3.0,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174271",
+        "descripcion_usda": "Soybeans, mature cooked, boiled, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/174271/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "haba_cocida",
+      "nombre": "Haba (fava)",
+      "categoria": "legumbre",
+      "estado": "cocida (sin sal)",
+      "por_100g": {
+        "kcal": 110.0,
+        "prot": 7.6,
+        "carbs": 19.65,
+        "fat": 0.4,
+        "fiber": 5.4,
+        "sugars": 1.82,
+        "sodium_mg": 5.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173753",
+        "descripcion_usda": "Broadbeans (fava beans), mature seeds, cooked, boiled, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/173753/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "alubia_cocida",
+      "nombre": "Alubia (frijol blanco)",
+      "categoria": "legumbre",
+      "estado": "cocida (sin sal)",
+      "por_100g": {
+        "kcal": 139.0,
+        "prot": 9.73,
+        "carbs": 25.09,
+        "fat": 0.35,
+        "fiber": 6.3,
+        "sugars": 0.34,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175203",
+        "descripcion_usda": "Beans, white, mature seeds, cooked, boiled, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/175203/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "avena_cruda",
+      "nombre": "Avena en hojuelas",
+      "categoria": "grano",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 379.0,
+        "prot": 13.15,
+        "carbs": 67.7,
+        "fat": 6.52,
+        "fiber": 10.1,
+        "sugars": 0.99,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173904",
+        "descripcion_usda": "Cereals, oats, regular and quick, not fortified, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/173904/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 6,
+        "cdita": 2,
+        "taza": 81
+      }
+    },
+    {
+      "id": "arroz_blanco_crudo",
+      "nombre": "Arroz blanco",
+      "categoria": "grano",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 365.0,
+        "prot": 7.13,
+        "carbs": 79.95,
+        "fat": 0.66,
+        "fiber": 1.3,
+        "sugars": 0.12,
+        "sodium_mg": 5.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169756",
+        "descripcion_usda": "Rice, white, long-grain, regular, raw, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/169756/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 12.5,
+        "cdita": 4.2,
+        "taza": 185
+      }
+    },
+    {
+      "id": "arroz_integral_crudo",
+      "nombre": "Arroz integral",
+      "categoria": "grano",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 367.0,
+        "prot": 7.54,
+        "carbs": 76.25,
+        "fat": 3.2,
+        "fiber": 3.6,
+        "sugars": 0.66,
+        "sodium_mg": 5.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169703",
+        "descripcion_usda": "Rice, brown, long-grain, raw (Includes foods for USDA's Food Distribution Program)",
+        "url": "https://fdc.nal.usda.gov/food-details/169703/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "arroz_integral_cocido",
+      "nombre": "Arroz integral",
+      "categoria": "grano",
+      "estado": "cocido (sin sal)",
+      "por_100g": {
+        "kcal": 123.0,
+        "prot": 2.74,
+        "carbs": 25.58,
+        "fat": 0.97,
+        "fiber": 1.6,
+        "sugars": 0.24,
+        "sodium_mg": 4.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169704",
+        "descripcion_usda": "Rice, brown, long-grain, cooked (Includes foods for USDA's Food Distribution Program)",
+        "url": "https://fdc.nal.usda.gov/food-details/169704/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "tortilla_maiz",
+      "nombre": "Tortilla de maíz",
+      "categoria": "grano",
+      "estado": "lista",
+      "por_100g": {
+        "kcal": 222.0,
+        "prot": 5.7,
+        "carbs": 46.6,
+        "fat": 2.5,
+        "fiber": 5.2,
+        "sugars": 0,
+        "sodium_mg": 11.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173241",
+        "descripcion_usda": "Tortillas, ready-to-bake or -fry, corn, without added salt",
+        "url": "https://fdc.nal.usda.gov/food-details/173241/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 26
+    },
+    {
+      "id": "tortilla_harina",
+      "nombre": "Tortilla de harina",
+      "categoria": "grano",
+      "estado": "lista",
+      "por_100g": {
+        "kcal": 306.0,
+        "prot": 8.2,
+        "carbs": 49.38,
+        "fat": 7.99,
+        "fiber": 3.5,
+        "sugars": 3.71,
+        "sodium_mg": 736.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175037",
+        "descripcion_usda": "Tortillas, ready-to-bake or -fry, flour, refrigerated",
+        "url": "https://fdc.nal.usda.gov/food-details/175037/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 35
+    },
+    {
+      "id": "pan_blanco",
+      "nombre": "Pan blanco",
+      "categoria": "grano",
+      "estado": "listo",
+      "por_100g": {
+        "kcal": 266.0,
+        "prot": 8.85,
+        "carbs": 49.42,
+        "fat": 3.33,
+        "fiber": 2.7,
+        "sugars": 5.67,
+        "sodium_mg": 490.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174924",
+        "descripcion_usda": "Bread, white, commercially prepared (includes soft bread crumbs)",
+        "url": "https://fdc.nal.usda.gov/food-details/174924/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 25
+    },
+    {
+      "id": "pan_integral",
+      "nombre": "Pan integral",
+      "categoria": "grano",
+      "estado": "listo",
+      "por_100g": {
+        "kcal": 252.0,
+        "prot": 12.45,
+        "carbs": 42.71,
+        "fat": 3.5,
+        "fiber": 6.0,
+        "sugars": 4.34,
+        "sodium_mg": 455.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172688",
+        "descripcion_usda": "Bread, whole-wheat, commercially prepared",
+        "url": "https://fdc.nal.usda.gov/food-details/172688/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 28
+    },
+    {
+      "id": "pasta_cruda",
+      "nombre": "Pasta seca",
+      "categoria": "grano",
+      "estado": "cruda (seca)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pasta_cocida",
+      "nombre": "Pasta",
+      "categoria": "grano",
+      "estado": "cocida (sin sal)",
+      "por_100g": {
+        "kcal": 158.0,
+        "prot": 5.8,
+        "carbs": 30.86,
+        "fat": 0.93,
+        "fiber": 1.8,
+        "sugars": 0.56,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168928",
+        "descripcion_usda": "Pasta, cooked, unenriched, without added salt",
+        "url": "https://fdc.nal.usda.gov/food-details/168928/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "quinoa_cocida",
+      "nombre": "Quinoa",
+      "categoria": "grano",
+      "estado": "cocida",
+      "por_100g": {
+        "kcal": 120.0,
+        "prot": 4.4,
+        "carbs": 21.3,
+        "fat": 1.92,
+        "fiber": 2.8,
+        "sugars": 0.87,
+        "sodium_mg": 7.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168917",
+        "descripcion_usda": "Quinoa, cooked",
+        "url": "https://fdc.nal.usda.gov/food-details/168917/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "chia",
+      "nombre": "Semillas de chía",
+      "categoria": "grano",
+      "estado": "secas",
+      "por_100g": {
+        "kcal": 486.0,
+        "prot": 16.54,
+        "carbs": 42.12,
+        "fat": 30.74,
+        "fiber": 34.4,
+        "sugars": 0,
+        "sodium_mg": 16.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170554",
+        "descripcion_usda": "Seeds, chia seeds, dried",
+        "url": "https://fdc.nal.usda.gov/food-details/170554/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 12,
+        "cdita": 4,
+        "taza": 168
+      }
+    },
+    {
+      "id": "linaza",
+      "nombre": "Linaza",
+      "categoria": "grano",
+      "estado": "semillas",
+      "por_100g": {
+        "kcal": 534.0,
+        "prot": 18.29,
+        "carbs": 28.88,
+        "fat": 42.16,
+        "fiber": 27.3,
+        "sugars": 1.55,
+        "sodium_mg": 30.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169414",
+        "descripcion_usda": "Seeds, flaxseed",
+        "url": "https://fdc.nal.usda.gov/food-details/169414/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 10,
+        "cdita": 3.3,
+        "taza": 168
+      }
+    },
+    {
+      "id": "galleta_salada",
+      "nombre": "Galletas saladas",
+      "categoria": "grano",
+      "estado": "listas",
+      "por_100g": {
+        "kcal": 418.0,
+        "prot": 9.46,
+        "carbs": 74.05,
+        "fat": 8.64,
+        "fiber": 2.8,
+        "sugars": 1.29,
+        "sodium_mg": 941.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172746",
+        "descripcion_usda": "Crackers, saltines (includes oyster, soda, soup)",
+        "url": "https://fdc.nal.usda.gov/food-details/172746/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "harina_trigo",
+      "nombre": "Harina de trigo",
+      "categoria": "grano",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 364.0,
+        "prot": 10.33,
+        "carbs": 76.31,
+        "fat": 0.98,
+        "fiber": 2.7,
+        "sugars": 0.27,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168894",
+        "descripcion_usda": "Wheat flour, white, all-purpose, enriched, bleached",
+        "url": "https://fdc.nal.usda.gov/food-details/168894/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 8,
+        "cdita": 2.6,
+        "taza": 125
+      }
+    },
+    {
+      "id": "harina_maiz",
+      "nombre": "Harina de maíz (masa)",
+      "categoria": "grano",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 362.0,
+        "prot": 8.12,
+        "carbs": 76.89,
+        "fat": 3.59,
+        "fiber": 7.3,
+        "sugars": 0.64,
+        "sodium_mg": 35.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169697",
+        "descripcion_usda": "Cornmeal, whole-grain, yellow",
+        "url": "https://fdc.nal.usda.gov/food-details/169697/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "amaranto",
+      "nombre": "Amaranto",
+      "categoria": "grano",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.56,
+        "carbs": 65.25,
+        "fat": 7.02,
+        "fiber": 6.7,
+        "sugars": 1.69,
+        "sodium_mg": 4.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170682",
+        "descripcion_usda": "Amaranth grain, uncooked",
+        "url": "https://fdc.nal.usda.gov/food-details/170682/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "fideo",
+      "nombre": "Fideo seco",
+      "categoria": "grano",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "nota": "Mismo macros que pasta",
+      "tipo": "generic"
+    },
+    {
+      "id": "pollo_pechuga_cruda_piel",
+      "nombre": "Pollo, pechuga (con piel)",
+      "categoria": "pollo",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 172.0,
+        "prot": 20.85,
+        "carbs": 0.0,
+        "fat": 9.25,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 63.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171474",
+        "descripcion_usda": "Chicken, broilers or fryers, breast, meat and skin, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/171474/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pollo_pechuga_asada",
+      "nombre": "Pollo, pechuga (sin piel)",
+      "categoria": "pollo",
+      "estado": "cocida (asada)",
+      "por_100g": {
+        "kcal": 165.0,
+        "prot": 31.02,
+        "carbs": 0.0,
+        "fat": 3.57,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 74.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171477",
+        "descripcion_usda": "Chicken, broilers or fryers, breast, meat only, cooked, roasted",
+        "url": "https://fdc.nal.usda.gov/food-details/171477/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pollo_muslo_asado",
+      "nombre": "Pollo, muslo (sin piel)",
+      "categoria": "pollo",
+      "estado": "cocido (asado)",
+      "por_100g": {
+        "kcal": 179.0,
+        "prot": 24.76,
+        "carbs": 0.0,
+        "fat": 8.15,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 106.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172388",
+        "descripcion_usda": "Chicken, broilers or fryers, thigh, meat only, cooked, roasted",
+        "url": "https://fdc.nal.usda.gov/food-details/172388/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pollo_ala_asada",
+      "nombre": "Pollo, ala",
+      "categoria": "pollo",
+      "estado": "cocida (asada)",
+      "por_100g": {
+        "kcal": 203.0,
+        "prot": 30.46,
+        "carbs": 0.0,
+        "fat": 8.13,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 92.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172392",
+        "descripcion_usda": "Chicken, broilers or fryers, wing, meat only, cooked, roasted",
+        "url": "https://fdc.nal.usda.gov/food-details/172392/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pollo_entero_crudo",
+      "nombre": "Pollo entero (sin piel)",
+      "categoria": "pollo",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 119.0,
+        "prot": 21.39,
+        "carbs": 0.0,
+        "fat": 3.08,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 77.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171052",
+        "descripcion_usda": "Chicken, broilers or fryers, meat only, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/171052/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pollo_entero_asado",
+      "nombre": "Pollo entero (sin piel)",
+      "categoria": "pollo",
+      "estado": "cocido (asado)",
+      "por_100g": {
+        "kcal": 190.0,
+        "prot": 28.93,
+        "carbs": 0.0,
+        "fat": 7.41,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 86.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171054",
+        "descripcion_usda": "Chicken, broilers or fryers, meat only, cooked, roasted",
+        "url": "https://fdc.nal.usda.gov/food-details/171054/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_bistec_crudo",
+      "nombre": "Res, bistec (top sirloin)",
+      "categoria": "res",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 201.0,
+        "prot": 20.3,
+        "carbs": 0.0,
+        "fat": 12.71,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 52.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168726",
+        "descripcion_usda": "Beef, top sirloin, steak, separable lean and fat, trimmed to 1/8\" fat, all grades, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168726/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_bistec_cocido",
+      "nombre": "Res, bistec (top sirloin)",
+      "categoria": "res",
+      "estado": "cocido (a la plancha)",
+      "por_100g": {
+        "kcal": 243.0,
+        "prot": 26.96,
+        "carbs": 0.0,
+        "fat": 14.23,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 56.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168727",
+        "descripcion_usda": "Beef, top sirloin, steak, separable lean and fat, trimmed to 1/8\" fat, all grades, cooked, broiled",
+        "url": "https://fdc.nal.usda.gov/food-details/168727/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_molida_80_cruda",
+      "nombre": "Res, carne molida 80/20",
+      "categoria": "res",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 254.0,
+        "prot": 17.17,
+        "carbs": 0.0,
+        "fat": 20.0,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 66.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174036",
+        "descripcion_usda": "Beef, ground, 80% lean meat / 20% fat, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/174036/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_molida_90_cruda",
+      "nombre": "Res, carne molida magra 90/10",
+      "categoria": "res",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 176.0,
+        "prot": 20.0,
+        "carbs": 0.0,
+        "fat": 10.0,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 66.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174030",
+        "descripcion_usda": "Beef, ground, 90% lean meat / 10% fat, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/174030/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_arrachera_cruda",
+      "nombre": "Res, arrachera (flank)",
+      "categoria": "res",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 141.0,
+        "prot": 21.57,
+        "carbs": 0.0,
+        "fat": 5.47,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 55.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174776",
+        "descripcion_usda": "Beef, flank, steak, separable lean only, trimmed to 0\" fat, all grades, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/174776/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_arrachera_cocida",
+      "nombre": "Res, arrachera (flank)",
+      "categoria": "res",
+      "estado": "cocida",
+      "por_100g": {
+        "kcal": 186.0,
+        "prot": 27.89,
+        "carbs": 0.0,
+        "fat": 7.4,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 57.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174774",
+        "descripcion_usda": "Beef, flank, steak, separable lean only, trimmed to 0\" fat, all grades, cooked, broiled",
+        "url": "https://fdc.nal.usda.gov/food-details/174774/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_higado_crudo",
+      "nombre": "Res, hígado",
+      "categoria": "res",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 135.0,
+        "prot": 20.36,
+        "carbs": 3.89,
+        "fat": 3.63,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 69.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169451",
+        "descripcion_usda": "Beef, variety meats and by-products, liver, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169451/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_higado_cocido",
+      "nombre": "Res, hígado",
+      "categoria": "res",
+      "estado": "cocido (sartén)",
+      "por_100g": {
+        "kcal": 175.0,
+        "prot": 26.52,
+        "carbs": 5.16,
+        "fat": 4.68,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 77.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168627",
+        "descripcion_usda": "Beef, variety meats and by-products, liver, cooked, pan-fried",
+        "url": "https://fdc.nal.usda.gov/food-details/168627/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "cerdo_lomo_crudo",
+      "nombre": "Cerdo, lomo (tenderloin)",
+      "categoria": "cerdo",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 109.0,
+        "prot": 20.95,
+        "carbs": 0.0,
+        "fat": 2.17,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 53.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168249",
+        "descripcion_usda": "Pork, fresh, loin, tenderloin, separable lean only, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168249/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "cerdo_lomo_cocido",
+      "nombre": "Cerdo, lomo (tenderloin)",
+      "categoria": "cerdo",
+      "estado": "cocido",
+      "por_100g": {
+        "kcal": 187.0,
+        "prot": 30.42,
+        "carbs": 0.0,
+        "fat": 6.33,
+        "fiber": 0.0,
+        "sugars": 0,
+        "sodium_mg": 65.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168313",
+        "descripcion_usda": "Pork, fresh, loin, tenderloin, separable lean only, cooked, broiled",
+        "url": "https://fdc.nal.usda.gov/food-details/168313/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "cerdo_chuleta_cruda",
+      "nombre": "Cerdo, chuleta (top loin)",
+      "categoria": "cerdo",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 127.0,
+        "prot": 22.41,
+        "carbs": 0.0,
+        "fat": 3.42,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 49.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168251",
+        "descripcion_usda": "Pork, fresh, loin, top loin (chops), boneless, separable lean only, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168251/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "cerdo_costilla",
+      "nombre": "Cerdo, costilla",
+      "categoria": "cerdo",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 277.0,
+        "prot": 15.47,
+        "carbs": 0.0,
+        "fat": 23.4,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 81.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167853",
+        "descripcion_usda": "Pork, fresh, spareribs, separable lean and fat, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/167853/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "chicharron",
+      "nombre": "Chicharrón",
+      "categoria": "cerdo",
+      "estado": "listo",
+      "por_100g": {
+        "kcal": 544.0,
+        "prot": 61.3,
+        "carbs": 0.0,
+        "fat": 31.3,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 1818.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167961",
+        "descripcion_usda": "Snacks, pork skins, plain",
+        "url": "https://fdc.nal.usda.gov/food-details/167961/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "atun_agua",
+      "nombre": "Atún enlatado en agua",
+      "categoria": "pescado",
+      "estado": "enlatado",
+      "por_100g": {
+        "kcal": 86.0,
+        "prot": 19.44,
+        "carbs": 0.0,
+        "fat": 0.96,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 247.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173709",
+        "descripcion_usda": "Fish, tuna, light, canned in water, drained solids (Includes foods for USDA's Food Distribution Program)",
+        "url": "https://fdc.nal.usda.gov/food-details/173709/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "atun_aceite",
+      "nombre": "Atún enlatado en aceite",
+      "categoria": "pescado",
+      "estado": "enlatado",
+      "por_100g": {
+        "kcal": 198.0,
+        "prot": 29.13,
+        "carbs": 0.0,
+        "fat": 8.21,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 416.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173708",
+        "descripcion_usda": "Fish, tuna, light, canned in oil, drained solids",
+        "url": "https://fdc.nal.usda.gov/food-details/173708/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "salmon_crudo",
+      "nombre": "Salmón atlántico (de granja)",
+      "categoria": "pescado",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 208.0,
+        "prot": 20.42,
+        "carbs": 0.0,
+        "fat": 13.42,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 59.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175167",
+        "descripcion_usda": "Fish, salmon, Atlantic, farmed, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/175167/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "salmon_cocido",
+      "nombre": "Salmón atlántico (de granja)",
+      "categoria": "pescado",
+      "estado": "cocido",
+      "por_100g": {
+        "kcal": 206.0,
+        "prot": 22.1,
+        "carbs": 0.0,
+        "fat": 12.35,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 61.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175168",
+        "descripcion_usda": "Fish, salmon, Atlantic, farmed, cooked, dry heat",
+        "url": "https://fdc.nal.usda.gov/food-details/175168/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "tilapia_cruda",
+      "nombre": "Tilapia",
+      "categoria": "pescado",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 96.0,
+        "prot": 20.08,
+        "carbs": 0.0,
+        "fat": 1.7,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 52.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175176",
+        "descripcion_usda": "Fish, tilapia, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/175176/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "tilapia_cocida",
+      "nombre": "Tilapia",
+      "categoria": "pescado",
+      "estado": "cocida",
+      "por_100g": {
+        "kcal": 128.0,
+        "prot": 26.15,
+        "carbs": 0.0,
+        "fat": 2.65,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 56.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175177",
+        "descripcion_usda": "Fish, tilapia, cooked, dry heat",
+        "url": "https://fdc.nal.usda.gov/food-details/175177/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "camaron_crudo",
+      "nombre": "Camarón",
+      "categoria": "pescado",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 71.0,
+        "prot": 13.61,
+        "carbs": 0.91,
+        "fat": 1.01,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 566.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174210",
+        "descripcion_usda": "Crustaceans, shrimp, mixed species, raw (may contain additives to retain moisture)",
+        "url": "https://fdc.nal.usda.gov/food-details/174210/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "camaron_cocido",
+      "nombre": "Camarón",
+      "categoria": "pescado",
+      "estado": "cocido (al vapor)",
+      "por_100g": {
+        "kcal": 119.0,
+        "prot": 22.78,
+        "carbs": 1.52,
+        "fat": 1.7,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 947.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171971",
+        "descripcion_usda": "Crustaceans, shrimp, mixed species, cooked, moist heat (may contain additives to retain moisture)",
+        "url": "https://fdc.nal.usda.gov/food-details/171971/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "sardina_aceite",
+      "nombre": "Sardina enlatada en aceite",
+      "categoria": "pescado",
+      "estado": "enlatada",
+      "por_100g": {
+        "kcal": 208.0,
+        "prot": 24.62,
+        "carbs": 0.0,
+        "fat": 11.45,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 307.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175139",
+        "descripcion_usda": "Fish, sardine, Atlantic, canned in oil, drained solids with bone",
+        "url": "https://fdc.nal.usda.gov/food-details/175139/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pulpo_crudo",
+      "nombre": "Pulpo",
+      "categoria": "pescado",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 82.0,
+        "prot": 14.91,
+        "carbs": 2.2,
+        "fat": 1.04,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 230.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174218",
+        "descripcion_usda": "Mollusks, octopus, common, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/174218/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pescado_blanco_crudo",
+      "nombre": "Pescado blanco (bacalao)",
+      "categoria": "pescado",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 82.0,
+        "prot": 17.81,
+        "carbs": 0.0,
+        "fat": 0.67,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 54.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171955",
+        "descripcion_usda": "Fish, cod, Atlantic, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/171955/nutrients"
+      },
+      "nota": "Bacalao fresco (no salado)",
+      "tipo": "generic"
+    },
+    {
+      "id": "huevo_entero_crudo",
+      "nombre": "Huevo entero",
+      "categoria": "huevo",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 143.0,
+        "prot": 12.56,
+        "carbs": 0.72,
+        "fat": 9.51,
+        "fiber": 0.0,
+        "sugars": 0.37,
+        "sodium_mg": 142.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171287",
+        "descripcion_usda": "Egg, whole, raw, fresh",
+        "url": "https://fdc.nal.usda.gov/food-details/171287/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 50
+    },
+    {
+      "id": "huevo_entero_cocido",
+      "nombre": "Huevo entero",
+      "categoria": "huevo",
+      "estado": "cocido (duro)",
+      "por_100g": {
+        "kcal": 155.0,
+        "prot": 12.58,
+        "carbs": 1.12,
+        "fat": 10.61,
+        "fiber": 0.0,
+        "sugars": 1.12,
+        "sodium_mg": 124.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173424",
+        "descripcion_usda": "Egg, whole, cooked, hard-boiled",
+        "url": "https://fdc.nal.usda.gov/food-details/173424/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 50
+    },
+    {
+      "id": "huevo_clara_cruda",
+      "nombre": "Huevo, clara",
+      "categoria": "huevo",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 52.0,
+        "prot": 10.9,
+        "carbs": 0.73,
+        "fat": 0.17,
+        "fiber": 0.0,
+        "sugars": 0.71,
+        "sodium_mg": 166.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172183",
+        "descripcion_usda": "Egg, white, raw, fresh",
+        "url": "https://fdc.nal.usda.gov/food-details/172183/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 33
+    },
+    {
+      "id": "huevo_yema_cruda",
+      "nombre": "Huevo, yema",
+      "categoria": "huevo",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 322.0,
+        "prot": 15.86,
+        "carbs": 3.59,
+        "fat": 26.54,
+        "fiber": 0.0,
+        "sugars": 0.56,
+        "sodium_mg": 48.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172184",
+        "descripcion_usda": "Egg, yolk, raw, fresh",
+        "url": "https://fdc.nal.usda.gov/food-details/172184/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 17
+    },
+    {
+      "id": "leche_entera",
+      "nombre": "Leche entera (3.25%)",
+      "categoria": "lacteo",
+      "estado": "liquida",
+      "por_100g": {
+        "kcal": 61.0,
+        "prot": 3.15,
+        "carbs": 4.8,
+        "fat": 3.25,
+        "fiber": 0.0,
+        "sugars": 5.05,
+        "sodium_mg": 43.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171265",
+        "descripcion_usda": "Milk, whole, 3.25% milkfat, with added vitamin D",
+        "url": "https://fdc.nal.usda.gov/food-details/171265/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 15,
+        "cdita": 5,
+        "taza": 240
+      }
+    },
+    {
+      "id": "leche_2pct",
+      "nombre": "Leche semidescremada (2%)",
+      "categoria": "lacteo",
+      "estado": "liquida",
+      "por_100g": {
+        "kcal": 50.0,
+        "prot": 3.3,
+        "carbs": 4.8,
+        "fat": 1.98,
+        "fiber": 0.0,
+        "sugars": 5.06,
+        "sodium_mg": 47.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171267",
+        "descripcion_usda": "Milk, reduced fat, fluid, 2% milkfat, with added vitamin A and vitamin D",
+        "url": "https://fdc.nal.usda.gov/food-details/171267/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 15,
+        "cdita": 5,
+        "taza": 240
+      }
+    },
+    {
+      "id": "leche_descremada",
+      "nombre": "Leche descremada (0%)",
+      "categoria": "lacteo",
+      "estado": "liquida",
+      "por_100g": {
+        "kcal": 34.0,
+        "prot": 3.37,
+        "carbs": 4.96,
+        "fat": 0.08,
+        "fiber": 0.0,
+        "sugars": 5.09,
+        "sodium_mg": 42.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171269",
+        "descripcion_usda": "Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)",
+        "url": "https://fdc.nal.usda.gov/food-details/171269/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 15,
+        "cdita": 5,
+        "taza": 240
+      }
+    },
+    {
+      "id": "yogurt_griego",
+      "nombre": "Yogurt griego natural (entero)",
+      "categoria": "lacteo",
+      "estado": "liquido",
+      "por_100g": {
+        "kcal": 97.0,
+        "prot": 9.0,
+        "carbs": 3.98,
+        "fat": 5.0,
+        "fiber": 0.0,
+        "sugars": 4.0,
+        "sodium_mg": 35.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171304",
+        "descripcion_usda": "Yogurt, Greek, plain, whole milk",
+        "url": "https://fdc.nal.usda.gov/food-details/171304/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 17,
+        "cdita": 5.7,
+        "taza": 245
+      }
+    },
+    {
+      "id": "yogurt_griego_descremado",
+      "nombre": "Yogurt griego natural (sin grasa)",
+      "categoria": "lacteo",
+      "estado": "liquido",
+      "por_100g": {
+        "kcal": 59.0,
+        "prot": 10.19,
+        "carbs": 3.6,
+        "fat": 0.39,
+        "fiber": 0.0,
+        "sugars": 3.24,
+        "sodium_mg": 36.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170894",
+        "descripcion_usda": "Yogurt, Greek, plain, nonfat (Includes foods for USDA's Food Distribution Program)",
+        "url": "https://fdc.nal.usda.gov/food-details/170894/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_oaxaca",
+      "nombre": "Queso Oaxaca / mozzarella",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 295.0,
+        "prot": 23.75,
+        "carbs": 5.58,
+        "fat": 19.78,
+        "fiber": 0.0,
+        "sugars": 1.9,
+        "sodium_mg": 666.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171244",
+        "descripcion_usda": "Cheese, mozzarella, low moisture, part-skim",
+        "url": "https://fdc.nal.usda.gov/food-details/171244/nutrients"
+      },
+      "nota": "USDA: mozzarella (equivalente Oaxaca)",
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_manchego",
+      "nombre": "Queso manchego",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 373.0,
+        "prot": 24.48,
+        "carbs": 0.68,
+        "fat": 30.28,
+        "fiber": 0.0,
+        "sugars": 0.5,
+        "sodium_mg": 600.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170844",
+        "descripcion_usda": "Cheese, monterey",
+        "url": "https://fdc.nal.usda.gov/food-details/170844/nutrients"
+      },
+      "nota": "USDA no tiene manchego MX; monterey jack es el más cercano",
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_crema",
+      "nombre": "Queso crema",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 350.0,
+        "prot": 6.15,
+        "carbs": 5.52,
+        "fat": 34.44,
+        "fiber": 0.0,
+        "sugars": 3.76,
+        "sodium_mg": 314.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173418",
+        "descripcion_usda": "Cheese, cream",
+        "url": "https://fdc.nal.usda.gov/food-details/173418/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_cottage",
+      "nombre": "Queso cottage (2%)",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 81.0,
+        "prot": 10.45,
+        "carbs": 4.76,
+        "fat": 2.27,
+        "fiber": 0.0,
+        "sugars": 4.0,
+        "sodium_mg": 308.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172182",
+        "descripcion_usda": "Cheese, cottage, lowfat, 2% milkfat",
+        "url": "https://fdc.nal.usda.gov/food-details/172182/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_parmesano",
+      "nombre": "Queso parmesano (rallado)",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 420.0,
+        "prot": 28.42,
+        "carbs": 13.91,
+        "fat": 27.84,
+        "fiber": 0.0,
+        "sugars": 0.07,
+        "sodium_mg": 1804.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171247",
+        "descripcion_usda": "Cheese, parmesan, grated",
+        "url": "https://fdc.nal.usda.gov/food-details/171247/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_cheddar",
+      "nombre": "Queso cheddar",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 410.0,
+        "prot": 24.25,
+        "carbs": 2.13,
+        "fat": 33.82,
+        "fiber": 0.0,
+        "sugars": 0.27,
+        "sodium_mg": 644.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170899",
+        "descripcion_usda": "Cheese, cheddar, sharp, sliced",
+        "url": "https://fdc.nal.usda.gov/food-details/170899/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "crema_acida",
+      "nombre": "Crema (sour cream)",
+      "categoria": "lacteo",
+      "estado": "liquida",
+      "por_100g": {
+        "kcal": 198.0,
+        "prot": 2.44,
+        "carbs": 4.63,
+        "fat": 19.35,
+        "fiber": 0.0,
+        "sugars": 3.41,
+        "sodium_mg": 31.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171257",
+        "descripcion_usda": "Cream, sour, cultured",
+        "url": "https://fdc.nal.usda.gov/food-details/171257/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 15,
+        "cdita": 5,
+        "taza": 230
+      }
+    },
+    {
+      "id": "mantequilla",
+      "nombre": "Mantequilla con sal",
+      "categoria": "grasa",
+      "estado": "solida",
+      "por_100g": {
+        "kcal": 717.0,
+        "prot": 0.85,
+        "carbs": 0.06,
+        "fat": 81.11,
+        "fiber": 0.0,
+        "sugars": 0.06,
+        "sodium_mg": 643.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173410",
+        "descripcion_usda": "Butter, salted",
+        "url": "https://fdc.nal.usda.gov/food-details/173410/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 14,
+        "cdita": 4.7,
+        "taza": 227
+      }
+    },
+    {
+      "id": "almendra",
+      "nombre": "Almendras",
+      "categoria": "semilla",
+      "estado": "crudas",
+      "por_100g": {
+        "kcal": 579.0,
+        "prot": 21.15,
+        "carbs": 21.55,
+        "fat": 49.93,
+        "fiber": 12.5,
+        "sugars": 4.35,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170567",
+        "descripcion_usda": "Nuts, almonds",
+        "url": "https://fdc.nal.usda.gov/food-details/170567/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "cacahuate_crudo",
+      "nombre": "Cacahuates crudos",
+      "categoria": "semilla",
+      "estado": "crudos",
+      "por_100g": {
+        "kcal": 567.0,
+        "prot": 25.8,
+        "carbs": 16.13,
+        "fat": 49.24,
+        "fiber": 8.5,
+        "sugars": 4.72,
+        "sodium_mg": 18.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172430",
+        "descripcion_usda": "Peanuts, all types, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/172430/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "cacahuate_tostado",
+      "nombre": "Cacahuates tostados (con sal)",
+      "categoria": "semilla",
+      "estado": "tostados",
+      "por_100g": {
+        "kcal": 587.0,
+        "prot": 24.35,
+        "carbs": 21.26,
+        "fat": 49.66,
+        "fiber": 8.4,
+        "sugars": 4.9,
+        "sodium_mg": 410.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174262",
+        "descripcion_usda": "Peanuts, all types, dry-roasted, with salt",
+        "url": "https://fdc.nal.usda.gov/food-details/174262/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "nuez",
+      "nombre": "Nuez (walnut)",
+      "categoria": "semilla",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 654.0,
+        "prot": 15.23,
+        "carbs": 13.71,
+        "fat": 65.21,
+        "fiber": 6.7,
+        "sugars": 2.61,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170187",
+        "descripcion_usda": "Nuts, walnuts, english",
+        "url": "https://fdc.nal.usda.gov/food-details/170187/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pistache",
+      "nombre": "Pistache",
+      "categoria": "semilla",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 560.0,
+        "prot": 20.16,
+        "carbs": 27.17,
+        "fat": 45.32,
+        "fiber": 10.6,
+        "sugars": 7.66,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170184",
+        "descripcion_usda": "Nuts, pistachio nuts, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170184/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pepita_calabaza",
+      "nombre": "Pepitas (semilla de calabaza)",
+      "categoria": "semilla",
+      "estado": "tostadas",
+      "por_100g": {
+        "kcal": 574.0,
+        "prot": 29.84,
+        "carbs": 14.71,
+        "fat": 49.05,
+        "fiber": 6.5,
+        "sugars": 1.29,
+        "sodium_mg": 18.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170557",
+        "descripcion_usda": "Seeds, pumpkin and squash seed kernels, roasted, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/170557/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "semilla_girasol",
+      "nombre": "Semilla de girasol",
+      "categoria": "semilla",
+      "estado": "tostada",
+      "por_100g": {
+        "kcal": 582.0,
+        "prot": 19.33,
+        "carbs": 24.07,
+        "fat": 49.8,
+        "fiber": 11.1,
+        "sugars": 2.73,
+        "sodium_mg": 3.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170563",
+        "descripcion_usda": "Seeds, sunflower seed kernels, dry roasted, without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/170563/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "mantequilla_cacahuate",
+      "nombre": "Mantequilla de cacahuate",
+      "categoria": "semilla",
+      "estado": "procesada",
+      "por_100g": {
+        "kcal": 598.0,
+        "prot": 22.21,
+        "carbs": 22.31,
+        "fat": 51.36,
+        "fiber": 5.0,
+        "sugars": 10.49,
+        "sodium_mg": 426.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174266",
+        "descripcion_usda": "Peanut butter, smooth style, with salt (Includes foods for USDA's Food Distribution Program)",
+        "url": "https://fdc.nal.usda.gov/food-details/174266/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 16,
+        "cdita": 5.3,
+        "taza": 258
+      }
+    },
+    {
+      "id": "coco_seco",
+      "nombre": "Coco rallado seco (sin azúcar)",
+      "categoria": "semilla",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 660.0,
+        "prot": 6.88,
+        "carbs": 23.65,
+        "fat": 64.53,
+        "fiber": 16.3,
+        "sugars": 7.35,
+        "sodium_mg": 37.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170170",
+        "descripcion_usda": "Nuts, coconut meat, dried (desiccated), not sweetened",
+        "url": "https://fdc.nal.usda.gov/food-details/170170/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "anacardo",
+      "nombre": "Anacardo / marañón (cashew)",
+      "categoria": "semilla",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 553.0,
+        "prot": 18.22,
+        "carbs": 30.19,
+        "fat": 43.85,
+        "fiber": 3.3,
+        "sugars": 5.91,
+        "sodium_mg": 12.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170162",
+        "descripcion_usda": "Nuts, cashew nuts, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170162/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "aceite_oliva",
+      "nombre": "Aceite de oliva",
+      "categoria": "grasa",
+      "estado": "liquido",
+      "por_100g": {
+        "kcal": 884.0,
+        "prot": 0.0,
+        "carbs": 0.0,
+        "fat": 100.0,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171413",
+        "descripcion_usda": "Oil, olive, salad or cooking",
+        "url": "https://fdc.nal.usda.gov/food-details/171413/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 13.5,
+        "cdita": 4.5,
+        "taza": 216
+      }
+    },
+    {
+      "id": "aceite_canola",
+      "nombre": "Aceite de canola",
+      "categoria": "grasa",
+      "estado": "liquido",
+      "por_100g": {
+        "kcal": 884.0,
+        "prot": 0.0,
+        "carbs": 0.0,
+        "fat": 100.0,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 0.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172336",
+        "descripcion_usda": "Oil, canola",
+        "url": "https://fdc.nal.usda.gov/food-details/172336/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 14,
+        "cdita": 4.7,
+        "taza": 218
+      }
+    },
+    {
+      "id": "aceite_coco",
+      "nombre": "Aceite de coco",
+      "categoria": "grasa",
+      "estado": "liquido",
+      "por_100g": {
+        "kcal": 892.0,
+        "prot": 0.0,
+        "carbs": 0.0,
+        "fat": 99.06,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 0.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171412",
+        "descripcion_usda": "Oil, coconut",
+        "url": "https://fdc.nal.usda.gov/food-details/171412/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 13.6,
+        "cdita": 4.5,
+        "taza": 218
+      }
+    },
+    {
+      "id": "manteca_cerdo",
+      "nombre": "Manteca de cerdo",
+      "categoria": "grasa",
+      "estado": "solida",
+      "por_100g": {
+        "kcal": 902.0,
+        "prot": 0.0,
+        "carbs": 0.0,
+        "fat": 100.0,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 0.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171401",
+        "descripcion_usda": "Lard",
+        "url": "https://fdc.nal.usda.gov/food-details/171401/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pimienta_negra",
+      "nombre": "Pimienta negra molida",
+      "categoria": "especia",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 251.0,
+        "prot": 10.39,
+        "carbs": 63.95,
+        "fat": 3.26,
+        "fiber": 25.3,
+        "sugars": 0.64,
+        "sodium_mg": 20.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170931",
+        "descripcion_usda": "Spices, pepper, black",
+        "url": "https://fdc.nal.usda.gov/food-details/170931/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 6.9,
+        "cdita": 2.3,
+        "taza": 100
+      }
+    },
+    {
+      "id": "comino",
+      "nombre": "Comino molido",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 375.0,
+        "prot": 17.81,
+        "carbs": 44.24,
+        "fat": 22.27,
+        "fiber": 10.5,
+        "sugars": 2.25,
+        "sodium_mg": 168.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170923",
+        "descripcion_usda": "Spices, cumin seed",
+        "url": "https://fdc.nal.usda.gov/food-details/170923/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 6,
+        "cdita": 2,
+        "taza": 90
+      }
+    },
+    {
+      "id": "oregano",
+      "nombre": "Orégano seco",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 265.0,
+        "prot": 9.0,
+        "carbs": 68.92,
+        "fat": 4.28,
+        "fiber": 42.5,
+        "sugars": 4.09,
+        "sodium_mg": 25.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171328",
+        "descripcion_usda": "Spices, oregano, dried",
+        "url": "https://fdc.nal.usda.gov/food-details/171328/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 3,
+        "cdita": 1,
+        "taza": 50
+      }
+    },
+    {
+      "id": "paprika",
+      "nombre": "Paprika",
+      "categoria": "especia",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 282.0,
+        "prot": 14.14,
+        "carbs": 53.99,
+        "fat": 12.89,
+        "fiber": 34.9,
+        "sugars": 10.34,
+        "sodium_mg": 68.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171329",
+        "descripcion_usda": "Spices, paprika",
+        "url": "https://fdc.nal.usda.gov/food-details/171329/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 6.8,
+        "cdita": 2.3,
+        "taza": 108
+      }
+    },
+    {
+      "id": "ajo_polvo",
+      "nombre": "Ajo en polvo",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 331.0,
+        "prot": 16.55,
+        "carbs": 72.73,
+        "fat": 0.73,
+        "fiber": 9.0,
+        "sugars": 2.43,
+        "sodium_mg": 60.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171325",
+        "descripcion_usda": "Spices, garlic powder",
+        "url": "https://fdc.nal.usda.gov/food-details/171325/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 9.7,
+        "cdita": 3.1,
+        "taza": 152
+      }
+    },
+    {
+      "id": "cebolla_polvo",
+      "nombre": "Cebolla en polvo",
+      "categoria": "especia",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 341.0,
+        "prot": 10.41,
+        "carbs": 79.12,
+        "fat": 1.04,
+        "fiber": 15.2,
+        "sugars": 6.63,
+        "sodium_mg": 73.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171327",
+        "descripcion_usda": "Spices, onion powder",
+        "url": "https://fdc.nal.usda.gov/food-details/171327/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 7.5,
+        "cdita": 2.4,
+        "taza": 116
+      }
+    },
+    {
+      "id": "curry_polvo",
+      "nombre": "Curry en polvo",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 325.0,
+        "prot": 14.29,
+        "carbs": 55.83,
+        "fat": 14.01,
+        "fiber": 53.2,
+        "sugars": 2.76,
+        "sodium_mg": 52.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170924",
+        "descripcion_usda": "Spices, curry powder",
+        "url": "https://fdc.nal.usda.gov/food-details/170924/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "canela",
+      "nombre": "Canela molida",
+      "categoria": "especia",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 247.0,
+        "prot": 3.99,
+        "carbs": 80.59,
+        "fat": 1.24,
+        "fiber": 53.1,
+        "sugars": 2.17,
+        "sodium_mg": 10.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171320",
+        "descripcion_usda": "Spices, cinnamon, ground",
+        "url": "https://fdc.nal.usda.gov/food-details/171320/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 7.8,
+        "cdita": 2.6,
+        "taza": 120
+      }
+    },
+    {
+      "id": "tomillo",
+      "nombre": "Tomillo seco",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 276.0,
+        "prot": 9.11,
+        "carbs": 63.94,
+        "fat": 7.43,
+        "fiber": 37.0,
+        "sugars": 1.71,
+        "sodium_mg": 55.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170938",
+        "descripcion_usda": "Spices, thyme, dried",
+        "url": "https://fdc.nal.usda.gov/food-details/170938/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "romero",
+      "nombre": "Romero seco",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 331.0,
+        "prot": 4.88,
+        "carbs": 64.06,
+        "fat": 15.22,
+        "fiber": 42.6,
+        "sugars": 0,
+        "sodium_mg": 50.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171333",
+        "descripcion_usda": "Spices, rosemary, dried",
+        "url": "https://fdc.nal.usda.gov/food-details/171333/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "albahaca",
+      "nombre": "Albahaca seca",
+      "categoria": "especia",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 233.0,
+        "prot": 22.98,
+        "carbs": 47.75,
+        "fat": 4.07,
+        "fiber": 37.7,
+        "sugars": 1.71,
+        "sodium_mg": 76.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171317",
+        "descripcion_usda": "Spices, basil, dried",
+        "url": "https://fdc.nal.usda.gov/food-details/171317/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "laurel",
+      "nombre": "Laurel (hojas)",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 313.0,
+        "prot": 7.61,
+        "carbs": 74.97,
+        "fat": 8.36,
+        "fiber": 26.3,
+        "sugars": 0,
+        "sodium_mg": 23.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170917",
+        "descripcion_usda": "Spices, bay leaf",
+        "url": "https://fdc.nal.usda.gov/food-details/170917/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "sal_mesa",
+      "nombre": "Sal de mesa",
+      "categoria": "especia",
+      "estado": "sólida",
+      "por_100g": {
+        "kcal": 0.0,
+        "prot": 0.0,
+        "carbs": 0.0,
+        "fat": 0.0,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 38758.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173468",
+        "descripcion_usda": "Salt, table",
+        "url": "https://fdc.nal.usda.gov/food-details/173468/nutrients"
+      },
+      "nota": "Solo sodio; sin kcal/macros",
+      "tipo": "generic",
+      "densidades": {
+        "cda": 18,
+        "cdita": 6,
+        "taza": 273
+      }
+    },
+    {
+      "id": "chile_polvo",
+      "nombre": "Chile en polvo",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 282.0,
+        "prot": 13.46,
+        "carbs": 49.7,
+        "fat": 14.28,
+        "fiber": 34.8,
+        "sugars": 7.19,
+        "sodium_mg": 2867.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171319",
+        "descripcion_usda": "Spices, chili powder",
+        "url": "https://fdc.nal.usda.gov/food-details/171319/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "jengibre_polvo",
+      "nombre": "Jengibre en polvo",
+      "categoria": "especia",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 335.0,
+        "prot": 8.98,
+        "carbs": 71.62,
+        "fat": 4.24,
+        "fiber": 14.1,
+        "sugars": 3.39,
+        "sodium_mg": 27.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170926",
+        "descripcion_usda": "Spices, ginger, ground",
+        "url": "https://fdc.nal.usda.gov/food-details/170926/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "azucar_blanca",
+      "nombre": "Azúcar blanca (granulada)",
+      "categoria": "endulzante",
+      "estado": "sólido",
+      "por_100g": {
+        "kcal": 387.0,
+        "prot": 0.0,
+        "carbs": 99.98,
+        "fat": 0.0,
+        "fiber": 0.0,
+        "sugars": 99.8,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169655",
+        "descripcion_usda": "Sugars, granulated",
+        "url": "https://fdc.nal.usda.gov/food-details/169655/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 12.5,
+        "cdita": 4.2,
+        "taza": 200
+      }
+    },
+    {
+      "id": "azucar_morena",
+      "nombre": "Azúcar morena",
+      "categoria": "endulzante",
+      "estado": "sólido",
+      "por_100g": {
+        "kcal": 380.0,
+        "prot": 0.12,
+        "carbs": 98.09,
+        "fat": 0.0,
+        "fiber": 0.0,
+        "sugars": 97.02,
+        "sodium_mg": 28.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168833",
+        "descripcion_usda": "Sugars, brown",
+        "url": "https://fdc.nal.usda.gov/food-details/168833/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 13.8,
+        "cdita": 4.6,
+        "taza": 220
+      }
+    },
+    {
+      "id": "miel",
+      "nombre": "Miel de abeja",
+      "categoria": "endulzante",
+      "estado": "líquida",
+      "por_100g": {
+        "kcal": 304.0,
+        "prot": 0.3,
+        "carbs": 82.4,
+        "fat": 0.0,
+        "fiber": 0.2,
+        "sugars": 82.12,
+        "sodium_mg": 4.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169640",
+        "descripcion_usda": "Honey",
+        "url": "https://fdc.nal.usda.gov/food-details/169640/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 21,
+        "cdita": 7,
+        "taza": 339
+      }
+    },
+    {
+      "id": "maple",
+      "nombre": "Maple (jarabe)",
+      "categoria": "endulzante",
+      "estado": "líquido",
+      "por_100g": {
+        "kcal": 260.0,
+        "prot": 0.04,
+        "carbs": 67.04,
+        "fat": 0.06,
+        "fiber": 0.0,
+        "sugars": 60.46,
+        "sodium_mg": 12.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169661",
+        "descripcion_usda": "Syrups, maple",
+        "url": "https://fdc.nal.usda.gov/food-details/169661/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 20,
+        "cdita": 6.7,
+        "taza": 322
+      }
+    },
+    {
+      "id": "salsa_soya",
+      "nombre": "Salsa de soya",
+      "categoria": "condimento",
+      "estado": "líquida",
+      "por_100g": {
+        "kcal": 53.0,
+        "prot": 8.14,
+        "carbs": 4.93,
+        "fat": 0.57,
+        "fiber": 0.8,
+        "sugars": 0.4,
+        "sodium_mg": 5493.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174277",
+        "descripcion_usda": "Soy sauce made from soy and wheat (shoyu)",
+        "url": "https://fdc.nal.usda.gov/food-details/174277/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 18,
+        "cdita": 6,
+        "taza": 256
+      }
+    },
+    {
+      "id": "vinagre_blanco",
+      "nombre": "Vinagre blanco",
+      "categoria": "condimento",
+      "estado": "líquido",
+      "por_100g": {
+        "kcal": 18.0,
+        "prot": 0.0,
+        "carbs": 0.04,
+        "fat": 0.0,
+        "fiber": 0.0,
+        "sugars": 0.04,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172237",
+        "descripcion_usda": "Vinegar, distilled",
+        "url": "https://fdc.nal.usda.gov/food-details/172237/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 15,
+        "cdita": 5,
+        "taza": 240
+      }
+    },
+    {
+      "id": "vinagre_manzana",
+      "nombre": "Vinagre de manzana",
+      "categoria": "condimento",
+      "estado": "líquido",
+      "por_100g": {
+        "kcal": 21.0,
+        "prot": 0.0,
+        "carbs": 0.93,
+        "fat": 0.0,
+        "fiber": 0.0,
+        "sugars": 0.4,
+        "sodium_mg": 5.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173469",
+        "descripcion_usda": "Vinegar, cider",
+        "url": "https://fdc.nal.usda.gov/food-details/173469/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "mostaza",
+      "nombre": "Mostaza preparada",
+      "categoria": "condimento",
+      "estado": "líquida",
+      "por_100g": {
+        "kcal": 60.0,
+        "prot": 3.74,
+        "carbs": 5.83,
+        "fat": 3.34,
+        "fiber": 4.0,
+        "sugars": 0.92,
+        "sodium_mg": 1104.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172234",
+        "descripcion_usda": "Mustard, prepared, yellow",
+        "url": "https://fdc.nal.usda.gov/food-details/172234/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 15,
+        "cdita": 5,
+        "taza": 250
+      }
+    },
+    {
+      "id": "mayonesa",
+      "nombre": "Mayonesa regular",
+      "categoria": "condimento",
+      "estado": "líquida",
+      "por_100g": {
+        "kcal": 680.0,
+        "prot": 0.96,
+        "carbs": 0.57,
+        "fat": 74.85,
+        "fiber": 0.0,
+        "sugars": 0.57,
+        "sodium_mg": 635.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171009",
+        "descripcion_usda": "Salad dressing, mayonnaise, regular",
+        "url": "https://fdc.nal.usda.gov/food-details/171009/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 14,
+        "cdita": 4.7,
+        "taza": 220
+      }
+    },
+    {
+      "id": "ketchup",
+      "nombre": "Cátsup",
+      "categoria": "condimento",
+      "estado": "líquida",
+      "por_100g": {
+        "kcal": 101.0,
+        "prot": 1.04,
+        "carbs": 27.4,
+        "fat": 0.1,
+        "fiber": 0.3,
+        "sugars": 21.27,
+        "sodium_mg": 907.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168556",
+        "descripcion_usda": "Catsup",
+        "url": "https://fdc.nal.usda.gov/food-details/168556/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 15,
+        "cdita": 5,
+        "taza": 240
+      }
+    },
+    {
+      "id": "cacao_polvo",
+      "nombre": "Cacao en polvo (sin azúcar)",
+      "categoria": "condimento",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 228.0,
+        "prot": 19.6,
+        "carbs": 57.9,
+        "fat": 13.7,
+        "fiber": 37.0,
+        "sugars": 1.75,
+        "sodium_mg": 21.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169593",
+        "descripcion_usda": "Cocoa, dry powder, unsweetened",
+        "url": "https://fdc.nal.usda.gov/food-details/169593/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 5.4,
+        "cdita": 1.8,
+        "taza": 86
+      }
+    },
+    {
+      "id": "maicena",
+      "nombre": "Maicena (almidón de maíz)",
+      "categoria": "condimento",
+      "estado": "seca",
+      "por_100g": {
+        "kcal": 381.0,
+        "prot": 0.26,
+        "carbs": 91.27,
+        "fat": 0.05,
+        "fiber": 0.9,
+        "sugars": 0.0,
+        "sodium_mg": 9.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169698",
+        "descripcion_usda": "Cornstarch",
+        "url": "https://fdc.nal.usda.gov/food-details/169698/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 8,
+        "cdita": 2.6,
+        "taza": 128
+      }
+    },
+    {
+      "id": "vainilla_extracto",
+      "nombre": "Extracto de vainilla",
+      "categoria": "condimento",
+      "estado": "líquido",
+      "por_100g": {
+        "kcal": 288.0,
+        "prot": 0.06,
+        "carbs": 12.65,
+        "fat": 0.06,
+        "fiber": 0.0,
+        "sugars": 12.65,
+        "sodium_mg": 9.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173471",
+        "descripcion_usda": "Vanilla extract",
+        "url": "https://fdc.nal.usda.gov/food-details/173471/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 13,
+        "cdita": 4.2,
+        "taza": 208
+      }
+    },
+    {
+      "id": "platano_macho",
+      "nombre": "Plátano macho",
+      "categoria": "fruta",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 122.0,
+        "prot": 1.3,
+        "carbs": 31.89,
+        "fat": 0.35,
+        "fiber": 1.7,
+        "sugars": 17.51,
+        "sodium_mg": 4.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169130",
+        "descripcion_usda": "Plantains, yellow, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169130/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 179
+    },
+    {
+      "id": "platano_macho_cocido",
+      "nombre": "Plátano macho",
+      "categoria": "fruta",
+      "estado": "cocido (hervido)",
+      "por_100g": {
+        "kcal": 121.0,
+        "prot": 1.09,
+        "carbs": 29.15,
+        "fat": 0.08,
+        "fiber": 2.6,
+        "sugars": 2.25,
+        "sodium_mg": 2.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168216",
+        "descripcion_usda": "Plantains, green, boiled",
+        "url": "https://fdc.nal.usda.gov/food-details/168216/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "betabel_cocido",
+      "nombre": "Betabel",
+      "categoria": "verdura",
+      "estado": "cocido (hervido, sin sal)",
+      "por_100g": {
+        "kcal": 44.0,
+        "prot": 1.68,
+        "carbs": 9.96,
+        "fat": 0.18,
+        "fiber": 2.0,
+        "sugars": 7.96,
+        "sodium_mg": 77.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169146",
+        "descripcion_usda": "Beets, cooked, boiled, drained",
+        "url": "https://fdc.nal.usda.gov/food-details/169146/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "esparrago_cocido",
+      "nombre": "Espárrago",
+      "categoria": "verdura",
+      "estado": "cocido (hervido, sin sal)",
+      "por_100g": {
+        "kcal": 22.0,
+        "prot": 2.4,
+        "carbs": 4.11,
+        "fat": 0.22,
+        "fiber": 2.0,
+        "sugars": 1.3,
+        "sodium_mg": 14.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168390",
+        "descripcion_usda": "Asparagus, cooked, boiled, drained",
+        "url": "https://fdc.nal.usda.gov/food-details/168390/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "frijol_refrito",
+      "nombre": "Frijol refrito",
+      "categoria": "legumbre",
+      "estado": "enlatado",
+      "por_100g": {
+        "kcal": 90.0,
+        "prot": 4.98,
+        "carbs": 13.55,
+        "fat": 2.01,
+        "fiber": 3.7,
+        "sugars": 0.54,
+        "sodium_mg": 370.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172438",
+        "descripcion_usda": "Refried beans, canned, traditional style",
+        "url": "https://fdc.nal.usda.gov/food-details/172438/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "avena_cocida",
+      "nombre": "Avena",
+      "categoria": "grano",
+      "estado": "cocida (agua, sin sal)",
+      "por_100g": {
+        "kcal": 71.0,
+        "prot": 2.54,
+        "carbs": 12.0,
+        "fat": 1.52,
+        "fiber": 1.7,
+        "sugars": 0.27,
+        "sodium_mg": 4.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173905",
+        "descripcion_usda": "Cereals, oats, regular and quick, unenriched, cooked with water (includes boiling and microwaving), without salt",
+        "url": "https://fdc.nal.usda.gov/food-details/173905/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "arroz_blanco_cocido",
+      "nombre": "Arroz blanco",
+      "categoria": "grano",
+      "estado": "cocido (enriquecido)",
+      "por_100g": {
+        "kcal": 130.0,
+        "prot": 2.69,
+        "carbs": 28.17,
+        "fat": 0.28,
+        "fiber": 0.4,
+        "sugars": 0.05,
+        "sodium_mg": 1.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168878",
+        "descripcion_usda": "Rice, white, long-grain, regular, enriched, cooked",
+        "url": "https://fdc.nal.usda.gov/food-details/168878/nutrients"
+      },
+      "nota": "USDA solo tiene \"enriched\" cocido; macros muy similares al no-enriched",
+      "tipo": "generic"
+    },
+    {
+      "id": "pan_molido",
+      "nombre": "Pan molido (white bread crumbs)",
+      "categoria": "grano",
+      "estado": "seco",
+      "por_100g": {
+        "kcal": 266.0,
+        "prot": 8.85,
+        "carbs": 49.42,
+        "fat": 3.33,
+        "fiber": 2.7,
+        "sugars": 5.67,
+        "sodium_mg": 490.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174924",
+        "descripcion_usda": "Bread, white, commercially prepared (includes soft bread crumbs)",
+        "url": "https://fdc.nal.usda.gov/food-details/174924/nutrients"
+      },
+      "nota": "USDA agrupa con pan blanco",
+      "tipo": "generic"
+    },
+    {
+      "id": "totopo",
+      "nombre": "Totopo (bajo en grasa, sin sal)",
+      "categoria": "grano",
+      "estado": "listo",
+      "por_100g": {
+        "kcal": 448.0,
+        "prot": 11.0,
+        "carbs": 80.2,
+        "fat": 5.7,
+        "fiber": 5.3,
+        "sugars": 0.67,
+        "sodium_mg": 517.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168859",
+        "descripcion_usda": "Tortilla chips, low fat, baked without fat",
+        "url": "https://fdc.nal.usda.gov/food-details/168859/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "totopo_normal",
+      "nombre": "Totopo (frito, con sal)",
+      "categoria": "grano",
+      "estado": "listo",
+      "por_100g": {
+        "kcal": 472.0,
+        "prot": 7.1,
+        "carbs": 67.78,
+        "fat": 20.68,
+        "fiber": 5.4,
+        "sugars": 0.78,
+        "sodium_mg": 328.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167558",
+        "descripcion_usda": "Snacks, tortilla chips, plain, white corn, salted",
+        "url": "https://fdc.nal.usda.gov/food-details/167558/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pollo_pechuga_cruda",
+      "nombre": "Pollo, pechuga (sin piel, sin hueso)",
+      "categoria": "pollo",
+      "estado": "cruda",
+      "por_100g": {
+        "kcal": 120.0,
+        "prot": 22.5,
+        "carbs": 0.0,
+        "fat": 2.62,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 45.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171077",
+        "descripcion_usda": "Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/171077/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "pollo_muslo_crudo",
+      "nombre": "Pollo, muslo (sin piel)",
+      "categoria": "pollo",
+      "estado": "crudo",
+      "por_100g": {
+        "kcal": 121.0,
+        "prot": 19.66,
+        "carbs": 0.0,
+        "fat": 4.12,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 95.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173627",
+        "descripcion_usda": "Chicken, broilers or fryers, dark meat, thigh, meat only, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/173627/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_molida_80_cocida",
+      "nombre": "Res, carne molida 80/20",
+      "categoria": "res",
+      "estado": "cocida (sartén, crumbles)",
+      "por_100g": {
+        "kcal": 272.0,
+        "prot": 27.0,
+        "carbs": 0.0,
+        "fat": 17.36,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 91.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171799",
+        "descripcion_usda": "Beef, ground, 80% lean meat / 20% fat, crumbles, cooked, pan-browned",
+        "url": "https://fdc.nal.usda.gov/food-details/171799/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "res_molida_90_cocida",
+      "nombre": "Res, carne molida magra 90/10",
+      "categoria": "res",
+      "estado": "cocida (sartén, crumbles)",
+      "por_100g": {
+        "kcal": 230.0,
+        "prot": 28.45,
+        "carbs": 0.0,
+        "fat": 12.04,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 87.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171794",
+        "descripcion_usda": "Beef, ground, 90% lean meat / 10% fat, crumbles, cooked, pan-browned",
+        "url": "https://fdc.nal.usda.gov/food-details/171794/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "tocino_cocido",
+      "nombre": "Tocino",
+      "categoria": "cerdo",
+      "estado": "cocido (sartén)",
+      "por_100g": {
+        "kcal": 541.0,
+        "prot": 37.04,
+        "carbs": 1.43,
+        "fat": 41.78,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 1030.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "167712",
+        "descripcion_usda": "Pork, cured, bacon, cooked, broiled, pan-fried or roasted, reduced sodium",
+        "url": "https://fdc.nal.usda.gov/food-details/167712/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "yogurt_natural",
+      "nombre": "Yogurt natural (leche entera)",
+      "categoria": "lacteo",
+      "estado": "liquido",
+      "por_100g": {
+        "kcal": 61.0,
+        "prot": 3.47,
+        "carbs": 4.66,
+        "fat": 3.25,
+        "fiber": 0.0,
+        "sugars": 4.66,
+        "sodium_mg": 46.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171284",
+        "descripcion_usda": "Yogurt, plain, whole milk",
+        "url": "https://fdc.nal.usda.gov/food-details/171284/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 15,
+        "cdita": 5,
+        "taza": 245
+      }
+    },
+    {
+      "id": "queso_fresco",
+      "nombre": "Queso fresco",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 299.0,
+        "prot": 18.09,
+        "carbs": 2.98,
+        "fat": 23.82,
+        "fiber": 0.0,
+        "sugars": 2.32,
+        "sodium_mg": 751.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172223",
+        "descripcion_usda": "Cheese, fresh, queso fresco",
+        "url": "https://fdc.nal.usda.gov/food-details/172223/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_cotija",
+      "nombre": "Queso cotija",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 366.0,
+        "prot": 20.0,
+        "carbs": 3.97,
+        "fat": 30.0,
+        "fiber": 0.0,
+        "sugars": 0.0,
+        "sodium_mg": 1400.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170898",
+        "descripcion_usda": "Cheese, mexican, queso cotija",
+        "url": "https://fdc.nal.usda.gov/food-details/170898/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_chihuahua",
+      "nombre": "Queso Chihuahua",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 374.0,
+        "prot": 21.56,
+        "carbs": 5.56,
+        "fat": 29.68,
+        "fiber": 0.0,
+        "sugars": 5.56,
+        "sodium_mg": 617.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "173438",
+        "descripcion_usda": "Cheese, mexican, queso chihuahua",
+        "url": "https://fdc.nal.usda.gov/food-details/173438/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "queso_anejo",
+      "nombre": "Queso añejo",
+      "categoria": "lacteo",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 373.0,
+        "prot": 21.44,
+        "carbs": 4.63,
+        "fat": 29.98,
+        "fiber": 0.0,
+        "sugars": 4.63,
+        "sodium_mg": 1131.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "172201",
+        "descripcion_usda": "Cheese, mexican, queso anejo",
+        "url": "https://fdc.nal.usda.gov/food-details/172201/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "salsa_inglesa",
+      "nombre": "Salsa inglesa (Worcestershire)",
+      "categoria": "condimento",
+      "estado": "liquida",
+      "por_100g": {
+        "kcal": 77.0,
+        "prot": 0.0,
+        "carbs": 19.17,
+        "fat": 0.0,
+        "fiber": 0.0,
+        "sugars": 10.03,
+        "sodium_mg": 1300.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171610",
+        "descripcion_usda": "Sauce, worcestershire",
+        "url": "https://fdc.nal.usda.gov/food-details/171610/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 17,
+        "cdita": 5.7,
+        "taza": 273
+      }
+    },
+    {
+      "id": "salsa_roja_lista",
+      "nombre": "Salsa roja (lista)",
+      "categoria": "condimento",
+      "estado": "liquida",
+      "por_100g": {
+        "kcal": 29.0,
+        "prot": 1.52,
+        "carbs": 6.64,
+        "fat": 0.17,
+        "fiber": 1.9,
+        "sugars": 4.01,
+        "sodium_mg": 711.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174524",
+        "descripcion_usda": "Sauce, salsa, ready-to-serve",
+        "url": "https://fdc.nal.usda.gov/food-details/174524/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "salsa_verde_lista",
+      "nombre": "Salsa verde (lista)",
+      "categoria": "condimento",
+      "estado": "liquida",
+      "por_100g": {
+        "kcal": 38.0,
+        "prot": 1.13,
+        "carbs": 6.36,
+        "fat": 0.89,
+        "fiber": 1.9,
+        "sugars": 3.5,
+        "sodium_mg": 906.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "171824",
+        "descripcion_usda": "Sauce, salsa, verde, ready-to-serve",
+        "url": "https://fdc.nal.usda.gov/food-details/171824/nutrients"
+      },
+      "tipo": "generic"
+    },
+    {
+      "id": "salsa_picante",
+      "nombre": "Salsa picante (tipo Tapatío genérica)",
+      "categoria": "condimento",
+      "estado": "liquida",
+      "por_100g": {
+        "kcal": 11.0,
+        "prot": 0.51,
+        "carbs": 1.75,
+        "fat": 0.37,
+        "fiber": 0.3,
+        "sugars": 1.26,
+        "sodium_mg": 2643.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174527",
+        "descripcion_usda": "Sauce, ready-to-serve, pepper or hot",
+        "url": "https://fdc.nal.usda.gov/food-details/174527/nutrients"
+      },
+      "tipo": "generic"
+    }
+  ]
+};

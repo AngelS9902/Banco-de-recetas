@@ -721,7 +721,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .day-servings-picker input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .day-servings-of{font-size:11px;color:var(--muted);font-weight:500}
 
-/* Lista de productos custom en Mi cuenta — caja scrollable con info completa */
+/* Lista de productos custom en Mi cuenta — caja scrollable */
 .custom-foods-list{
   margin-top:.5rem;
   background:#fff;
@@ -733,43 +733,46 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 }
 .custom-food-row{
   display:flex;align-items:center;gap:12px;
-  padding:.75rem 1rem;border-radius:8px;
+  padding:.85rem 1rem;border-radius:8px;
   transition:background .15s;
 }
-.custom-food-row + .custom-food-row{border-top:1px solid var(--border)}
-.custom-food-row:hover{background:rgba(0,0,0,.025)}
+.custom-food-row + .custom-food-row{border-top:1px solid #EFE9DE}
+.custom-food-row:hover{background:rgba(0,0,0,.02)}
 .custom-food-info{flex:1;min-width:0}
 .custom-food-name{
-  font-size:14px;font-weight:600;color:var(--text);
-  display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;
+  font-size:15px;font-weight:600;color:var(--text);
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
 }
 .custom-food-cat{
-  font-size:10px;font-weight:500;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.5px;
+  font-size:9px;font-weight:500;color:#B4B2A9;
+  text-transform:uppercase;letter-spacing:.6px;opacity:.85;
 }
 .custom-food-macros{
-  display:flex;gap:10px;margin-top:4px;
-  font-size:12px;color:var(--muted);font-weight:500;flex-wrap:wrap;
+  display:flex;gap:8px;margin-top:3px;
+  font-size:10.5px;color:var(--muted);font-weight:400;flex-wrap:wrap;
 }
-.custom-food-macros span{color:var(--text)}
-.custom-food-macros .cf-per{color:var(--muted);font-weight:400}
-.custom-food-actions{display:flex;gap:6px;flex-shrink:0}
+.custom-food-macros .cf-per{opacity:.6}
+.custom-food-actions{display:flex;gap:6px;flex-shrink:0;margin-left:auto}
 .custom-food-actions .btn-edit,
 .custom-food-actions .btn-delete{
-  font-size:11px;padding:6px 10px;border-radius:8px;
-  border:1px solid var(--border);background:var(--bg);cursor:pointer;
-  font-family:inherit;font-weight:600;
+  font-size:12px;padding:7px 12px;border-radius:8px;
+  cursor:pointer;font-family:inherit;font-weight:600;
+  transition:filter .15s;
 }
-.custom-food-actions .btn-edit{color:var(--muted)}
-.custom-food-actions .btn-edit:hover{border-color:var(--blue);color:var(--blue)}
-.custom-food-actions .btn-delete{color:var(--muted)}
-.custom-food-actions .btn-delete:hover{border-color:#d9534f;color:#d9534f}
+.custom-food-actions .btn-edit{
+  border:1px solid #B5D4F4;background:#E6F1FB;color:#185FA5;
+}
+.custom-food-actions .btn-edit:hover{filter:brightness(.96)}
+.custom-food-actions .btn-delete{
+  border:1px solid #F7C1C1;background:#FCEBEB;color:#A32D2D;
+}
+.custom-food-actions .btn-delete:hover{filter:brightness(.96)}
 .custom-foods-list .empty-state{
   padding:1.25rem !important;border:none !important;background:transparent !important;
 }
 @media(max-width:600px){
   .custom-food-row{flex-direction:column;align-items:stretch}
-  .custom-food-actions{justify-content:flex-end}
+  .custom-food-actions{justify-content:flex-end;margin-left:0}
 }
 
 /* Chip de receta en lista compras: con selector de porciones */

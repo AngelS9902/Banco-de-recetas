@@ -6,7 +6,7 @@ window.FOODS_DB = {
     "fuente_principal": "USDA FoodData Central — SR Legacy (April 2018)",
     "fuente_url": "https://fdc.nal.usda.gov/download-datasets/",
     "unidades": "Valores por 100g de alimento comestible. Sodio en mg, resto en gramos (excepto kcal).",
-    "total_alimentos": 241,
+    "total_alimentos": 244,
     "nota_especias": "Especias incluidas para completitud. En cantidades típicas (<5g por receta) su aporte calórico es despreciable (<10 kcal), pero el sodio sí puede importar.",
     "campos_opcionales": {
       "marca": "Solo presente cuando tipo=branded. Indica marca específica (Lala, FUD, etc.)",
@@ -5629,6 +5629,98 @@ window.FOODS_DB = {
         "url": "https://fdc.nal.usda.gov/food-details/174527/nutrients"
       },
       "tipo": "generic"
+    },
+    {
+      "id": "caldo_res",
+      "nombre": "Caldo de res",
+      "categoria": "liquido",
+      "estado": "listo (enlatado)",
+      "por_100g": {
+        "kcal": 7.0,
+        "prot": 1.27,
+        "carbs": 0.36,
+        "fat": 0.22,
+        "fiber": 0.0,
+        "sugars": 0.36,
+        "sodium_mg": 363.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174684",
+        "descripcion_usda": "Soup, beef broth, bouillon, canned, ready-to-serve",
+        "url": "https://fdc.nal.usda.gov/food-details/174684/nutrients"
+      },
+      "aliases": [
+        "beef stock",
+        "caldo carne",
+        "consome res"
+      ],
+      "tipo": "generic",
+      "densidades": {
+        "taza": 240,
+        "ml": 1.0
+      }
+    },
+    {
+      "id": "caldo_pollo",
+      "nombre": "Caldo de pollo",
+      "categoria": "liquido",
+      "estado": "listo (enlatado)",
+      "por_100g": {
+        "kcal": 15.0,
+        "prot": 1.07,
+        "carbs": 0.86,
+        "fat": 0.54,
+        "fiber": 0.0,
+        "sugars": 0.45,
+        "sodium_mg": 372.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "174685",
+        "descripcion_usda": "Soup, chicken broth, canned, ready-to-serve",
+        "url": "https://fdc.nal.usda.gov/food-details/174685/nutrients"
+      },
+      "aliases": [
+        "chicken stock",
+        "consome pollo"
+      ],
+      "tipo": "generic",
+      "densidades": {
+        "taza": 240,
+        "ml": 1.0
+      }
+    },
+    {
+      "id": "caldo_verduras",
+      "nombre": "Caldo de verduras",
+      "categoria": "liquido",
+      "estado": "listo (enlatado)",
+      "por_100g": {
+        "kcal": 5.0,
+        "prot": 0.34,
+        "carbs": 1.18,
+        "fat": 0.0,
+        "fiber": 0.0,
+        "sugars": 0.5,
+        "sodium_mg": 230.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "175199",
+        "descripcion_usda": "Soup, stock, vegetable, home-prepared",
+        "url": "https://fdc.nal.usda.gov/food-details/175199/nutrients"
+      },
+      "aliases": [
+        "vegetable stock",
+        "caldo vegetal",
+        "vegetable broth"
+      ],
+      "tipo": "generic",
+      "densidades": {
+        "taza": 240,
+        "ml": 1.0
+      }
     }
   ]
 };

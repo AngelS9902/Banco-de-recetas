@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario · Banco de Recetas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="impersonateBannerSlot"></div>
+
+<div class="header">
+  <div class="header-label">Planeación y registro</div>
+  <h1>Calendario</h1>
+  <div class="header-meta" id="calHeaderMeta">
+    <span class="meta-pill" id="calKcalTarget">— kcal/día</span>
+    <span class="meta-pill" id="calWaterTarget">— ml/día</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Navegación de mes -->
+  <div class="section cal-nav-section">
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="calPrevMonth()" aria-label="Mes anterior">‹</button>
+      <div class="cal-nav-title" id="calMonthLabel">—</div>
+      <button class="cal-nav-btn" onclick="calNextMonth()" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="cal-nav-actions">
+      <button class="cal-today-btn" onclick="calGoToday()">Hoy</button>
+    </div>
+  </div>
+
+  <!-- Leyenda de colores -->
+  <div class="section cal-legend">
+    <div class="cal-legend-item"><span class="cal-dot cal-dot-green"></span> En meta (90–110%)</div>
+    <div class="cal-legend-item"><span class="cal-dot cal-dot-yellow"></span> Bajo objetivo (&lt;90%)</div>
+    <div class="cal-legend-item"><span class="cal-dot cal-dot-red"></span> Pasado (&gt;110%)</div>
+    <div class="cal-legend-item"><span class="cal-dot cal-dot-gray"></span> Sin registrar</div>
+  </div>
+
+  <!-- Grid mensual -->
+  <div class="section">
+    <div class="cal-weekdays">
+      <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Calendario · Planea · Registra · Cumple
+</div>
+
+<!-- MODAL: Detalle del día -->
+<div class="modal-overlay" id="dayDetailModal"></div>
+
+<!-- MODAL: Agregar entrada al día (receta o item rápido) -->
+<div class="modal-overlay" id="addEntryModal"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cloudStorage.js"></script>
+<script src="auth.js"></script>
+<script src="foods.js"></script>
+<script src="calendar.js"></script>
+<script>
+(async () => {
+  await requireAuth();
+  const ok = await initCloudStorage();
+  if (!ok) { alert('No se pudieron cargar tus datos. Reintenta.'); return; }
+  await refreshSession();
+  mountTopBarAndDrawer({ showCart: false });
+  initCalendar();
+})();
+</script>
+</body>
+</html>

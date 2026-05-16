@@ -4226,6 +4226,32 @@ window.FOODS_DB = {
       }
     },
     {
+      "id": "stevia_hoja_molida",
+      "nombre": "Stevia (hoja molida)",
+      "categoria": "endulzante",
+      "estado": "sólido",
+      "por_100g": {
+        "kcal": 290.0,
+        "prot": 5.0,
+        "carbs": 65.0,
+        "fat": 2.0,
+        "fiber": 15.0,
+        "sugars": 0.0,
+        "sodium_mg": 5.0
+      },
+      "fuente": {
+        "db": "Estimación basada en datos genéricos de hoja de Stevia rebaudiana",
+        "descripcion_usda": "Stevia rebaudiana leaves, ground (100% puro). Sobre típico 0.4g ≈ 1 kcal."
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 0.4,
+      "densidades": {
+        "cda": 5,
+        "cdita": 1.7,
+        "taza": 80
+      }
+    },
+    {
       "id": "salsa_soya",
       "nombre": "Salsa de soya",
       "categoria": "condimento",

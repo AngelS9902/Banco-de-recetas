@@ -2365,7 +2365,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "spaghetti_integral",
@@ -2387,7 +2390,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "fettuccine",
@@ -2409,7 +2415,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "fettuccine_integral",
@@ -2431,7 +2440,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "tallarin",
@@ -2453,7 +2465,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "cabello_angel",
@@ -2475,7 +2490,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "penne",
@@ -2497,7 +2515,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "penne_integral",
@@ -2519,7 +2540,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "rigatoni",
@@ -2541,7 +2565,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "rigatoni_integral",
@@ -2563,7 +2590,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "coditos",
@@ -2585,7 +2615,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "coditos_integral",
@@ -2607,7 +2640,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "fusilli",
@@ -2629,7 +2665,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "fusilli_integral",
@@ -2651,7 +2690,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "rotini",
@@ -2673,7 +2715,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "rotini_integral",
@@ -2695,7 +2740,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "farfalle",
@@ -2717,7 +2765,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "farfalle_integral",
@@ -2739,7 +2790,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "conchitas",
@@ -2761,7 +2815,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "orzo",
@@ -2783,7 +2840,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "lasana",
@@ -2805,7 +2865,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "lasana_integral",
@@ -2827,7 +2890,10 @@
         "descripcion_usda": "Pasta, whole-wheat, dry",
         "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "letras",
@@ -2849,7 +2915,10 @@
         "descripcion_usda": "Pasta, dry, unenriched",
         "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
       },
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "noquis",
@@ -2871,7 +2940,11 @@
         "url": ""
       },
       "nota": "Macros aproximados; revisar etiqueta de la marca específica",
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta",
+        "gnocchi"
+      ]
     },
     {
       "id": "ravioli",
@@ -2893,7 +2966,10 @@
         "url": ""
       },
       "nota": "Macros aproximados; cambian si el relleno es carne, espinaca, etc.",
-      "tipo": "generic"
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
     },
     {
       "id": "pollo_pechuga_cruda_piel",

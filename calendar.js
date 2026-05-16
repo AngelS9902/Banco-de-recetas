@@ -569,6 +569,8 @@ function openAddEntry(dateStr, slot) {
 function closeAddEntry() {
   document.getElementById('addEntryModal').classList.remove('open');
   CAL_OPEN_SLOT = null;
+  OFF_PICKED = null;
+  OFF_LAST_RESULTS = [];
 }
 
 function addRecipeEntry() {
@@ -666,6 +668,7 @@ function clearDayPrompt(dateStr) {
 let offSearchTimer = null;
 let offCurrentScanner = null;
 let OFF_LAST_RESULTS = []; // cache de los resultados de la búsqueda actual
+let OFF_PICKED = null;     // producto actualmente cargado en el form (para recálculo en vivo)
 
 function onOFFSearchInput() {
   clearTimeout(offSearchTimer);
@@ -745,35 +748,80 @@ function pickOFFProductByIdx(idx) {
 }
 
 function pickOFFProduct(prod) {
-  // Pre-llena el form de item rápido escalando a una porción razonable
-  let defaultGrams = 100;
-  // Intenta parsear el serving_size (ej. "30 g", "1 bolsa (45 g)")
-  const m = (prod.serving || '').match(/(\d+(?:[.,]\d+)?)\s*g/i);
-  if (m) defaultGrams = parseFloat(m[1].replace(',','.'));
+  OFF_PICKED = prod;
+
+  // Parsea grams de quantity (peso real del empaque, ej. "45 g") y serving_size (ej. "30 g")
+  const parseG = (s) => {
+    if (!s) return null;
+    const m = String(s).match(/(\d+(?:[.,]\d+)?)\s*g/i);
+    return m ? parseFloat(m[1].replace(',','.')) : null;
+  };
+  const packG = parseG(prod.quantity);     // bolsa completa
+  const servG = parseG(prod.serving);      // porción "de referencia"
+
+  // Preferimos peso real del empaque (lo que sale en la etiqueta como contenido)
+  const defaultGrams = packG || servG || 100;
 
   document.getElementById('qi_name').value = prod.name || '';
   document.getElementById('qi_marca').value = prod.brand || '';
-  document.getElementById('qi_porcion').value = prod.serving || (defaultGrams + 'g');
+  document.getElementById('qi_porcion').value = prod.quantity || prod.serving || (defaultGrams + 'g');
 
-  // Escala a la porción
-  const f = defaultGrams / 100;
-  document.getElementById('qi_kcal').value  = Math.round(prod.kcal100 * f);
-  document.getElementById('qi_prot').value  = (prod.prot100 * f).toFixed(1);
-  document.getElementById('qi_carbs').value = (prod.carbs100 * f).toFixed(1);
-  document.getElementById('qi_fat').value   = (prod.fat100 * f).toFixed(1);
+  applyOFFPortion(defaultGrams);
 
-  // Mensaje en los resultados
+  // Botones de presets según lo que tenga OFF
+  const presets = [];
+  if (packG) presets.push({label:`Bolsa/empaque (${packG}g)`, g: packG});
+  if (servG && servG !== packG) presets.push({label:`Porción ref. (${servG}g)`, g: servG});
+  presets.push({label:'100g', g: 100});
+  presets.push({label:'½ bolsa', g: packG ? Math.round(packG/2) : 50});
+
+  const presetBtns = presets.map(p =>
+    `<button class="off-preset-btn" onclick="setOFFGrams(${p.g})">${escapeHtmlCal(p.label)}</button>`
+  ).join('');
+
   document.getElementById('off_results').innerHTML = `
     <div class="off-picked">
       ✓ Producto cargado: <strong>${escapeHtmlCal(prod.name)}</strong>
-      <br><span class="off-picked-hint">Ajusta la porción y kcal abajo si lo necesitas, luego presiona "Agregar al día".</span>
+      <div class="off-picked-info">
+        <span>Por 100g: ${prod.kcal100} kcal · P ${prod.prot100.toFixed(1)}g · C ${prod.carbs100.toFixed(1)}g · G ${prod.fat100.toFixed(1)}g</span>
+        ${prod.quantity ? `<span>Empaque: <strong>${escapeHtmlCal(prod.quantity)}</strong></span>` : ''}
+        ${prod.serving && prod.serving !== prod.quantity ? `<span>Porción ref.: ${escapeHtmlCal(prod.serving)}</span>` : ''}
+      </div>
+      <div class="off-grams-row">
+        <label>¿Cuántos gramos comiste?</label>
+        <input type="number" id="off_grams" value="${defaultGrams}" min="1" step="1" oninput="onOFFGramsChange()">
+        <span>g</span>
+      </div>
+      <div class="off-preset-row">${presetBtns}</div>
+      <div class="off-picked-hint">El kcal y macros abajo se recalculan en vivo. Edítalos manual si quieres.</div>
     </div>
   `;
 
-  // Scroll al form de quick item
   setTimeout(() => {
-    document.getElementById('qi_name').scrollIntoView({behavior:'smooth', block:'center'});
+    document.getElementById('off_grams') && document.getElementById('off_grams').focus();
   }, 50);
+}
+
+function onOFFGramsChange() {
+  const v = parseFloat(document.getElementById('off_grams').value);
+  if (!isNaN(v) && v > 0) applyOFFPortion(v);
+}
+
+function setOFFGrams(g) {
+  const inp = document.getElementById('off_grams');
+  if (inp) inp.value = g;
+  applyOFFPortion(g);
+}
+
+function applyOFFPortion(grams) {
+  if (!OFF_PICKED) return;
+  const f = grams / 100;
+  document.getElementById('qi_kcal').value  = Math.round(OFF_PICKED.kcal100 * f);
+  document.getElementById('qi_prot').value  = (OFF_PICKED.prot100 * f).toFixed(1);
+  document.getElementById('qi_carbs').value = (OFF_PICKED.carbs100 * f).toFixed(1);
+  document.getElementById('qi_fat').value   = (OFF_PICKED.fat100 * f).toFixed(1);
+  // Actualiza el campo porción para reflejar los gramos elegidos
+  document.getElementById('qi_porcion').value = grams + 'g' + (OFF_PICKED.quantity && parseFloat(OFF_PICKED.quantity) ? ` de ${OFF_PICKED.quantity}` : '');
 }
 
 // ─── BARCODE SCANNER ────────────────────────────────────────────────────────

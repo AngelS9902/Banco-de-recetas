@@ -324,6 +324,51 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 }
 .btn-newfood-global:hover{background:var(--purple);color:white}
 
+/* GRUPOS DE INGREDIENTES (secciones dentro de una receta) */
+.ingr-group{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:10px;
+}
+.ingr-group-header{
+  display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;
+  margin-bottom:8px;
+}
+.ingr-group-name{
+  font-family:inherit;font-size:13px;font-weight:600;
+  border:none;border-bottom:1px solid var(--border);
+  padding:4px 6px;background:transparent;color:var(--text);
+}
+.ingr-group-name:focus{outline:none;border-bottom-color:var(--accent)}
+.ingr-group-name::placeholder{font-weight:400;color:var(--muted);font-style:italic}
+.ingr-group-del{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:18px;padding:2px 8px;
+  border-radius:6px;line-height:1;
+}
+.ingr-group-del:hover{color:#c53030;background:#fdecec}
+.ingr-group-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.btn-add-ingr-group{margin-top:4px}
+.btn-add-group{
+  font-size:12px;font-weight:600;font-family:inherit;
+  background:white;color:#3D6F47;
+  border:1px dashed #7BC47F;border-radius:8px;
+  padding:6px 14px;cursor:pointer;
+}
+.btn-add-group:hover{background:#EAF5EC}
+
+/* Sección headers DENTRO de la card de receta */
+.ingr-section-header{
+  list-style:none;margin-left:-1.2em;
+  font-size:11px;font-weight:600;
+  color:var(--accent);text-transform:uppercase;letter-spacing:.05em;
+  margin-top:8px;padding-top:4px;
+  border-top:1px dashed var(--border);
+}
+.ingr-section-header:first-child{margin-top:0;padding-top:0;border-top:none}
+
 .ingr-text-mode{
   background:var(--accent-light);color:var(--accent);
   padding:8px 12px;border-radius:8px;font-size:11px;margin:8px 0 0;line-height:1.5;

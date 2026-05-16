@@ -58,6 +58,10 @@ let CUSTOM_FOODS = [];
 let FOODS = [...BASE_FOODS];
 let FOODS_BY_ID = Object.fromEntries(FOODS.map(f => [f.id, f]));
 
+// Items rápidos guardados (frecuentes): papitas, refrescos, comida de restaurantes, antojitos
+let QUICK_ITEMS = [];
+function saveQuickItems() { cloudSet('quick_items', QUICK_ITEMS); }
+
 // Entry point — llamado por el <script> de home.html tras initCloudStorage
 function initApp() {
   CURRENT_USER = getCurrentUser();
@@ -69,8 +73,18 @@ function initApp() {
     save();
   }
   if (!data.snacks) data.snacks = [];
+  // Limpieza: items rápidos no deben vivir en data[cat] (van en el calendario)
+  let cleaned = false;
+  ['desayunos','comidas','cenas','snacks'].forEach(cat => {
+    if (!Array.isArray(data[cat])) return;
+    const before = data[cat].length;
+    data[cat] = data[cat].filter(r => !r.quick_item);
+    if (data[cat].length !== before) cleaned = true;
+  });
+  if (cleaned) save();
   profile = cloudGet('profile', null) || { name: CURRENT_USER.username, ...DEFAULT_PROFILE_TMPL };
   CUSTOM_FOODS = cloudGet('custom_foods', []) || [];
+  QUICK_ITEMS = cloudGet('quick_items', []) || [];
   rebuildFoodsIndex();
   renderProfile();
   renderAll();
@@ -252,7 +266,21 @@ function saveProfile() {
 // ─── CARD HTML ────────────────────────────────────────────────────────────────
 function cardHTML(r, cat) {
   const badgesHTML = (r.badges||[]).map(b => `<span class="badge b-default">${escapeHtml(b)}</span>`).join('');
-  const ingrHTML = (r.ingredients||[]).map(i => `<li>${escapeHtml(i)}</li>`).join('');
+  // Si la receta tiene secciones (>1 grupo, o un solo grupo con nombre), renderiza secciones
+  let ingrHTML;
+  const groups = Array.isArray(r.ingredient_groups) ? r.ingredient_groups : null;
+  const hasSections = groups && (groups.length > 1 || (groups[0] && groups[0].name));
+  if (hasSections) {
+    ingrHTML = groups.map(g => {
+      const items = (g.items || []).map(it => `<li>${escapeHtml(formatIngrLine(it))}</li>`).join('');
+      const header = g.name
+        ? `<li class="ingr-section-header">${escapeHtml(g.name)}</li>`
+        : '';
+      return header + items;
+    }).join('');
+  } else {
+    ingrHTML = (r.ingredients||[]).map(i => `<li>${escapeHtml(i)}</li>`).join('');
+  }
   const stepsHTML = (r.steps||[]).map(s => `<li>${escapeHtml(s)}</li>`).join('');
   const tipHTML = r.tip ? `<div class="tip">${escapeHtml(r.tip)}</div>` : '';
   const baseS = r.base_servings || 1;
@@ -621,9 +649,13 @@ function toggleForm(cat) {
   const isOpen = formEl.classList.toggle('open');
   if (isOpen && !formEl.innerHTML.trim()) {
     editingMap[cat] = null;
+    ingrRowCounters[cat] = 0;
+    ingrGroupCounters[cat] = 0;
     buildForm(cat);
   } else if (!isOpen) {
     editingMap[cat] = null;
+    ingrRowCounters[cat] = 0;
+    ingrGroupCounters[cat] = 0;
     formEl.innerHTML = '';
   }
 }
@@ -631,6 +663,9 @@ function toggleForm(cat) {
 function openEditForm(cat, id) {
   const formEl = document.getElementById('form-'+cat);
   formEl.classList.add('open');
+  ingrRowCounters[cat] = 0;
+  ingrGroupCounters[cat] = 0;
+  formEl.innerHTML = '';
   buildForm(cat, id);
   formEl.scrollIntoView({behavior:'smooth', block:'start'});
 }
@@ -788,7 +823,7 @@ function buildForm(cat, editId) {
         <label>Ingredientes</label>
         <div class="ingr-builder" id="ingr-rows-${cat}"></div>
         <div class="ingr-actions">
-          <button class="btn-add-ingr" type="button" onclick="addIngredientRow('${cat}')">＋ Agregar ingrediente</button>
+          <button class="btn-add-group" type="button" onclick="addIngredientGroup('${cat}')">📑 Nueva sección</button>
           <button class="btn-newfood-global" type="button" onclick="openNewFoodModal('${cat}',null,'')">🆕 Crear producto nuevo</button>
         </div>
         ${legacyWarn}
@@ -809,12 +844,25 @@ function buildForm(cat, editId) {
     </div>
   `;
 
-  if (editing && editing.ingredients_structured && editing.ingredients_structured.length) {
-    for (const ing of editing.ingredients_structured) {
-      addIngredientRow(cat);
-      const rows = document.querySelectorAll(`#ingr-rows-${cat} .ingr-row`);
+  // Determinar los grupos iniciales
+  let initialGroups;
+  if (editing && Array.isArray(editing.ingredient_groups) && editing.ingredient_groups.length) {
+    initialGroups = editing.ingredient_groups;
+  } else if (editing && Array.isArray(editing.ingredients_structured) && editing.ingredients_structured.length) {
+    // Legacy: envuelve en un solo grupo sin nombre
+    initialGroups = [{ name:'', items: editing.ingredients_structured }];
+  } else {
+    initialGroups = [{ name:'', items: [] }];
+  }
+
+  // Renderiza cada grupo y sus filas
+  initialGroups.forEach(g => {
+    const groupIdx = addIngredientGroup(cat, g.name || '');
+    (g.items || []).forEach(ing => {
+      addIngredientRow(cat, groupIdx);
+      const rows = document.querySelectorAll(`#ingr-rows-${cat} [data-group="${groupIdx}"] .ingr-row`);
       const lastRow = rows[rows.length - 1];
-      if (!lastRow) continue;
+      if (!lastRow) return;
       const food = FOODS_BY_ID[ing.food_id];
       const idx = parseInt(lastRow.dataset.row);
       if (food) {
@@ -825,21 +873,71 @@ function buildForm(cat, editId) {
       lastRow.querySelector('.ingr-qty').value = ing.qty;
       onIngrChange(cat, idx);
       lastRow.querySelector('.ingr-unit').value = ing.unit;
-    }
-    updateMacrosPreview(cat);
-  } else {
-    addIngredientRow(cat);
+    });
+  });
+  // Si el último grupo está vacío y no es el único, OK. Para nueva receta, agrega 1 fila al primer grupo.
+  if (!editing) {
+    addIngredientRow(cat, 0);
   }
+  updateMacrosPreview(cat);
 }
 
 const ingrRowCounters = {};
+const ingrGroupCounters = {};
 
-function addIngredientRow(cat) {
+function addIngredientGroup(cat, name = '') {
+  ingrGroupCounters[cat] = (ingrGroupCounters[cat] || 0) + 1;
+  const gIdx = ingrGroupCounters[cat];
+  const container = document.getElementById('ingr-rows-'+cat);
+  if (!container) return gIdx;
+  const nameVal = escapeHtml(name);
+  const html = `
+    <div class="ingr-group" data-group="${gIdx}">
+      <div class="ingr-group-header">
+        <input type="text" class="ingr-group-name" placeholder="Sección (opcional, ej. Spaghetti, Pollo)" value="${nameVal}">
+        <button type="button" class="ingr-group-del" onclick="removeIngredientGroup('${cat}',${gIdx})" title="Eliminar sección">×</button>
+      </div>
+      <div class="ingr-group-rows"></div>
+      <button class="btn-add-ingr btn-add-ingr-group" type="button" onclick="addIngredientRow('${cat}',${gIdx})">＋ Agregar ingrediente</button>
+    </div>
+  `;
+  container.insertAdjacentHTML('beforeend', html);
+  return gIdx;
+}
+
+function removeIngredientGroup(cat, gIdx) {
+  const container = document.getElementById('ingr-rows-'+cat);
+  if (!container) return;
+  const groups = container.querySelectorAll('.ingr-group');
+  if (groups.length <= 1) {
+    // Si es el único grupo, solo vacía su nombre y filas
+    const g = container.querySelector(`.ingr-group[data-group="${gIdx}"]`);
+    if (g) {
+      g.querySelector('.ingr-group-name').value = '';
+      g.querySelector('.ingr-group-rows').innerHTML = '';
+    }
+    updateMacrosPreview(cat);
+    return;
+  }
+  const g = container.querySelector(`.ingr-group[data-group="${gIdx}"]`);
+  if (g) g.remove();
+  updateMacrosPreview(cat);
+}
+
+function addIngredientRow(cat, groupIdx) {
   ingrRowCounters[cat] = (ingrRowCounters[cat] || 0) + 1;
   const idx = ingrRowCounters[cat];
   const container = document.getElementById('ingr-rows-'+cat);
   if (!container) return;
-  container.insertAdjacentHTML('beforeend', buildIngredientRowHTML(cat, idx));
+  // Si no se especifica grupo, usa el primero (o créalo)
+  if (groupIdx == null) {
+    const firstGroup = container.querySelector('.ingr-group');
+    if (firstGroup) groupIdx = parseInt(firstGroup.dataset.group);
+    else groupIdx = addIngredientGroup(cat, '');
+  }
+  const rowsHolder = container.querySelector(`.ingr-group[data-group="${groupIdx}"] .ingr-group-rows`);
+  if (!rowsHolder) return;
+  rowsHolder.insertAdjacentHTML('beforeend', buildIngredientRowHTML(cat, idx));
 }
 
 function adjustServingsInput(inputId, delta) {
@@ -875,16 +973,29 @@ function onIngrChange(cat, idx) {
   updateMacrosPreview(cat);
 }
 
-function readStructuredIngr(cat) {
-  const rows = document.querySelectorAll(`#ingr-rows-${cat} .ingr-row`);
+function readStructuredGroups(cat) {
+  const container = document.getElementById('ingr-rows-'+cat);
+  if (!container) return [];
+  const groupEls = container.querySelectorAll('.ingr-group');
   const out = [];
-  rows.forEach(row => {
-    const food_id = row.querySelector('.ingr-food').value;
-    const qty = parseFloat(row.querySelector('.ingr-qty').value);
-    const unit = row.querySelector('.ingr-unit').value;
-    if (food_id && qty > 0) out.push({food_id, qty, unit});
+  groupEls.forEach(groupEl => {
+    const nameInput = groupEl.querySelector('.ingr-group-name');
+    const name = (nameInput?.value || '').trim();
+    const items = [];
+    groupEl.querySelectorAll('.ingr-row').forEach(row => {
+      const food_id = row.querySelector('.ingr-food').value;
+      const qty = parseFloat(row.querySelector('.ingr-qty').value);
+      const unit = row.querySelector('.ingr-unit').value;
+      if (food_id && qty > 0) items.push({food_id, qty, unit});
+    });
+    out.push({name, items});
   });
   return out;
+}
+
+function readStructuredIngr(cat) {
+  // Devuelve la lista FLAT de ingredientes (compat con calcRecipeMacros, lista_compras, etc.)
+  return readStructuredGroups(cat).flatMap(g => g.items);
 }
 
 function updateMacrosPreview(cat) {
@@ -916,6 +1027,7 @@ function closeForm(cat) {
   formEl.classList.remove('open');
   formEl.innerHTML = '';
   ingrRowCounters[cat] = 0;
+  ingrGroupCounters[cat] = 0;
   editingMap[cat] = null;
 }
 
@@ -925,10 +1037,11 @@ function addRecipe(cat) {
 
   const editId = editingMap[cat];
   const editing = editId ? data[cat].find(r => r.id === editId) : null;
-  const structured = readStructuredIngr(cat);
+  const groups = readStructuredGroups(cat).filter(g => g.items.length > 0 || g.name);
+  const structured = groups.flatMap(g => g.items);
 
   let kcal, prot, carbs, fat, fiber, sugars, sodium;
-  let ingredients, ingredients_structured, auto_macros;
+  let ingredients, ingredients_structured, ingredient_groups, auto_macros;
 
   if (structured.length > 0) {
     const m = calcRecipeMacros(structured);
@@ -941,6 +1054,7 @@ function addRecipe(cat) {
     sodium = m.sodium;
     ingredients = structured.map(formatIngrLine);
     ingredients_structured = structured;
+    ingredient_groups = groups; // guarda agrupado
     auto_macros = true;
   } else if (editing) {
     // Edición sin agregar ingredientes nuevos → conserva originales
@@ -953,6 +1067,7 @@ function addRecipe(cat) {
     sodium = editing.sodium;
     ingredients = editing.ingredients || [];
     ingredients_structured = editing.ingredients_structured;
+    ingredient_groups = editing.ingredient_groups;
     auto_macros = editing.auto_macros || false;
   } else {
     alert('Agrega al menos un ingrediente válido (alimento + cantidad).');
@@ -968,14 +1083,14 @@ function addRecipe(cat) {
     Object.assign(editing, {
       name, kcal, prot, carbs, fat, fiber, sugars, sodium,
       badges, tip, ingredients, steps,
-      ingredients_structured, auto_macros, base_servings,
+      ingredients_structured, ingredient_groups, auto_macros, base_servings,
     });
   } else {
     const id = cat[0] + 'u' + Date.now();
     data[cat].push({
       id, name, kcal, prot, carbs, fat, fiber, sugars, sodium,
       badges, tip, ingredients, steps,
-      ingredients_structured, auto_macros, base_servings,
+      ingredients_structured, ingredient_groups, auto_macros, base_servings,
     });
   }
 
@@ -1118,6 +1233,160 @@ function saveNewFood() {
     selectFood(newFoodContext.cat, newFoodContext.idx, id);
   }
   closeNewFoodModal();
+}
+
+// ─── QUICK ITEMS (snacks rápidos, antojitos, comida de restaurantes) ──────────
+// Estructura: { id, name, porcion, kcal, prot, carbs, fat, marca, tag, lastUsed }
+// Se guardan en cloudStorage 'quick_items' y se agregan a data[cat] como recetas
+// con un marcador `quick_item: true` y badge "Rápido".
+
+function openQuickItemModal(cat) {
+  const modal = document.getElementById('quickItemModal');
+  const frecuentes = (QUICK_ITEMS || [])
+    .slice()
+    .sort((a, b) => (b.lastUsed || 0) - (a.lastUsed || 0));
+
+  const frecuentesHTML = frecuentes.length === 0
+    ? '<div class="qi-empty">Aún no tienes items guardados. Crea uno abajo y márcalo para reusar.</div>'
+    : frecuentes.map(item => `
+        <div class="qi-chip" onclick="addFrequentToCategory('${cat}','${item.id}')">
+          <div class="qi-chip-name">${escapeHtml(item.name)}</div>
+          <div class="qi-chip-meta">${item.kcal} kcal${item.porcion ? ' · '+escapeHtml(item.porcion) : ''}</div>
+          <button class="qi-chip-del" onclick="event.stopPropagation();deleteQuickItem('${item.id}','${cat}')" title="Eliminar de frecuentes">×</button>
+        </div>
+      `).join('');
+
+  modal.innerHTML = `
+    <div class="modal">
+      <h3>⚡ Item rápido</h3>
+      <div class="modal-sub">Para registrar antojitos, snacks o comida de restaurantes que no quieres guardar como receta completa.</div>
+
+      <div class="qi-section">
+        <div class="qi-section-title">Frecuentes</div>
+        <div class="qi-frecuentes">${frecuentesHTML}</div>
+      </div>
+
+      <div class="qi-divider"><span>o crea uno nuevo</span></div>
+
+      <div class="modal-grid">
+        <div class="form-group form-full">
+          <label>Nombre *</label>
+          <input type="text" id="qi_name" placeholder="Ej: Papas Sabritas, Rebanada Little Caesars">
+        </div>
+        <div class="form-group">
+          <label>Porción <span style="text-transform:none;letter-spacing:0;font-weight:400">(opcional)</span></label>
+          <input type="text" id="qi_porcion" placeholder="Ej: 1 bolsa 45g, 2 rebanadas">
+        </div>
+        <div class="form-group">
+          <label>Marca <span style="text-transform:none;letter-spacing:0;font-weight:400">(opcional)</span></label>
+          <input type="text" id="qi_marca" placeholder="Ej: Sabritas, Little Caesars">
+        </div>
+        <div class="form-group">
+          <label>Kcal *</label>
+          <input type="number" id="qi_kcal" min="0" step="1" placeholder="240">
+        </div>
+        <div class="form-group">
+          <label>Proteína g <span style="text-transform:none;letter-spacing:0;font-weight:400">(opc)</span></label>
+          <input type="number" id="qi_prot" min="0" step="0.1" placeholder="3">
+        </div>
+        <div class="form-group">
+          <label>Carbos g <span style="text-transform:none;letter-spacing:0;font-weight:400">(opc)</span></label>
+          <input type="number" id="qi_carbs" min="0" step="0.1" placeholder="28">
+        </div>
+        <div class="form-group">
+          <label>Grasa g <span style="text-transform:none;letter-spacing:0;font-weight:400">(opc)</span></label>
+          <input type="number" id="qi_fat" min="0" step="0.1" placeholder="14">
+        </div>
+        <div class="form-group form-full qi-save-row">
+          <label class="qi-checkbox-label">
+            <input type="checkbox" id="qi_save_frequent" checked>
+            <span>Guardar en frecuentes para reusar después</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-submit" onclick="saveQuickItem('${cat}')">Agregar al día</button>
+        <button class="btn-cancel" onclick="closeQuickItemModal()">Cancelar</button>
+      </div>
+    </div>
+  `;
+  modal.classList.add('open');
+}
+
+function closeQuickItemModal() {
+  document.getElementById('quickItemModal').classList.remove('open');
+}
+
+function saveQuickItem(cat) {
+  const name = (document.getElementById('qi_name').value || '').trim();
+  if (!name) { alert('El nombre es obligatorio.'); return; }
+  const kcal = parseFloat(document.getElementById('qi_kcal').value);
+  if (isNaN(kcal) || kcal < 0) { alert('Las kcal son obligatorias.'); return; }
+
+  const porcion = (document.getElementById('qi_porcion').value || '').trim();
+  const marca = (document.getElementById('qi_marca').value || '').trim();
+  const prot = parseFloat(document.getElementById('qi_prot').value) || 0;
+  const carbs = parseFloat(document.getElementById('qi_carbs').value) || 0;
+  const fat = parseFloat(document.getElementById('qi_fat').value) || 0;
+  const saveFreq = document.getElementById('qi_save_frequent').checked;
+
+  // Guardar en frecuentes si corresponde
+  if (saveFreq) {
+    const qid = 'qi_' + Date.now();
+    QUICK_ITEMS.push({
+      id: qid, name, porcion, marca, kcal: Math.round(kcal),
+      prot, carbs, fat, lastUsed: Date.now()
+    });
+    saveQuickItems();
+  }
+
+  // Agregar a la categoría como receta-snack
+  addQuickItemAsRecipe(cat, { name, porcion, marca, kcal: Math.round(kcal), prot, carbs, fat });
+  closeQuickItemModal();
+}
+
+function addFrequentToCategory(cat, quickItemId) {
+  const item = (QUICK_ITEMS || []).find(q => q.id === quickItemId);
+  if (!item) return;
+  item.lastUsed = Date.now();
+  saveQuickItems();
+  addQuickItemAsRecipe(cat, item);
+  closeQuickItemModal();
+}
+
+function deleteQuickItem(quickItemId, cat) {
+  if (!confirm('¿Eliminar este item de tus frecuentes?')) return;
+  QUICK_ITEMS = (QUICK_ITEMS || []).filter(q => q.id !== quickItemId);
+  saveQuickItems();
+  openQuickItemModal(cat); // re-render
+}
+
+function addQuickItemAsRecipe(cat, qi) {
+  const id = 'q_' + cat[0] + '_' + Date.now();
+  const badges = ['⚡ Rápido'];
+  if (qi.marca) badges.push(qi.marca);
+  const ingrLine = qi.porcion ? qi.porcion : '1 porción';
+  data[cat] = data[cat] || [];
+  data[cat].push({
+    id, name: qi.name,
+    kcal: Math.round(qi.kcal || 0),
+    prot: Math.round(qi.prot || 0),
+    carbs: Math.round(qi.carbs || 0),
+    fat: Math.round(qi.fat || 0),
+    fiber: 0, sugars: 0, sodium: 0,
+    badges,
+    tip: qi.marca ? ('Item rápido · ' + qi.marca) : 'Item rápido',
+    ingredients: [ingrLine],
+    steps: [],
+    ingredients_structured: [],
+    auto_macros: false,
+    base_servings: 1,
+    quick_item: true
+  });
+  save();
+  renderCat(cat);
+  updateTotals();
 }
 
 // INIT — se llama desde la página HTML después de initCloudStorage()

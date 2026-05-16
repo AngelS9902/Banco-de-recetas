@@ -6,7 +6,7 @@ window.FOODS_DB = {
     "fuente_principal": "USDA FoodData Central — SR Legacy (April 2018)",
     "fuente_url": "https://fdc.nal.usda.gov/download-datasets/",
     "unidades": "Valores por 100g de alimento comestible. Sodio en mg, resto en gramos (excepto kcal).",
-    "total_alimentos": 216,
+    "total_alimentos": 222,
     "nota_especias": "Especias incluidas para completitud. En cantidades típicas (<5g por receta) su aporte calórico es despreciable (<10 kcal), pero el sodio sí puede importar.",
     "campos_opcionales": {
       "marca": "Solo presente cuando tipo=branded. Indica marca específica (Lala, FUD, etc.)",
@@ -4411,6 +4411,7 @@ window.FOODS_DB = {
     {
       "id": "cacao_polvo",
       "nombre": "Cacao en polvo (sin azúcar)",
+      "aliases": ["chocolate en polvo", "cocoa", "chocolate amargo en polvo"],
       "categoria": "condimento",
       "estado": "seco",
       "por_100g": {
@@ -4433,6 +4434,130 @@ window.FOODS_DB = {
         "cda": 5.4,
         "cdita": 1.8,
         "taza": 86
+      }
+    },
+    {
+      "id": "chocolate_amargo_70_85",
+      "nombre": "Chocolate amargo (70-85% cacao)",
+      "aliases": ["dark chocolate", "chocolate oscuro"],
+      "categoria": "dulce",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 598.0,
+        "prot": 7.79,
+        "carbs": 45.9,
+        "fat": 42.63,
+        "fiber": 10.9,
+        "sugars": 23.99,
+        "sodium_mg": 20.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170273",
+        "descripcion_usda": "Candies, chocolate, dark, 70-85% cacao solids",
+        "url": "https://fdc.nal.usda.gov/food-details/170273/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 10
+    },
+    {
+      "id": "chocolate_semiamargo_45_60",
+      "nombre": "Chocolate semiamargo (45-60% cacao)",
+      "aliases": ["semisweet chocolate"],
+      "categoria": "dulce",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 546.0,
+        "prot": 4.88,
+        "carbs": 61.17,
+        "fat": 31.28,
+        "fiber": 7.0,
+        "sugars": 47.91,
+        "sodium_mg": 24.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170272",
+        "descripcion_usda": "Candies, chocolate, dark, 45- 59% cacao solids",
+        "url": "https://fdc.nal.usda.gov/food-details/170272/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 10
+    },
+    {
+      "id": "chocolate_leche",
+      "nombre": "Chocolate con leche",
+      "aliases": ["milk chocolate"],
+      "categoria": "dulce",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 535.0,
+        "prot": 7.65,
+        "carbs": 59.4,
+        "fat": 29.66,
+        "fiber": 3.4,
+        "sugars": 51.5,
+        "sodium_mg": 79.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170270",
+        "descripcion_usda": "Candies, milk chocolate",
+        "url": "https://fdc.nal.usda.gov/food-details/170270/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 10
+    },
+    {
+      "id": "chocolate_blanco",
+      "nombre": "Chocolate blanco",
+      "aliases": ["white chocolate"],
+      "categoria": "dulce",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 539.0,
+        "prot": 5.87,
+        "carbs": 59.24,
+        "fat": 32.09,
+        "fiber": 0.2,
+        "sugars": 59.24,
+        "sodium_mg": 90.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170271",
+        "descripcion_usda": "Candies, white chocolate",
+        "url": "https://fdc.nal.usda.gov/food-details/170271/nutrients"
+      },
+      "tipo": "generic",
+      "gramos_por_unidad": 10
+    },
+    {
+      "id": "chocolate_chips",
+      "nombre": "Chips de chocolate semiamargo",
+      "aliases": ["chocolate chips", "chispas de chocolate"],
+      "categoria": "dulce",
+      "estado": "solido",
+      "por_100g": {
+        "kcal": 479.0,
+        "prot": 4.2,
+        "carbs": 63.13,
+        "fat": 29.97,
+        "fiber": 5.9,
+        "sugars": 54.5,
+        "sodium_mg": 11.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "170274",
+        "descripcion_usda": "Candies, semisweet chocolate",
+        "url": "https://fdc.nal.usda.gov/food-details/170274/nutrients"
+      },
+      "tipo": "generic",
+      "densidades": {
+        "cda": 11,
+        "cdita": 3.7,
+        "taza": 175
       }
     },
     {

@@ -263,6 +263,44 @@ function saveProfile() {
   toggleProfileEdit();
 }
 
+// ─── RECIPE LINK HELPERS ──────────────────────────────────────────────────────
+// Detecta YouTube y devuelve {kind, label, icon} para renderizar el link bonito
+function getRecipeLinkMeta(rawUrl) {
+  if (!rawUrl) return null;
+  let url = rawUrl.trim();
+  if (!url) return null;
+  // Asegurar protocolo
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  let host = '';
+  try { host = new URL(url).hostname.replace(/^www\./, ''); } catch { return null; }
+  // YouTube
+  if (/(^|\.)youtube\.com$/i.test(host) || /(^|\.)youtu\.be$/i.test(host)) {
+    return {
+      kind: 'youtube',
+      url,
+      label: 'YouTube',
+      iconHTML: `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#FF0000" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8z"/><path fill="#fff" d="M9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>`
+    };
+  }
+  // Fallback: favicon del sitio vía Google s2
+  const favicon = `https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(host)}`;
+  return {
+    kind: 'web',
+    url,
+    label: host,
+    iconHTML: `<img src="${favicon}" alt="" width="22" height="22" onerror="this.style.display='none';this.parentNode.insertAdjacentHTML('afterbegin','🔗')">`
+  };
+}
+
+function recipeLinkHTML(rawUrl) {
+  const meta = getRecipeLinkMeta(rawUrl);
+  if (!meta) return '';
+  return `<a class="recipe-link recipe-link-${meta.kind}" href="${escapeHtml(meta.url)}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(meta.url)}">
+    <span class="recipe-link-icon">${meta.iconHTML}</span>
+    <span class="recipe-link-label">${escapeHtml(meta.label)}</span>
+  </a>`;
+}
+
 // ─── CARD HTML ────────────────────────────────────────────────────────────────
 function cardHTML(r, cat) {
   const badgesHTML = (r.badges||[]).map(b => `<span class="badge b-default">${escapeHtml(b)}</span>`).join('');
@@ -283,6 +321,7 @@ function cardHTML(r, cat) {
   }
   const stepsHTML = (r.steps||[]).map(s => `<li>${escapeHtml(s)}</li>`).join('');
   const tipHTML = r.tip ? `<div class="tip">${escapeHtml(r.tip)}</div>` : '';
+  const linkHTML = recipeLinkHTML(r.url);
   const baseS = r.base_servings || 1;
   const isActive = selected[cat] === r.id;
   const dayS = daySelectedServings[cat] || 1;
@@ -317,6 +356,7 @@ function cardHTML(r, cat) {
   <ul class="ingr-list" id="ingr-${r.id}">${ingrHTML}</ul>
   ${stepsHTML ? `<div class="sec-label">Pasos</div><ol class="step-list">${stepsHTML}</ol>` : ''}
   ${tipHTML}
+  ${linkHTML}
   <div class="card-bottom-actions">
     <button class="btn-edit" onclick="openEditForm('${cat}','${r.id}')">✎ Editar</button>
     <button class="btn-delete" onclick="deleteRecipe('${r.id}','${cat}')">🗑 Eliminar</button>
@@ -687,10 +727,13 @@ function searchFoods(query) {
     const nI = normalizeStr(f.id);
     const nC = normalizeStr(f.categoria);
     const nE = normalizeStr(f.estado||'');
+    const aliases = (f.aliases||[]).map(a => normalizeStr(a));
     let score = -1;
     if (nN.startsWith(q) || nI.startsWith(q)) score = 100;
     else if (nN.split(/[\s,()\-]+/).some(w => w.startsWith(q))) score = 80;
+    else if (aliases.some(a => a.startsWith(q))) score = 70;
     else if (nN.includes(q)) score = 50;
+    else if (aliases.some(a => a.includes(q))) score = 45;
     else if (nC.startsWith(q)) score = 30;
     else if (nE.includes(q)) score = 20;
     if (score >= 0) scored.push({f, score});
@@ -836,6 +879,10 @@ function buildForm(cat, editId) {
       <div class="form-group form-full">
         <label>Comentario / Tip <span style="text-transform:none;letter-spacing:0;font-weight:400">(opcional)</span></label>
         <input type="text" id="f_${cat}_tip" placeholder="Ej: Puedes prep el domingo para toda la semana" value="${editing ? escapeHtml(editing.tip||'') : ''}">
+      </div>
+      <div class="form-group form-full">
+        <label>Link de la receta <span style="text-transform:none;letter-spacing:0;font-weight:400">(opcional — YouTube, blog, etc.)</span></label>
+        <input type="url" id="f_${cat}_url" placeholder="https://..." value="${editing ? escapeHtml(editing.url||'') : ''}">
       </div>
     </div>
     <div class="form-actions">
@@ -1077,19 +1124,21 @@ function addRecipe(cat) {
   const badges = (document.getElementById(`f_${cat}_badges`).value||'').split(',').map(b=>b.trim()).filter(Boolean);
   const steps = (document.getElementById(`f_${cat}_steps`).value||'').split('\n').map(l=>l.trim()).filter(Boolean);
   const tip = document.getElementById(`f_${cat}_tip`).value.trim();
+  const urlEl = document.getElementById(`f_${cat}_url`);
+  const url = urlEl ? urlEl.value.trim() : '';
   const base_servings = Math.max(1, parseInt(document.getElementById(`f_${cat}_servings`).value) || 1);
 
   if (editing) {
     Object.assign(editing, {
       name, kcal, prot, carbs, fat, fiber, sugars, sodium,
-      badges, tip, ingredients, steps,
+      badges, tip, url, ingredients, steps,
       ingredients_structured, ingredient_groups, auto_macros, base_servings,
     });
   } else {
     const id = cat[0] + 'u' + Date.now();
     data[cat].push({
       id, name, kcal, prot, carbs, fat, fiber, sugars, sodium,
-      badges, tip, ingredients, steps,
+      badges, tip, url, ingredients, steps,
       ingredients_structured, ingredient_groups, auto_macros, base_servings,
     });
   }

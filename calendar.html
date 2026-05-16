@@ -22,14 +22,18 @@
 
 <div class="container">
 
-  <!-- Navegación de mes -->
+  <!-- Navegación -->
   <div class="section cal-nav-section">
     <div class="cal-nav">
-      <button class="cal-nav-btn" onclick="calPrevMonth()" aria-label="Mes anterior">‹</button>
+      <button class="cal-nav-btn" onclick="calPrev()" aria-label="Anterior">‹</button>
       <div class="cal-nav-title" id="calMonthLabel">—</div>
-      <button class="cal-nav-btn" onclick="calNextMonth()" aria-label="Mes siguiente">›</button>
+      <button class="cal-nav-btn" onclick="calNext()" aria-label="Siguiente">›</button>
     </div>
     <div class="cal-nav-actions">
+      <div class="cal-view-toggle" role="tablist" aria-label="Vista del calendario">
+        <button class="cal-view-btn cal-view-active" id="calViewMonthBtn" onclick="calSetView('month')" role="tab">Mes</button>
+        <button class="cal-view-btn" id="calViewWeekBtn" onclick="calSetView('week')" role="tab">Semana</button>
+      </div>
       <button class="cal-today-btn" onclick="calGoToday()">Hoy</button>
     </div>
   </div>
@@ -43,11 +47,16 @@
   </div>
 
   <!-- Grid mensual -->
-  <div class="section">
+  <div class="section" id="calMonthSection">
     <div class="cal-weekdays">
       <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
     </div>
     <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <!-- Grid semanal -->
+  <div class="section" id="calWeekSection" style="display:none">
+    <div class="cal-week" id="calWeek"></div>
   </div>
 
 </div>

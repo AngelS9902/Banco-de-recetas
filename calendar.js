@@ -16,7 +16,9 @@ let CAL_DATA = {};
 let CAL_PROFILE = null;
 let CAL_RECIPES = { desayunos:[], comidas:[], cenas:[], snacks:[] };
 let CAL_QUICK_ITEMS = [];
-let CAL_CURRENT = null;     // {year, month} de la vista actual
+let CAL_CURRENT = null;     // {year, month} de la vista actual (mensual)
+let CAL_WEEK_START = null;  // Date del lunes de la semana mostrada (semanal)
+let CAL_VIEW = 'month';     // 'month' | 'week'
 let CAL_OPEN_DAY = null;    // YYYY-MM-DD del día abierto en el modal
 let CAL_OPEN_SLOT = null;   // {date, slot} para el modal de agregar entrada
 let CAL_CONTAINERS = [];    // tamaños de "vaso" personalizados
@@ -48,12 +50,35 @@ function initCalendar() {
   CAL_QUICK_ITEMS = cloudGet('quick_items', []) || [];
   CAL_CONTAINERS = cloudGet('water_containers', null) || DEFAULT_CONTAINERS.slice();
 
-  // Mes actual por defecto
+  // Mes actual por defecto + semana actual
   const now = new Date();
   CAL_CURRENT = { year: now.getFullYear(), month: now.getMonth() };
+  CAL_WEEK_START = mondayOf(now);
+  // Restaurar vista preferida
+  try {
+    const savedView = localStorage.getItem('cal_view');
+    if (savedView === 'week' || savedView === 'month') CAL_VIEW = savedView;
+  } catch {}
 
   renderHeaderTargets();
-  renderCalendarGrid();
+  syncViewToggle();
+  renderCalendar();
+}
+
+// ─── HELPERS DE FECHA ───────────────────────────────────────────────────────
+function mondayOf(date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const dow = (d.getDay() + 6) % 7; // Lun=0
+  d.setDate(d.getDate() - dow);
+  return d;
+}
+function addDays(date, n) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  d.setDate(d.getDate() + n);
+  return d;
+}
+function dateToStr(d) {
+  return fmtDate(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
 function calSave() { cloudSet('calendar', CAL_DATA); }
@@ -169,7 +194,54 @@ function todayStr() {
   return fmtDate(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-function renderCalendarGrid() {
+// ─── DISPATCHER DE VISTA ─────────────────────────────────────────────────────
+function renderCalendar() {
+  const monthSec = document.getElementById('calMonthSection');
+  const weekSec = document.getElementById('calWeekSection');
+  if (CAL_VIEW === 'week') {
+    if (monthSec) monthSec.style.display = 'none';
+    if (weekSec) weekSec.style.display = '';
+    renderWeekView();
+  } else {
+    if (monthSec) monthSec.style.display = '';
+    if (weekSec) weekSec.style.display = 'none';
+    renderMonthGrid();
+  }
+}
+// Alias retrocompatible
+function renderCalendarGrid() { renderCalendar(); }
+
+function syncViewToggle() {
+  const mBtn = document.getElementById('calViewMonthBtn');
+  const wBtn = document.getElementById('calViewWeekBtn');
+  if (!mBtn || !wBtn) return;
+  mBtn.classList.toggle('cal-view-active', CAL_VIEW === 'month');
+  wBtn.classList.toggle('cal-view-active', CAL_VIEW === 'week');
+}
+
+function calSetView(view) {
+  if (view !== 'month' && view !== 'week') return;
+  if (CAL_VIEW === view) return;
+  CAL_VIEW = view;
+  try { localStorage.setItem('cal_view', view); } catch {}
+  // Si estamos cambiando a semana, alinear al lunes que contiene hoy o el primer día del mes mostrado
+  if (view === 'week') {
+    const candidate = new Date(CAL_CURRENT.year, CAL_CURRENT.month, 1);
+    const today = new Date();
+    // Si el mes mostrado es el de hoy, usar la semana de hoy; si no, usar la primera semana del mes
+    const ref = (today.getFullYear() === CAL_CURRENT.year && today.getMonth() === CAL_CURRENT.month)
+      ? today : candidate;
+    CAL_WEEK_START = mondayOf(ref);
+  } else {
+    // Volviendo a mes: alinear el mes al de la semana mostrada
+    CAL_CURRENT = { year: CAL_WEEK_START.getFullYear(), month: CAL_WEEK_START.getMonth() };
+  }
+  syncViewToggle();
+  renderCalendar();
+}
+
+// ─── GRID MENSUAL ───────────────────────────────────────────────────────────
+function renderMonthGrid() {
   const { year, month } = CAL_CURRENT;
   document.getElementById('calMonthLabel').textContent = `${MES_NOMBRES[month]} ${year}`;
 
@@ -205,20 +277,100 @@ function renderCalendarGrid() {
   grid.innerHTML = html;
 }
 
-function calPrevMonth() {
-  CAL_CURRENT.month--;
-  if (CAL_CURRENT.month < 0) { CAL_CURRENT.month = 11; CAL_CURRENT.year--; }
-  renderCalendarGrid();
+// ─── VISTA SEMANAL ──────────────────────────────────────────────────────────
+const DOW_SHORT = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const MES_CORTO = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+function renderWeekView() {
+  const start = CAL_WEEK_START;
+  const end = addDays(start, 6);
+  // Label tipo "11 – 17 may 2026" o "30 may – 5 jun 2026"
+  let label;
+  if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+    label = `${start.getDate()} – ${end.getDate()} ${MES_CORTO[start.getMonth()]} ${start.getFullYear()}`;
+  } else if (start.getFullYear() === end.getFullYear()) {
+    label = `${start.getDate()} ${MES_CORTO[start.getMonth()]} – ${end.getDate()} ${MES_CORTO[end.getMonth()]} ${start.getFullYear()}`;
+  } else {
+    label = `${start.getDate()} ${MES_CORTO[start.getMonth()]} ${start.getFullYear()} – ${end.getDate()} ${MES_CORTO[end.getMonth()]} ${end.getFullYear()}`;
+  }
+  document.getElementById('calMonthLabel').textContent = label;
+
+  const today = todayStr();
+  const container = document.getElementById('calWeek');
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(start, i);
+    const dateStr = dateToStr(d);
+    const status = dayStatus(dateStr);
+    const isToday = (dateStr === today) ? 'cal-week-day-today' : '';
+    const day = CAL_DATA[dateStr];
+
+    // Resumen de comidas: tomar primer item de cada slot (si hay) hasta 4 lines
+    const preview = [];
+    if (day) {
+      SLOTS.forEach(s => {
+        const entries = day[s.key] || [];
+        if (entries.length === 0) return;
+        const first = entries[0];
+        const name = first.type === 'recipe'
+          ? ((CAL_RECIPES[first.cat] || []).find(r => r.id === first.id) || {name:'(receta)'}).name
+          : first.name;
+        const extra = entries.length > 1 ? ` +${entries.length - 1}` : '';
+        preview.push(`<div class="cal-week-meal"><span class="cal-week-meal-icon">${s.icon}</span><span class="cal-week-meal-name">${escapeHtmlCal(name)}${extra}</span></div>`);
+      });
+    }
+    const previewHTML = preview.length
+      ? `<div class="cal-week-meals">${preview.join('')}</div>`
+      : `<div class="cal-week-empty">— sin registrar —</div>`;
+
+    const kcalLine = status.kcal > 0 ? `<span class="cal-week-kcal">${status.kcal} kcal</span>` : '<span class="cal-week-kcal cal-week-kcal-empty">—</span>';
+    const waterLine = status.water > 0 ? `<span class="cal-week-water">💧 ${status.water}ml</span>` : '';
+
+    html += `
+      <div class="cal-week-day cal-week-day-${status.color} ${isToday}" onclick="openDayDetail('${dateStr}')">
+        <div class="cal-week-day-head">
+          <span class="cal-week-day-name">${DOW_SHORT[i]}</span>
+          <span class="cal-week-day-num">${d.getDate()}</span>
+        </div>
+        <div class="cal-week-day-totals">
+          ${kcalLine}
+          ${waterLine}
+        </div>
+        ${previewHTML}
+      </div>
+    `;
+  }
+  container.innerHTML = html;
 }
-function calNextMonth() {
-  CAL_CURRENT.month++;
-  if (CAL_CURRENT.month > 11) { CAL_CURRENT.month = 0; CAL_CURRENT.year++; }
-  renderCalendarGrid();
+
+// ─── NAV UNIFICADA ──────────────────────────────────────────────────────────
+function calPrev() {
+  if (CAL_VIEW === 'week') {
+    CAL_WEEK_START = addDays(CAL_WEEK_START, -7);
+  } else {
+    CAL_CURRENT.month--;
+    if (CAL_CURRENT.month < 0) { CAL_CURRENT.month = 11; CAL_CURRENT.year--; }
+  }
+  renderCalendar();
 }
+function calNext() {
+  if (CAL_VIEW === 'week') {
+    CAL_WEEK_START = addDays(CAL_WEEK_START, 7);
+  } else {
+    CAL_CURRENT.month++;
+    if (CAL_CURRENT.month > 11) { CAL_CURRENT.month = 0; CAL_CURRENT.year++; }
+  }
+  renderCalendar();
+}
+// Aliases retrocompat
+function calPrevMonth() { calPrev(); }
+function calNextMonth() { calNext(); }
+
 function calGoToday() {
   const now = new Date();
   CAL_CURRENT = { year: now.getFullYear(), month: now.getMonth() };
-  renderCalendarGrid();
+  CAL_WEEK_START = mondayOf(now);
+  renderCalendar();
   openDayDetail(todayStr());
 }
 

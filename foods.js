@@ -6,7 +6,7 @@ window.FOODS_DB = {
     "fuente_principal": "USDA FoodData Central — SR Legacy (April 2018)",
     "fuente_url": "https://fdc.nal.usda.gov/download-datasets/",
     "unidades": "Valores por 100g de alimento comestible. Sodio en mg, resto en gramos (excepto kcal).",
-    "total_alimentos": 222,
+    "total_alimentos": 241,
     "nota_especias": "Especias incluidas para completitud. En cantidades típicas (<5g por receta) su aporte calórico es despreciable (<10 kcal), pero el sodio sí puede importar.",
     "campos_opcionales": {
       "marca": "Solo presente cuando tipo=branded. Indica marca específica (Lala, FUD, etc.)",
@@ -2348,6 +2348,632 @@ window.FOODS_DB = {
       "tipo": "generic"
     },
     {
+      "id": "spaghetti",
+      "nombre": "Spaghetti",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "spaghetti_integral",
+      "nombre": "Spaghetti integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "fettuccine",
+      "nombre": "Fettuccine",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "fettuccine_integral",
+      "nombre": "Fettuccine integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "tallarin",
+      "nombre": "Tallarín",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "cabello_angel",
+      "nombre": "Cabello de ángel",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "penne",
+      "nombre": "Penne / Pluma",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "penne_integral",
+      "nombre": "Penne integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "rigatoni",
+      "nombre": "Rigatoni",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "rigatoni_integral",
+      "nombre": "Rigatoni integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "coditos",
+      "nombre": "Coditos / Macarrón",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "coditos_integral",
+      "nombre": "Coditos integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "fusilli",
+      "nombre": "Fusilli / Tornillo",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "fusilli_integral",
+      "nombre": "Fusilli integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "rotini",
+      "nombre": "Rotini",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "rotini_integral",
+      "nombre": "Rotini integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "farfalle",
+      "nombre": "Farfalle / Moñitos",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "farfalle_integral",
+      "nombre": "Farfalle integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "conchitas",
+      "nombre": "Conchitas",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "orzo",
+      "nombre": "Orzo / Risoni",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "lasana",
+      "nombre": "Lasaña (láminas)",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "lasana_integral",
+      "nombre": "Lasaña integral",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 348.0,
+        "prot": 14.63,
+        "carbs": 74.74,
+        "fat": 2.42,
+        "fiber": 10.7,
+        "sugars": 2.74,
+        "sodium_mg": 8.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "169740",
+        "descripcion_usda": "Pasta, whole-wheat, dry",
+        "url": "https://fdc.nal.usda.gov/food-details/169740/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "letras",
+      "nombre": "Letras / Estrellitas (sopa)",
+      "categoria": "grano",
+      "estado": "crudo (seco)",
+      "por_100g": {
+        "kcal": 371.0,
+        "prot": 13.04,
+        "carbs": 74.67,
+        "fat": 1.51,
+        "fiber": 3.2,
+        "sugars": 2.67,
+        "sodium_mg": 6.0
+      },
+      "fuente": {
+        "db": "USDA FoodData Central — SR Legacy (April 2018)",
+        "fdc_id": "168927",
+        "descripcion_usda": "Pasta, dry, unenriched",
+        "url": "https://fdc.nal.usda.gov/food-details/168927/nutrients"
+      },
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
+      "id": "noquis",
+      "nombre": "Ñoquis (de papa)",
+      "categoria": "grano",
+      "estado": "frescos (envasados)",
+      "por_100g": {
+        "kcal": 165.0,
+        "prot": 4.0,
+        "carbs": 33.0,
+        "fat": 1.0,
+        "fiber": 2.0,
+        "sugars": 0.8,
+        "sodium_mg": 400.0
+      },
+      "fuente": {
+        "db": "Promedio comercial (varía por marca)",
+        "descripcion_usda": "Gnocchi, potato, fresh vacuum-packed (genérico)",
+        "url": ""
+      },
+      "nota": "Macros aproximados; revisar etiqueta de la marca específica",
+      "tipo": "generic",
+      "aliases": [
+        "pasta",
+        "gnocchi"
+      ]
+    },
+    {
+      "id": "ravioli",
+      "nombre": "Ravioli (queso, fresco)",
+      "categoria": "grano",
+      "estado": "fresco (sin cocer)",
+      "por_100g": {
+        "kcal": 283.0,
+        "prot": 11.0,
+        "carbs": 41.0,
+        "fat": 8.5,
+        "fiber": 2.0,
+        "sugars": 1.5,
+        "sodium_mg": 380.0
+      },
+      "fuente": {
+        "db": "Promedio comercial (varía por relleno/marca)",
+        "descripcion_usda": "Ravioli, cheese-filled, fresh (genérico)",
+        "url": ""
+      },
+      "nota": "Macros aproximados; cambian si el relleno es carne, espinaca, etc.",
+      "tipo": "generic",
+      "aliases": [
+        "pasta"
+      ]
+    },
+    {
       "id": "pollo_pechuga_cruda_piel",
       "nombre": "Pollo, pechuga (con piel)",
       "categoria": "pollo",
@@ -4226,32 +4852,6 @@ window.FOODS_DB = {
       }
     },
     {
-      "id": "stevia_hoja_molida",
-      "nombre": "Stevia (hoja molida)",
-      "categoria": "endulzante",
-      "estado": "sólido",
-      "por_100g": {
-        "kcal": 290.0,
-        "prot": 5.0,
-        "carbs": 65.0,
-        "fat": 2.0,
-        "fiber": 15.0,
-        "sugars": 0.0,
-        "sodium_mg": 5.0
-      },
-      "fuente": {
-        "db": "Estimación basada en datos genéricos de hoja de Stevia rebaudiana",
-        "descripcion_usda": "Stevia rebaudiana leaves, ground (100% puro). Sobre típico 0.4g ≈ 1 kcal."
-      },
-      "tipo": "generic",
-      "gramos_por_unidad": 0.4,
-      "densidades": {
-        "cda": 5,
-        "cdita": 1.7,
-        "taza": 80
-      }
-    },
-    {
       "id": "salsa_soya",
       "nombre": "Salsa de soya",
       "categoria": "condimento",
@@ -4411,7 +5011,6 @@ window.FOODS_DB = {
     {
       "id": "cacao_polvo",
       "nombre": "Cacao en polvo (sin azúcar)",
-      "aliases": ["chocolate en polvo", "cocoa", "chocolate amargo en polvo"],
       "categoria": "condimento",
       "estado": "seco",
       "por_100g": {
@@ -4434,130 +5033,6 @@ window.FOODS_DB = {
         "cda": 5.4,
         "cdita": 1.8,
         "taza": 86
-      }
-    },
-    {
-      "id": "chocolate_amargo_70_85",
-      "nombre": "Chocolate amargo (70-85% cacao)",
-      "aliases": ["dark chocolate", "chocolate oscuro"],
-      "categoria": "dulce",
-      "estado": "solido",
-      "por_100g": {
-        "kcal": 598.0,
-        "prot": 7.79,
-        "carbs": 45.9,
-        "fat": 42.63,
-        "fiber": 10.9,
-        "sugars": 23.99,
-        "sodium_mg": 20.0
-      },
-      "fuente": {
-        "db": "USDA FoodData Central — SR Legacy (April 2018)",
-        "fdc_id": "170273",
-        "descripcion_usda": "Candies, chocolate, dark, 70-85% cacao solids",
-        "url": "https://fdc.nal.usda.gov/food-details/170273/nutrients"
-      },
-      "tipo": "generic",
-      "gramos_por_unidad": 10
-    },
-    {
-      "id": "chocolate_semiamargo_45_60",
-      "nombre": "Chocolate semiamargo (45-60% cacao)",
-      "aliases": ["semisweet chocolate"],
-      "categoria": "dulce",
-      "estado": "solido",
-      "por_100g": {
-        "kcal": 546.0,
-        "prot": 4.88,
-        "carbs": 61.17,
-        "fat": 31.28,
-        "fiber": 7.0,
-        "sugars": 47.91,
-        "sodium_mg": 24.0
-      },
-      "fuente": {
-        "db": "USDA FoodData Central — SR Legacy (April 2018)",
-        "fdc_id": "170272",
-        "descripcion_usda": "Candies, chocolate, dark, 45- 59% cacao solids",
-        "url": "https://fdc.nal.usda.gov/food-details/170272/nutrients"
-      },
-      "tipo": "generic",
-      "gramos_por_unidad": 10
-    },
-    {
-      "id": "chocolate_leche",
-      "nombre": "Chocolate con leche",
-      "aliases": ["milk chocolate"],
-      "categoria": "dulce",
-      "estado": "solido",
-      "por_100g": {
-        "kcal": 535.0,
-        "prot": 7.65,
-        "carbs": 59.4,
-        "fat": 29.66,
-        "fiber": 3.4,
-        "sugars": 51.5,
-        "sodium_mg": 79.0
-      },
-      "fuente": {
-        "db": "USDA FoodData Central — SR Legacy (April 2018)",
-        "fdc_id": "170270",
-        "descripcion_usda": "Candies, milk chocolate",
-        "url": "https://fdc.nal.usda.gov/food-details/170270/nutrients"
-      },
-      "tipo": "generic",
-      "gramos_por_unidad": 10
-    },
-    {
-      "id": "chocolate_blanco",
-      "nombre": "Chocolate blanco",
-      "aliases": ["white chocolate"],
-      "categoria": "dulce",
-      "estado": "solido",
-      "por_100g": {
-        "kcal": 539.0,
-        "prot": 5.87,
-        "carbs": 59.24,
-        "fat": 32.09,
-        "fiber": 0.2,
-        "sugars": 59.24,
-        "sodium_mg": 90.0
-      },
-      "fuente": {
-        "db": "USDA FoodData Central — SR Legacy (April 2018)",
-        "fdc_id": "170271",
-        "descripcion_usda": "Candies, white chocolate",
-        "url": "https://fdc.nal.usda.gov/food-details/170271/nutrients"
-      },
-      "tipo": "generic",
-      "gramos_por_unidad": 10
-    },
-    {
-      "id": "chocolate_chips",
-      "nombre": "Chips de chocolate semiamargo",
-      "aliases": ["chocolate chips", "chispas de chocolate"],
-      "categoria": "dulce",
-      "estado": "solido",
-      "por_100g": {
-        "kcal": 479.0,
-        "prot": 4.2,
-        "carbs": 63.13,
-        "fat": 29.97,
-        "fiber": 5.9,
-        "sugars": 54.5,
-        "sodium_mg": 11.0
-      },
-      "fuente": {
-        "db": "USDA FoodData Central — SR Legacy (April 2018)",
-        "fdc_id": "170274",
-        "descripcion_usda": "Candies, semisweet chocolate",
-        "url": "https://fdc.nal.usda.gov/food-details/170274/nutrients"
-      },
-      "tipo": "generic",
-      "densidades": {
-        "cda": 11,
-        "cdita": 3.7,
-        "taza": 175
       }
     },
     {

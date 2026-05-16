@@ -3,7 +3,7 @@ const SEED = {
   desayunos:[
     {id:'d1',name:'Overnight oats clásico',kcal:430,prot:25,carbs:58,fat:9,badges:['Frío','Prep domingo'],tip:'Prep 5 frascos el domingo. Dura toda la semana refrigerado.',ingredients:['80g avena GV','15g chía OKKO','200ml leche Lala','120g yogurt griego','1 cdita maple sin azúcar','½ cdita vainilla','½ plátano (al momento)'],steps:['Mezcla todo en frasco excepto el plátano','Tapa y refrigera mínimo 6 horas','Al comer: agrega plátano en rebanadas encima']},
     {id:'d2',name:'Overnight oats de chocolate',kcal:445,prot:26,carbs:60,fat:10,badges:['Frío','Prep domingo'],tip:'Misma base que el clásico — solo agrega cacao. Sabe a postre.',ingredients:['80g avena GV','15g chía OKKO','200ml leche Lala','120g yogurt griego','1 cda cacao en polvo sin azúcar','1 cdita maple sin azúcar','½ cdita vainilla'],steps:['Mezcla todo bien hasta disolver el cacao','Tapa y refrigera mínimo 6 horas','Opcional: plátano en rebanadas encima al comer']},
-    {id:'d3',name:'Baked oats cinnamon roll',kcal:320,prot:18,carbs:44,fat:8,badges:['Prep domingo','Colación trabajo'],tip:'2 piezas = ~320 kcal / ~18g prot. Dura toda la semana. Necesitas polvo para hornear (~$15 MXN).',ingredients:['300g avena GV (rinde 12 piezas)','240g yogurt griego','2 huevos','200ml leche Lala','2 cdas maple sin azúcar','1 cdita vainilla','1 cdita polvo para hornear','Relleno: 2 cdas azúcar morena + 2 cditas canela + 1 cdita mantequilla','Glaseado: 3 cdas yogurt + 1 cdita maple + canela'],steps:['Precalienta horno 175°C','Mezcla ingredientes base en tazón','Mezcla relleno en tazón pequeño','Engrasa molde cupcakes, llena ¾ cada cavidad','½ cdita relleno encima + swirl con palillo','Hornea 18–22 min','Glaseado al momento de comer']},
+    {id:'d3',name:'Baked oats cinnamon roll',kcal:320,prot:18,carbs:44,fat:8,badges:['Prep domingo','Snack trabajo'],tip:'2 piezas = ~320 kcal / ~18g prot. Dura toda la semana. Necesitas polvo para hornear (~$15 MXN).',ingredients:['300g avena GV (rinde 12 piezas)','240g yogurt griego','2 huevos','200ml leche Lala','2 cdas maple sin azúcar','1 cdita vainilla','1 cdita polvo para hornear','Relleno: 2 cdas azúcar morena + 2 cditas canela + 1 cdita mantequilla','Glaseado: 3 cdas yogurt + 1 cdita maple + canela'],steps:['Precalienta horno 175°C','Mezcla ingredientes base en tazón','Mezcla relleno en tazón pequeño','Engrasa molde cupcakes, llena ¾ cada cavidad','½ cdita relleno encima + swirl con palillo','Hornea 18–22 min','Glaseado al momento de comer']},
     {id:'d4',name:'Avena caliente con plátano',kcal:420,prot:22,carbs:62,fat:8,badges:['Caliente','10 min'],tip:'Textura uniforme y cremosa si se revuelve bien constantemente.',ingredients:['80g avena GV','250ml leche Lala','120g yogurt griego (encima al servir)','½ plátano en rebanadas','1 cdita maple','Canela al gusto'],steps:['Calienta leche en olla a fuego medio','Agrega avena, revuelve constantemente ~5 min hasta cremosa','Sirve, agrega yogurt griego, plátano, maple y canela encima']},
     {id:'d5',name:'Huevos revueltos cremosos + tostada',kcal:380,prot:24,carbs:28,fat:18,badges:['Caliente','10 min'],tip:'Fuego bajo = textura sedosa. Fuego alto = textura seca y gomosa.',ingredients:['3 huevos','2 rebanadas pan integral o blanco','1 cdita aceite o mantequilla','Sal, pimienta, Tapatío'],steps:['Bate huevos con sal y pimienta','Sartén a fuego BAJO con aceite — esto es clave','Agrega huevos, revuelve despacio con espátula ~4 min','Retira antes de que estén secos — quedan cremosos','Sirve sobre pan tostado con Tapatío']},
     {id:'d6',name:'Avocado toast con huevo estrellado',kcal:410,prot:22,carbs:30,fat:22,badges:['Caliente','10 min'],tip:'Aguacate machacado = textura uniforme, sin trozos. Clásico y saciante.',ingredients:['2 rebanadas pan tostado','½ aguacate maduro','2 huevos','Jugo de ½ limón','Sal, pimienta, Tapatío'],steps:['Tuesta el pan','Machaca aguacate + sal + limón hasta pasta uniforme','Unta aguacate sobre el pan','Estrella huevos en sartén a fuego medio','Coloca huevos encima + Tapatío']},
@@ -35,13 +35,13 @@ const SEED = {
     {id:'ce9',name:'Pollo a la miel express con arroz',kcal:560,prot:50,carbs:52,fat:12,badges:['25 min','1 sartén'],tip:'Con arroz del prep dominical esto se hace en 12 minutos.',ingredients:['250g pechuga en tiras','1 cda miel o maple','1 cda salsa soya','1 diente ajo','150g arroz cocido','Sal, pimienta, 1 cdita aceite'],steps:['Dora pollo en sartén caliente 5 min','Mezcla miel + soya + ajo, vierte encima','Cocina 5 min hasta glaseado brillante','Calienta arroz en microondas 2 min, sirve junto']},
     {id:'ce10',name:'Tacos de frijoles con queso',kcal:530,prot:28,carbs:62,fat:16,badges:['15 min','Mexicano'],tip:'3 tacos, no 6. Agrega yogurt griego como aderezo para subir proteína.',ingredients:['3 tortillas de maíz','150g frijoles refritos','50g queso manchego o Oaxaca','Salsa verde al gusto','Limón, sal'],steps:['Calienta frijoles en sartén o microondas','Calienta tortillas en comal','Unta frijoles + queso en cada tortilla','Dobla y calienta en comal 1 min por lado','Sirve con salsa verde y limón']}
   ],
-  colaciones:[
+  snacks:[
     {id:'col1',name:'Baked oats cinnamon roll (2 piezas)',kcal:320,prot:18,carbs:44,fat:8,badges:['Prep domingo','Anti-Oxxo'],tip:'12 piezas duran toda la semana. Sin refrigeración por unas horas — perfecto para llevar al trabajo.',ingredients:['300g avena GV (rinde 12 piezas)','240g yogurt griego','2 huevos','200ml leche Lala','2 cdas maple sin azúcar','1 cdita vainilla','1 cdita polvo para hornear','Relleno: azúcar morena + canela + mantequilla','Glaseado: yogurt + maple + canela'],steps:['Precalienta horno 175°C','Mezcla ingredientes base','Mezcla relleno por separado','Llena molde cupcakes ¾ + relleno + swirl con palillo','Hornea 18–22 min','Lleva 2 piezas al trabajo en tupper']}
   ]
 };
 
 // ─── STATE (poblado en initApp tras cargar cloudStorage) ──────────────────────
-const EMPTY_DATA = {desayunos:[], comidas:[], cenas:[], colaciones:[]};
+const EMPTY_DATA = {desayunos:[], comidas:[], cenas:[], snacks:[]};
 const DEFAULT_PROFILE_TMPL = {age:25, weight:70, height:170, sex:'male', activity:'light'};
 
 let CURRENT_USER = null;
@@ -62,6 +62,13 @@ let FOODS_BY_ID = Object.fromEntries(FOODS.map(f => [f.id, f]));
 function initApp() {
   CURRENT_USER = getCurrentUser();
   data = cloudGet('recipes', null) || JSON.parse(JSON.stringify(EMPTY_DATA));
+  // Migración: colaciones → snacks (cambio de nomenclatura)
+  if (data.colaciones && !data.snacks) {
+    data.snacks = data.colaciones;
+    delete data.colaciones;
+    save();
+  }
+  if (!data.snacks) data.snacks = [];
   profile = cloudGet('profile', null) || { name: CURRENT_USER.username, ...DEFAULT_PROFILE_TMPL };
   CUSTOM_FOODS = cloudGet('custom_foods', []) || [];
   rebuildFoodsIndex();
@@ -306,7 +313,7 @@ function renderCat(cat) {
 }
 
 function renderAll() {
-  ['desayunos','comidas','cenas','colaciones'].forEach(renderCat);
+  ['desayunos','comidas','cenas','snacks'].forEach(renderCat);
   syncShopButtons();
   updateShopPanel();
 }
@@ -437,7 +444,7 @@ function toggleDay(id, cat, btn) {
 }
 
 function updateTotals() {
-  const cats = ['desayunos','comidas','cenas','colaciones'];
+  const cats = ['desayunos','comidas','cenas','snacks'];
   let kcal=0,prot=0,carbs=0,fat=0;
   const names = [];
   let any = false;

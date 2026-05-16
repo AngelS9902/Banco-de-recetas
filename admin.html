@@ -89,7 +89,7 @@ function userStats(id) {
   if (!me || me.id !== id) return {recipes: '—', weeks: '—', customFoods: '—'};
   const recipes_data = cloudGet('recipes', {});
   let recipes = 0;
-  ['desayunos','comidas','cenas','colaciones'].forEach(c => { recipes += (recipes_data[c]||[]).length; });
+  ['desayunos','comidas','cenas','snacks','colaciones'].forEach(c => { recipes += (recipes_data[c]||[]).length; });
   const weeks = (cloudGet('shop_history', []) || []).length;
   const customFoods = (cloudGet('custom_foods', []) || []).length;
   return {recipes, weeks, customFoods};

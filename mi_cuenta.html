@@ -185,7 +185,7 @@ function renderCustomFoodsList(){
 function findRecipesUsingFood(foodId){
   const recipes = cloudGet('recipes', null) || {};
   const matches = [];
-  ['desayunos','comidas','cenas','colaciones'].forEach(cat => {
+  ['desayunos','comidas','cenas','snacks','colaciones'].forEach(cat => {
     (recipes[cat]||[]).forEach(r => {
       if (Array.isArray(r.ingredients_structured) && r.ingredients_structured.some(i => i.food_id === foodId)){
         matches.push(r.name);
@@ -358,7 +358,7 @@ async function importData() {
         if (key === 'recipes' && current) {
           // Combina arrays por categoría
           const combined = {};
-          ['desayunos','comidas','cenas','colaciones'].forEach(c => {
+          ['desayunos','comidas','cenas','snacks','colaciones'].forEach(c => {
             const a = (current[c] || []);
             const b = (value[c] || []);
             const ids = new Set(a.map(r => r.id));

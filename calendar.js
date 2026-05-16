@@ -507,6 +507,17 @@ function openAddEntry(dateStr, slot) {
         <div class="qi-frecuentes">${frecuentesHTML}</div>
       </div>
 
+      <div class="qi-divider"><span>o busca un producto</span></div>
+
+      <div class="add-entry-section">
+        <div class="qi-section-title">Open Food Facts <span class="off-tag">producto empacado</span></div>
+        <div class="off-search-row">
+          <input type="text" id="off_query" placeholder="Ej: sabritas adobadas, coca cola..." oninput="onOFFSearchInput()">
+          <button class="off-scan-btn" onclick="openBarcodeScanner()" title="Escanear código de barras">📷</button>
+        </div>
+        <div class="off-results" id="off_results"></div>
+      </div>
+
       <div class="qi-divider"><span>o crea uno nuevo</span></div>
 
       <div class="modal-grid">
@@ -648,6 +659,204 @@ function clearDayPrompt(dateStr) {
   delete CAL_DATA[dateStr];
   calSave();
   closeDayDetail();
+}
+
+// ─── OPEN FOOD FACTS ────────────────────────────────────────────────────────
+// API pública, sin autenticación. Docs: https://wiki.openfoodfacts.org/API
+let offSearchTimer = null;
+let offCurrentScanner = null;
+let OFF_LAST_RESULTS = []; // cache de los resultados de la búsqueda actual
+
+function onOFFSearchInput() {
+  clearTimeout(offSearchTimer);
+  const q = (document.getElementById('off_query').value || '').trim();
+  if (q.length < 2) {
+    document.getElementById('off_results').innerHTML = '';
+    return;
+  }
+  offSearchTimer = setTimeout(() => offSearch(q), 350);
+}
+
+async function offSearch(query) {
+  const resultsEl = document.getElementById('off_results');
+  resultsEl.innerHTML = '<div class="off-loading">Buscando…</div>';
+  try {
+    // Prioriza productos vendidos en México. Si no, busca global.
+    const fields = 'code,product_name,brands,image_thumb_url,nutriments,serving_size,quantity,countries_tags';
+    const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=${fields}&tagtype_0=countries&tag_contains_0=contains&tag_0=mexico`;
+    const res = await fetch(url);
+    let data = await res.json();
+    let products = (data.products || []).filter(p => p.product_name);
+    // Fallback: si no hay resultados de México, busca global
+    if (products.length === 0) {
+      const url2 = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=12&fields=${fields}`;
+      const res2 = await fetch(url2);
+      const data2 = await res2.json();
+      products = (data2.products || []).filter(p => p.product_name);
+    }
+    renderOFFResults(products);
+  } catch (e) {
+    resultsEl.innerHTML = `<div class="off-error">Error: ${escapeHtmlCal(e.message || 'No se pudo buscar')}</div>`;
+  }
+}
+
+function renderOFFResults(products) {
+  const resultsEl = document.getElementById('off_results');
+  // Normaliza y cachea
+  OFF_LAST_RESULTS = products.map(p => {
+    const n = p.nutriments || {};
+    const kcal100 = Math.round(n['energy-kcal_100g'] || (n['energy-kcal'] || (n['energy_100g'] ? n['energy_100g']/4.184 : 0)) || 0);
+    return {
+      name: p.product_name || '',
+      brand: (p.brands || '').split(',')[0].trim(),
+      kcal100,
+      prot100: Number(n['proteins_100g'] || 0),
+      carbs100: Number(n['carbohydrates_100g'] || 0),
+      fat100: Number(n['fat_100g'] || 0),
+      serving: p.serving_size || '',
+      quantity: p.quantity || '',
+      code: p.code || '',
+      image: p.image_thumb_url || ''
+    };
+  });
+
+  if (OFF_LAST_RESULTS.length === 0) {
+    resultsEl.innerHTML = '<div class="off-empty">Sin resultados. Prueba otro nombre o crea uno manual abajo.</div>';
+    return;
+  }
+  resultsEl.innerHTML = OFF_LAST_RESULTS.map((r, idx) => {
+    const img = r.image ? `<img src="${escapeHtmlCal(r.image)}" alt="" loading="lazy">` : '<div class="off-noimg">🍴</div>';
+    return `
+      <div class="off-result" onclick="pickOFFProductByIdx(${idx})">
+        <div class="off-result-img">${img}</div>
+        <div class="off-result-info">
+          <div class="off-result-name">${escapeHtmlCal(r.name)}</div>
+          <div class="off-result-meta">${escapeHtmlCal(r.brand || '—')} · ${r.kcal100} kcal/100g</div>
+          <div class="off-result-macros">P ${r.prot100.toFixed(1)}g · C ${r.carbs100.toFixed(1)}g · G ${r.fat100.toFixed(1)}g</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function pickOFFProductByIdx(idx) {
+  const prod = OFF_LAST_RESULTS[idx];
+  if (prod) pickOFFProduct(prod);
+}
+
+function pickOFFProduct(prod) {
+  // Pre-llena el form de item rápido escalando a una porción razonable
+  let defaultGrams = 100;
+  // Intenta parsear el serving_size (ej. "30 g", "1 bolsa (45 g)")
+  const m = (prod.serving || '').match(/(\d+(?:[.,]\d+)?)\s*g/i);
+  if (m) defaultGrams = parseFloat(m[1].replace(',','.'));
+
+  document.getElementById('qi_name').value = prod.name || '';
+  document.getElementById('qi_marca').value = prod.brand || '';
+  document.getElementById('qi_porcion').value = prod.serving || (defaultGrams + 'g');
+
+  // Escala a la porción
+  const f = defaultGrams / 100;
+  document.getElementById('qi_kcal').value  = Math.round(prod.kcal100 * f);
+  document.getElementById('qi_prot').value  = (prod.prot100 * f).toFixed(1);
+  document.getElementById('qi_carbs').value = (prod.carbs100 * f).toFixed(1);
+  document.getElementById('qi_fat').value   = (prod.fat100 * f).toFixed(1);
+
+  // Mensaje en los resultados
+  document.getElementById('off_results').innerHTML = `
+    <div class="off-picked">
+      ✓ Producto cargado: <strong>${escapeHtmlCal(prod.name)}</strong>
+      <br><span class="off-picked-hint">Ajusta la porción y kcal abajo si lo necesitas, luego presiona "Agregar al día".</span>
+    </div>
+  `;
+
+  // Scroll al form de quick item
+  setTimeout(() => {
+    document.getElementById('qi_name').scrollIntoView({behavior:'smooth', block:'center'});
+  }, 50);
+}
+
+// ─── BARCODE SCANNER ────────────────────────────────────────────────────────
+function openBarcodeScanner() {
+  if (typeof Html5Qrcode === 'undefined') {
+    alert('El escáner no está disponible. Intenta recargar la página.');
+    return;
+  }
+  document.getElementById('barcodeModal').innerHTML = `
+    <div class="modal">
+      <div class="day-detail-header">
+        <h3>📷 Escanear código</h3>
+        <button class="modal-close" onclick="closeBarcodeScanner()">×</button>
+      </div>
+      <div class="modal-sub">Apunta la cámara al código de barras del producto.</div>
+      <div id="barcode-reader" class="barcode-reader"></div>
+      <div id="barcode-status" class="barcode-status">Iniciando cámara…</div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="closeBarcodeScanner()">Cancelar</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('barcodeModal').classList.add('open');
+
+  setTimeout(() => {
+    const scanner = new Html5Qrcode('barcode-reader');
+    offCurrentScanner = scanner;
+    const config = { fps: 10, qrbox: { width: 250, height: 150 } };
+    scanner.start(
+      { facingMode: 'environment' },
+      config,
+      (decodedText) => {
+        document.getElementById('barcode-status').textContent = `Detectado: ${decodedText}. Buscando…`;
+        // Stop el scanner y buscar producto
+        scanner.stop().then(() => {
+          offCurrentScanner = null;
+          fetchOFFByBarcode(decodedText);
+        }).catch(() => fetchOFFByBarcode(decodedText));
+      },
+      (errorMessage) => { /* ignora errores de frame */ }
+    ).catch(err => {
+      document.getElementById('barcode-status').textContent = 'Error al acceder a la cámara: ' + err;
+    });
+  }, 100);
+}
+
+function closeBarcodeScanner() {
+  if (offCurrentScanner) {
+    offCurrentScanner.stop().catch(()=>{}).finally(() => { offCurrentScanner = null; });
+  }
+  document.getElementById('barcodeModal').classList.remove('open');
+}
+
+async function fetchOFFByBarcode(barcode) {
+  try {
+    const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json?fields=code,product_name,brands,image_thumb_url,nutriments,serving_size,quantity`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.status !== 1 || !data.product) {
+      closeBarcodeScanner();
+      alert('No se encontró ese producto en Open Food Facts. Puedes capturarlo manual abajo.');
+      return;
+    }
+    const p = data.product;
+    const n = p.nutriments || {};
+    const kcal100 = Math.round(n['energy-kcal_100g'] || (n['energy_100g'] ? n['energy_100g']/4.184 : 0) || 0);
+    const prod = {
+      name: p.product_name || '',
+      brand: (p.brands || '').split(',')[0].trim(),
+      kcal100,
+      prot100: Number(n['proteins_100g'] || 0),
+      carbs100: Number(n['carbohydrates_100g'] || 0),
+      fat100: Number(n['fat_100g'] || 0),
+      serving: p.serving_size || '',
+      quantity: p.quantity || '',
+      code: p.code || barcode
+    };
+    closeBarcodeScanner();
+    pickOFFProduct(prod);
+  } catch (e) {
+    closeBarcodeScanner();
+    alert('Error al buscar el producto: ' + (e.message || e));
+  }
 }
 
 // ─── UTIL ───────────────────────────────────────────────────────────────────

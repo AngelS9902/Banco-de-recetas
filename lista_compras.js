@@ -271,6 +271,7 @@ function renderIngredients() {
       <table class="lc-table">
         <thead>
           <tr>
+            <th class="lc-th-check" title="Marcar como completo">✓</th>
             <th>Producto</th>
             <th>Necesito</th>
             <th>Ya tengo<br><span class="lc-th-sub">refri / alacena</span></th>
@@ -350,8 +351,15 @@ function renderIngrRow(item, shop) {
 
   const showUnitToggle = food.gramos_por_unidad ? true : false;
 
+  const isDone = buyGrams === 0 && totalGrams > 0;
+
   return `
-    <tr data-fid="${item.food_id}">
+    <tr data-fid="${item.food_id}" class="${isDone?'lc-row-done':''}">
+      <td class="lc-td-check">
+        <input type="checkbox" class="lc-check-done" ${isDone?'checked':''}
+               onchange="toggleItemDone('${item.food_id}', this.checked)"
+               title="Marcar todo como ya cubierto">
+      </td>
       <td>
         <div class="lc-prod-name">${escapeHtml(food.nombre)}</div>
         <div class="lc-prod-sub" title="${escapeHtml(sourcesTxt)}">${escapeHtml(sourcesTxt)}</div>
@@ -395,6 +403,31 @@ function renderIngrRow(item, shop) {
       <td class="lc-cost">${costo!=null?fmtMoney(costo):'—'}</td>
     </tr>
   `;
+}
+
+function toggleItemDone(food_id, checked) {
+  const { agg } = aggregateIngredients();
+  const item = agg[food_id];
+  if (!item) return;
+  const s = shopGet();
+  if (!s.inventory) s.inventory = {};
+  if (checked) {
+    // Marcar como cubierto: poner inventario = total necesario
+    const food = item.food;
+    // Usa la unidad de display (g o unidad) para que se vea consistente con la fila
+    const display = chooseDisplayUnit(item);
+    if (display.unit === 'unidad' && food.gramos_por_unidad) {
+      const qtyU = item.totalGrams / food.gramos_por_unidad;
+      s.inventory[food_id] = { qty: Math.round(qtyU * 100) / 100, unit: 'unidad' };
+    } else {
+      s.inventory[food_id] = { qty: Math.round(item.totalGrams * 100) / 100, unit: 'g' };
+    }
+  } else {
+    // Desmarcar: limpiar inventario
+    delete s.inventory[food_id];
+  }
+  shopSet(s);
+  renderIngredients();
 }
 
 function setInventory(food_id, qty, unit) {

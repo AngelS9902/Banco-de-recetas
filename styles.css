@@ -1040,6 +1040,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:4px;
 }
 .lc-store-menu-clear:hover{background:#fdeaea}
+
+/* Grupo Pantry (Refri/Alacena) */
+.lc-store-group-pantry{border-color:var(--green,#7fbf6b)}
+.lc-store-pantry{background:rgba(127,191,107,.08) !important}
+.lc-store-pantry .lc-store-group-title{color:#3d6b30}
+
+/* Fila "en carrito" (compre row checked) */
+.lc-row-cart{background:rgba(255,193,7,.08)}
+.lc-row-cart .lc-prod-name{color:var(--text);font-weight:600}
+.lc-row-cart .lc-prod-name::after{content:' · 🛒';font-size:11px}
+
+/* Ahorro en pantry row destacado */
+.lc-cost-saved-strong{color:#3d6b30;font-weight:600;font-size:14px}
+
+/* Costo paquete sub-línea */
+.lc-cost-pkg{font-size:10px;color:var(--muted);margin-top:2px}
+.lc-cost-pkg-active{color:#b8860b;font-weight:600}
+.lc-cost-pkg-active::before{content:'✓ '}
+
+/* Resumen de gastos (totalEstimado se vuelve container) */
+#totalEstimado{font-size:14px;font-weight:400;line-height:1.5;display:block}
+.lc-total-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
+.lc-total-grand{font-weight:600;font-size:16px;border-top:1px solid var(--border);padding-top:8px;margin-top:6px;color:var(--accent)}
 .lc-cost{font-weight:600;font-size:13px;color:var(--accent);text-align:right}
 
 .lc-inv-row,.lc-price-row{display:flex;align-items:center;gap:4px}

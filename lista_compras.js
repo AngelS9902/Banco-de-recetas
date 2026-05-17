@@ -14,6 +14,8 @@ let FOODS_BY_ID = Object.fromEntries(FOODS.map(f => [f.id, f]));
 let RECETAS_DATA = {};
 
 const DEFAULT_STORES = ['Walmart', 'HEB', 'Soriana', 'Aurrera', 'Costco', 'Mercado'];
+// Grupo virtual para items que ya están en casa (no es una tienda real)
+const PANTRY = 'Refri / Alacena';
 
 // Entry point — llamado desde lista_compras.html tras initCloudStorage
 function initLista() {
@@ -57,6 +59,21 @@ function plusDays(iso, n) {
   return d.toISOString().slice(0,10);
 }
 
+// Convierte (qty, unit) a gramos para inventario/precio.
+// ml y L se tratan como g (1:1) por defecto — funciona para líquidos típicos.
+function unitToGrams(qty, unit, food) {
+  qty = parseFloat(qty) || 0;
+  switch(unit) {
+    case 'kg': return qty * 1000;
+    case 'L':  return qty * 1000;
+    case 'ml': return qty;
+    case 'g':  return qty;
+    case 'unidad':
+      return (food && food.gramos_por_unidad) ? qty * food.gramos_por_unidad : 0;
+    default: return qty;
+  }
+}
+
 const GENERIC_DENSITIES = { cda:15, cdita:5, taza:240 };
 function convertToGrams(qty, unit, food) {
   qty = parseFloat(qty) || 0;
@@ -80,8 +97,11 @@ function convertToGrams(qty, unit, food) {
 // ─── STATE (cloud-backed) ────────────────────────────────────────────────────
 function shopGet() {
   const raw = cloudGet('shop_list', null);
-  if (raw && Array.isArray(raw.recipes)) return raw;
-  return { recipes: [], inventory: {}, prices: {}, store: '', weekStart: '' };
+  if (raw && Array.isArray(raw.recipes)) {
+    if (!raw.purchased) raw.purchased = {};
+    return raw;
+  }
+  return { recipes: [], inventory: {}, prices: {}, purchased: {}, store: '', weekStart: '' };
 }
 function shopSet(s) { cloudSet('shop_list', s); }
 
@@ -291,71 +311,115 @@ function renderIngredients() {
   if (keys.length === 0) {
     wrap.innerHTML = `<div class="empty-state" style="padding:1rem">Sin ingredientes para sumar. Agrega recetas con ingredientes estructurados.</div>`;
   } else {
-    // Agrupar food_ids por tienda asignada
-    const groups = {}; // store -> [food_ids]
+    // Calcular split por food_id: cuánto va a pantry y cuánto a comprar
     const UNASSIGNED = '__unassigned__';
+    const groups = {}; // groupName -> [{ food_id, kind: 'pantry'|'buy' }]
     keys.forEach(k => {
-      const store = getFoodStore(k) || UNASSIGNED;
-      if (!groups[store]) groups[store] = [];
-      groups[store].push(k);
+      const it = agg[k];
+      const inv = shop.inventory[k] || {qty:0, unit:'g'};
+      const invG = unitToGrams(inv.qty, inv.unit, it.food);
+      const buyG = Math.max(0, it.totalGrams - invG);
+      // Pantry row si hay inventario
+      if (invG > 0) {
+        if (!groups[PANTRY]) groups[PANTRY] = [];
+        groups[PANTRY].push({ food_id: k, kind: 'pantry' });
+      }
+      // Buy row si falta por comprar
+      if (buyG > 0) {
+        const store = getFoodStore(k) || UNASSIGNED;
+        if (!groups[store]) groups[store] = [];
+        groups[store].push({ food_id: k, kind: 'buy' });
+      }
     });
-    // Orden: tiendas alfabéticas, "sin asignar" al final
-    const storeNames = Object.keys(groups).filter(s => s !== UNASSIGNED).sort((a,b) => a.localeCompare(b));
-    if (groups[UNASSIGNED]) storeNames.push(UNASSIGNED);
+    // Orden: Refri primero, tiendas alfabéticas, Sin asignar al final
+    const allGroups = Object.keys(groups);
+    const ordered = [];
+    if (groups[PANTRY]) ordered.push(PANTRY);
+    allGroups.filter(s => s !== PANTRY && s !== UNASSIGNED).sort((a,b) => a.localeCompare(b)).forEach(s => ordered.push(s));
+    if (groups[UNASSIGNED]) ordered.push(UNASSIGNED);
 
-    wrap.innerHTML = storeNames.map(storeName => {
-      const isUnassigned = storeName === UNASSIGNED;
-      const itemKeys = groups[storeName];
+    wrap.innerHTML = ordered.map(groupName => {
+      const isUnassigned = groupName === UNASSIGNED;
+      const isPantry = groupName === PANTRY;
+      const rows = groups[groupName];
       // Stats por grupo
-      let groupTotal = 0;
-      let doneCount = 0;
-      itemKeys.forEach(k => {
-        const it = agg[k];
-        const inv = shop.inventory[k] || {qty:0, unit:'g'};
-        let invG = inv.unit === 'unidad' && it.food.gramos_por_unidad
-          ? (parseFloat(inv.qty)||0)*it.food.gramos_por_unidad : (parseFloat(inv.qty)||0);
+      let groupBuyTotal = 0;     // costo proporcional (lo que la receta usa)
+      let groupPkgTotal = 0;     // costo paquete (lo que realmente gastas si "en carrito")
+      let savedTotal = 0;        // ahorro (solo pantry)
+      let purchasedCount = 0;
+      rows.forEach(({food_id, kind}) => {
+        const it = agg[food_id];
+        const inv = shop.inventory[food_id] || {qty:0, unit:'g'};
+        const invG = unitToGrams(inv.qty, inv.unit, it.food);
         const buyG = Math.max(0, it.totalGrams - invG);
-        if (buyG === 0 && it.totalGrams > 0) doneCount++;
-        const price = shop.prices[k] || {};
-        let pkgG = 0;
-        if (price.unit === 'kg') pkgG = (parseFloat(price.qty)||0)*1000;
-        else if (price.unit === 'unidad' && it.food.gramos_por_unidad) pkgG = (parseFloat(price.qty)||0)*it.food.gramos_por_unidad;
-        else pkgG = parseFloat(price.qty)||0;
-        if (parseFloat(price.price)>0 && pkgG>0) groupTotal += (parseFloat(price.price)/pkgG)*buyG;
+        const price = shop.prices[food_id] || {};
+        const pkgG = unitToGrams(price.qty, price.unit, it.food);
+        const hp = (parseFloat(price.price)>0) ? null : lastHistoricalPrice(food_id, isPantry ? null : groupName);
+        const pricePerG = (parseFloat(price.price)>0 && pkgG>0)
+          ? (parseFloat(price.price)/pkgG)
+          : (hp ? hp.pricePer100g/100 : 0);
+        if (kind === 'pantry') {
+          savedTotal += pricePerG * invG;
+        } else { // buy
+          groupBuyTotal += pricePerG * buyG;
+          if (shop.purchased && shop.purchased[food_id]) {
+            purchasedCount++;
+            if (parseFloat(price.price)>0) groupPkgTotal += parseFloat(price.price);
+          }
+        }
       });
-      const statsTxt = `${itemKeys.length} producto${itemKeys.length===1?'':'s'}` +
-        (doneCount>0?` · ${doneCount} ya tienes`:'') +
-        (groupTotal>0?` · ${fmtMoney(groupTotal)}`:'');
+      const statsTxt = isPantry
+        ? `${rows.length} item${rows.length===1?'':'s'}${savedTotal>0?` · ahorro ${fmtMoney(savedTotal)}`:''}`
+        : `${rows.length} item${rows.length===1?'':'s'}` +
+          (purchasedCount>0?` · ${purchasedCount} en carrito`:'') +
+          (groupPkgTotal>0?` · pagado ${fmtMoney(groupPkgTotal)}`:'') +
+          (groupBuyTotal>0?` · receta ${fmtMoney(groupBuyTotal)}`:'');
 
-      const headHtml = isUnassigned
-        ? `<div class="lc-store-group-head lc-store-unassigned">
-             <div class="lc-store-group-title">📦 Sin tienda asignada</div>
+      const headHtml = isPantry
+        ? `<div class="lc-store-group-head lc-store-pantry">
+             <div class="lc-store-group-title">🏠 ${escapeHtml(PANTRY)}</div>
              <div class="lc-store-group-stats">${statsTxt}</div>
            </div>`
-        : `<div class="lc-store-group-head">
-             <div class="lc-store-group-title">🏪 ${escapeHtml(storeName)}</div>
-             <div class="lc-store-group-stats">${statsTxt}</div>
-           </div>`;
+        : isUnassigned
+          ? `<div class="lc-store-group-head lc-store-unassigned">
+               <div class="lc-store-group-title">📦 Sin tienda asignada</div>
+               <div class="lc-store-group-stats">${statsTxt}</div>
+             </div>`
+          : `<div class="lc-store-group-head">
+               <div class="lc-store-group-title">🏪 ${escapeHtml(groupName)}</div>
+               <div class="lc-store-group-stats">${statsTxt}</div>
+             </div>`;
+
+      // Encabezado de tabla diferente para pantry vs buy
+      const theadHtml = isPantry
+        ? `<tr>
+             <th class="lc-th-check" title="Marcar como cubierto">✓</th>
+             <th>Producto</th>
+             <th>Tengo</th>
+             <th>Necesito</th>
+             <th>Ahorro<br><span class="lc-th-sub">vs comprar</span></th>
+           </tr>`
+        : `<tr>
+             <th class="lc-th-check" title="Marcar como en carrito">✓</th>
+             <th>Producto</th>
+             <th>A comprar<br><span class="lc-th-sub">de Necesito</span></th>
+             <th>Precio paquete<br><span class="lc-th-sub">$ por cantidad</span></th>
+             <th>Costo<br><span class="lc-th-sub">receta · paquete</span></th>
+           </tr>`;
+
+      const bodyHtml = rows.map(({food_id, kind}) =>
+        kind === 'pantry'
+          ? renderPantryRow(agg[food_id], shop)
+          : renderIngrRow(agg[food_id], shop, isUnassigned ? null : groupName)
+      ).join('');
 
       return `
-        <div class="lc-store-group ${isUnassigned?'lc-store-group-dashed':''}">
+        <div class="lc-store-group ${isUnassigned?'lc-store-group-dashed':''} ${isPantry?'lc-store-group-pantry':''}">
           ${headHtml}
           <div class="lc-table-wrap">
           <table class="lc-table">
-            <thead>
-              <tr>
-                <th class="lc-th-check" title="Marcar como completo">✓</th>
-                <th>Producto</th>
-                <th>Necesito</th>
-                <th>Ya tengo<br><span class="lc-th-sub">refri / alacena</span></th>
-                <th>A comprar</th>
-                <th>Precio paquete<br><span class="lc-th-sub">$ por cantidad</span></th>
-                <th>Costo</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${itemKeys.map(k => renderIngrRow(agg[k], shop, isUnassigned ? null : storeName)).join('')}
-            </tbody>
+            <thead>${theadHtml}</thead>
+            <tbody>${bodyHtml}</tbody>
           </table>
           </div>
         </div>
@@ -383,53 +447,93 @@ function renderIngredients() {
   updateTotals();
 }
 
-function renderIngrRow(item, shop, assignedStore) {
+// Fila Pantry (Refri/Alacena): muestra lo que ya tienes
+function renderPantryRow(item, shop) {
   const { food, totalGrams } = item;
   const display = chooseDisplayUnit(item);
   const inv = shop.inventory[item.food_id] || {qty:0, unit: display.unit};
-  // a comprar = totalGrams - inventoryGrams (convertir inv a grams)
-  let invGrams = 0;
-  if (inv.unit === 'unidad' && food.gramos_por_unidad) {
-    invGrams = (parseFloat(inv.qty)||0) * food.gramos_por_unidad;
+  const invGrams = unitToGrams(inv.qty, inv.unit, food);
+  const showUnitToggle = food.gramos_por_unidad ? true : false;
+
+  // Ahorro: usa precio actual o histórico
+  const price = shop.prices[item.food_id] || {};
+  const pkgGrams = unitToGrams(price.qty, price.unit, food);
+  let pricePerG = 0;
+  let isHist = false;
+  if (parseFloat(price.price) > 0 && pkgGrams > 0) {
+    pricePerG = parseFloat(price.price) / pkgGrams;
   } else {
-    invGrams = parseFloat(inv.qty)||0;
+    const hp = lastHistoricalPrice(item.food_id, null);
+    if (hp) { pricePerG = hp.pricePer100g/100; isHist = true; }
   }
+  const ahorro = pricePerG * invGrams;
+
+  const needLabel = display.unit==='unidad'
+    ? `${(totalGrams/food.gramos_por_unidad).toFixed(1)}u`
+    : `${Math.round(totalGrams)}g`;
+  const sourcesTxt = item.sources.map(s => `${s.qty}${s.unit==='unidad'?'u':s.unit} (${s.recipeName})`).join(' + ');
+  const isFullyCovered = invGrams >= totalGrams;
+
+  return `
+    <tr data-fid="${item.food_id}" data-kind="pantry" class="${isFullyCovered?'lc-row-done':''}">
+      <td class="lc-td-check">
+        <input type="checkbox" class="lc-check-done" ${isFullyCovered?'checked':''}
+               onchange="togglePantryFull('${item.food_id}', this.checked)"
+               title="Marcar como ya cubierto del todo">
+      </td>
+      <td>
+        <div class="lc-prod-name">${escapeHtml(food.nombre)}</div>
+        <div class="lc-prod-sub" title="${escapeHtml(sourcesTxt)}">${escapeHtml(sourcesTxt)}</div>
+      </td>
+      <td>
+        <div class="lc-inv-row">
+          <input type="number" min="0" step="0.1" value="${inv.qty||''}"
+                 placeholder="0"
+                 onchange="setInventory('${item.food_id}', this.value, document.querySelector('[data-fid=\\'${item.food_id}\\'][data-kind=\\'pantry\\'] .lc-inv-unit').value)"
+                 class="lc-inv-input">
+          <select class="lc-inv-unit" onchange="setInventory('${item.food_id}', document.querySelector('[data-fid=\\'${item.food_id}\\'][data-kind=\\'pantry\\'] .lc-inv-input').value, this.value)">
+            <option value="g" ${inv.unit==='g'?'selected':''}>g</option>
+            <option value="kg" ${inv.unit==='kg'?'selected':''}>kg</option>
+            <option value="ml" ${inv.unit==='ml'?'selected':''}>ml</option>
+            <option value="L" ${inv.unit==='L'?'selected':''}>L</option>
+            ${showUnitToggle ? `<option value="unidad" ${inv.unit==='unidad'?'selected':''}>u</option>` : ''}
+          </select>
+        </div>
+      </td>
+      <td class="lc-need"><strong>${needLabel}</strong></td>
+      <td class="lc-cost">
+        ${ahorro > 0
+          ? `<div class="lc-cost-saved-strong">${fmtMoney(ahorro)}</div>${isHist?`<div class="lc-sub" style="font-size:9px">hist.</div>`:''}`
+          : '<span class="lc-sub">—</span>'}
+      </td>
+    </tr>
+  `;
+}
+
+// Fila Buy: en tienda asignada o sin asignar. Checkbox = "en carrito"
+function renderIngrRow(item, shop, assignedStore) {
+  const { food, totalGrams } = item;
+  const display = chooseDisplayUnit(item);
+  const inv = shop.inventory[item.food_id] || {qty:0, unit:'g'};
+  const invGrams = unitToGrams(inv.qty, inv.unit, food);
   const buyGrams = Math.max(0, totalGrams - invGrams);
   const buyDisplay = display.unit === 'unidad'
     ? (buyGrams / food.gramos_por_unidad)
     : buyGrams;
 
-  // sources resumido
   const sourcesTxt = item.sources.map(s => `${s.qty}${s.unit==='unidad'?'u':s.unit} (${s.recipeName})`).join(' + ');
 
-  // Precio
   const price = shop.prices[item.food_id] || {price:'', qty:'', unit: display.unit};
-  // Costo estimado = (price / packageGrams) * buyGrams
   let costo = null;
-  let pkgGrams = 0;
-  if (price.unit === 'unidad' && food.gramos_por_unidad) {
-    pkgGrams = (parseFloat(price.qty)||0) * food.gramos_por_unidad;
-  } else {
-    pkgGrams = parseFloat(price.qty)||0;
-  }
+  const pkgGrams = unitToGrams(price.qty, price.unit, food);
   if (parseFloat(price.price) > 0 && pkgGrams > 0) {
     costo = (parseFloat(price.price) / pkgGrams) * buyGrams;
   }
 
-  // Fallback histórico: si no hay precio actual, buscamos el último guardado
-  // (priorizando la tienda asignada al producto). Usamos esto para mostrar
-  // costo "tachado" de lo que ya tienes, y como placeholder en los inputs.
   const histPrice = (parseFloat(price.price) > 0) ? null : lastHistoricalPrice(item.food_id, assignedStore);
-  // Costo total estimado (lo que costaría todo el necesario, no solo a comprar)
-  let costoTotalRef = null;
-  if (parseFloat(price.price) > 0 && pkgGrams > 0) {
-    costoTotalRef = (parseFloat(price.price) / pkgGrams) * totalGrams;
-  } else if (histPrice && histPrice.pricePer100g) {
-    costoTotalRef = (histPrice.pricePer100g / 100) * totalGrams;
-  }
 
   const unitLabel = display.unit === 'unidad' ? 'u' : 'g';
-  const displayQtyFmt = display.unit === 'unidad'
+  const needFmt = display.unit === 'unidad'
     ? (display.qty % 1 === 0 ? display.qty.toFixed(0) : display.qty.toFixed(1))
     : Math.round(display.qty);
   const buyQtyFmt = display.unit === 'unidad'
@@ -437,15 +541,15 @@ function renderIngrRow(item, shop, assignedStore) {
     : Math.round(buyDisplay);
 
   const showUnitToggle = food.gramos_por_unidad ? true : false;
-
-  const isDone = buyGrams === 0 && totalGrams > 0;
+  const inCart = !!(shop.purchased && shop.purchased[item.food_id]);
+  const pkgPrice = parseFloat(price.price) || 0;
 
   return `
-    <tr data-fid="${item.food_id}" class="${isDone?'lc-row-done':''}">
+    <tr data-fid="${item.food_id}" data-kind="buy" class="${inCart?'lc-row-cart':''}">
       <td class="lc-td-check">
-        <input type="checkbox" class="lc-check-done" ${isDone?'checked':''}
-               onchange="toggleItemDone('${item.food_id}', this.checked)"
-               title="Marcar todo como ya cubierto">
+        <input type="checkbox" class="lc-check-done" ${inCart?'checked':''}
+               onchange="toggleInCart('${item.food_id}', this.checked, ${assignedStore?'true':'false'})"
+               title="${assignedStore?'Marcar como ya en el carrito':'Marcar como ya cubierto (lo mueve a Refri/Alacena)'}">
       </td>
       <td>
         <div class="lc-prod-name">${escapeHtml(food.nombre)}</div>
@@ -454,25 +558,9 @@ function renderIngrRow(item, shop, assignedStore) {
           ? `<div class="lc-prod-store"><button class="lc-store-badge" onclick="openStoreMenu('${item.food_id}', this)" title="Cambiar tienda">🏪 ${escapeHtml(assignedStore)} ▾</button></div>`
           : `<div class="lc-prod-store"><button class="lc-store-assign" onclick="openStoreMenu('${item.food_id}', this)">+ asignar tienda</button></div>`}
       </td>
-      <td class="lc-need">
-        <strong>${displayQtyFmt}${unitLabel}</strong>
-        ${display.unit==='g' && food.gramos_por_unidad ? `<div class="lc-sub">≈ ${(totalGrams/food.gramos_por_unidad).toFixed(1)} unid</div>` : ''}
-      </td>
-      <td>
-        <div class="lc-inv-row">
-          <input type="number" min="0" step="0.1" value="${inv.qty||''}"
-                 placeholder="0"
-                 onchange="setInventory('${item.food_id}', this.value, document.querySelector('[data-fid=\\'${item.food_id}\\'] .lc-inv-unit').value)"
-                 class="lc-inv-input">
-          <select class="lc-inv-unit" onchange="setInventory('${item.food_id}', document.querySelector('[data-fid=\\'${item.food_id}\\'] .lc-inv-input').value, this.value)">
-            <option value="g" ${inv.unit==='g'?'selected':''}>g</option>
-            ${showUnitToggle ? `<option value="unidad" ${inv.unit==='unidad'?'selected':''}>u</option>` : ''}
-          </select>
-        </div>
-      </td>
-      <td class="lc-buy ${buyGrams===0?'lc-buy-done':''}">
+      <td class="lc-buy">
         <strong>${buyQtyFmt}${unitLabel}</strong>
-        ${buyGrams===0?'<div class="lc-sub" style="color:var(--green)">✓ ya tienes</div>':''}
+        <div class="lc-sub">de ${needFmt}${unitLabel}</div>
       </td>
       <td>
         <div class="lc-price-row">
@@ -486,17 +574,17 @@ function renderIngrRow(item, shop, assignedStore) {
           <select onchange="setPrice('${item.food_id}', 'unit', this.value)" class="lc-price-unit">
             <option value="g" ${(price.unit||(histPrice&&histPrice.unit))==='g'?'selected':''}>g</option>
             <option value="kg" ${(price.unit||(histPrice&&histPrice.unit))==='kg'?'selected':''}>kg</option>
+            <option value="ml" ${(price.unit||(histPrice&&histPrice.unit))==='ml'?'selected':''}>ml</option>
+            <option value="L" ${(price.unit||(histPrice&&histPrice.unit))==='L'?'selected':''}>L</option>
             ${showUnitToggle ? `<option value="unidad" ${(price.unit||(histPrice&&histPrice.unit))==='unidad'?'selected':''}>u</option>` : ''}
           </select>
         </div>
-        ${histPrice ? `<div class="lc-hist-hint">Último: $${histPrice.price}/${histPrice.qty}${histPrice.unit} · ${escapeHtml(histPrice.store)}${histPrice.fromCurrentStore?'':' (otra tienda)'} <button class="lc-apply-hist" onclick="applyHistPrice('${item.food_id}')">aplicar</button></div>`:''}
+        ${histPrice ? `<div class="lc-hist-hint">Último: $${histPrice.price}/${histPrice.qty}${histPrice.unit} · ${escapeHtml(histPrice.store)} <button class="lc-apply-hist" onclick="applyHistPrice('${item.food_id}')">aplicar</button></div>`:''}
       </td>
       <td class="lc-cost">
-        ${costo!=null && costo>0 ? fmtMoney(costo) : (
-          isDone && costoTotalRef!=null
-            ? `<div class="lc-cost-done">${fmtMoney(costoTotalRef)}</div><div class="lc-cost-saved">ahorro ${histPrice?'(hist.)':''}</div>`
-            : '—'
-        )}
+        ${costo!=null && costo>0
+          ? `<div>${fmtMoney(costo)}</div>${pkgPrice>0 ? `<div class="lc-sub lc-cost-pkg ${inCart?'lc-cost-pkg-active':''}">pago ${fmtMoney(pkgPrice)}</div>` : ''}`
+          : '—'}
       </td>
     </tr>
   `;
@@ -563,30 +651,61 @@ function applyHistPrice(food_id) {
   renderIngredients();
 }
 
-function toggleItemDone(food_id, checked) {
+// Pantry row checkbox: si check, llena inv = totalNeeded
+function togglePantryFull(food_id, checked) {
   const { agg } = aggregateIngredients();
   const item = agg[food_id];
   if (!item) return;
   const s = shopGet();
   if (!s.inventory) s.inventory = {};
   if (checked) {
-    // Marcar como cubierto: poner inventario = total necesario
     const food = item.food;
-    // Usa la unidad de display (g o unidad) para que se vea consistente con la fila
     const display = chooseDisplayUnit(item);
     if (display.unit === 'unidad' && food.gramos_por_unidad) {
-      const qtyU = item.totalGrams / food.gramos_por_unidad;
-      s.inventory[food_id] = { qty: Math.round(qtyU * 100) / 100, unit: 'unidad' };
+      s.inventory[food_id] = { qty: Math.round((item.totalGrams/food.gramos_por_unidad) * 100)/100, unit: 'unidad' };
     } else {
-      s.inventory[food_id] = { qty: Math.round(item.totalGrams * 100) / 100, unit: 'g' };
+      s.inventory[food_id] = { qty: Math.round(item.totalGrams * 100)/100, unit: 'g' };
     }
   } else {
-    // Desmarcar: limpiar inventario
     delete s.inventory[food_id];
   }
   shopSet(s);
   renderIngredients();
 }
+
+// Buy row checkbox: si hay tienda asignada → marca/desmarca "en carrito".
+// Si NO hay tienda (Sin asignar): auto-llena inventario (mueve a Refri/Alacena).
+function toggleInCart(food_id, checked, hasStore) {
+  const s = shopGet();
+  if (!s.purchased) s.purchased = {};
+  if (!s.inventory) s.inventory = {};
+  if (!hasStore) {
+    // Sin tienda: el check significa "ya tengo todo" → llenar inventario
+    if (checked) {
+      const { agg } = aggregateIngredients();
+      const item = agg[food_id];
+      if (!item) return;
+      const food = item.food;
+      const display = chooseDisplayUnit(item);
+      if (display.unit === 'unidad' && food.gramos_por_unidad) {
+        s.inventory[food_id] = { qty: Math.round((item.totalGrams/food.gramos_por_unidad)*100)/100, unit: 'unidad' };
+      } else {
+        s.inventory[food_id] = { qty: Math.round(item.totalGrams*100)/100, unit: 'g' };
+      }
+    } else {
+      delete s.inventory[food_id];
+    }
+  } else {
+    // Con tienda: toggle "en carrito"
+    if (checked) s.purchased[food_id] = true;
+    else delete s.purchased[food_id];
+  }
+  shopSet(s);
+  renderIngredients();
+}
+
+// Compat (por si llaman desde otro lado): redirige a togglePantryFull
+function toggleItemDone(food_id, checked) { togglePantryFull(food_id, checked); }
 
 function setInventory(food_id, qty, unit) {
   const s = shopGet();
@@ -607,9 +726,11 @@ function setPrice(food_id, field, value) {
   if (!s.prices[food_id]) s.prices[food_id] = {price:'', qty:'', unit:'g'};
   if (field === 'unit') {
     s.prices[food_id].unit = value;
-    // Si pasa a kg, sugerir 1; si pasa a g, sugerir 1000
+    // Defaults sugeridos al cambiar de unidad
     if (value === 'kg' && !s.prices[food_id].qty) s.prices[food_id].qty = 1;
-    if (value === 'g' && !s.prices[food_id].qty) s.prices[food_id].qty = 1000;
+    if (value === 'L'  && !s.prices[food_id].qty) s.prices[food_id].qty = 1;
+    if (value === 'g'  && !s.prices[food_id].qty) s.prices[food_id].qty = 1000;
+    if (value === 'ml' && !s.prices[food_id].qty) s.prices[food_id].qty = 1000;
   } else {
     s.prices[food_id][field] = value;
   }
@@ -621,29 +742,58 @@ function setPrice(food_id, field, value) {
 function updateTotals() {
   const { agg } = aggregateIngredients();
   const shop = shopGet();
-  let total = 0;
-  let withPrice = 0;
   const keys = Object.keys(agg);
+  let costoReceta = 0;     // proporcional sobre lo que se necesita comprar
+  let costoCarrito = 0;    // suma de precio paquete de items "en carrito"
+  let ahorro = 0;          // pricePerG * invGrams
+  let withPrice = 0;
+  const storeTotalsPkg = {}; // store -> sum pkg cost (en carrito)
+  const storeTotalsReceta = {}; // store -> sum proporcional
+
   keys.forEach(k => {
     const item = agg[k];
     const food = item.food;
     const inv = shop.inventory[k] || {qty:0, unit:'g'};
-    let invGrams = 0;
-    if (inv.unit === 'unidad' && food.gramos_por_unidad) invGrams = (parseFloat(inv.qty)||0) * food.gramos_por_unidad;
-    else invGrams = parseFloat(inv.qty)||0;
+    const invGrams = unitToGrams(inv.qty, inv.unit, food);
     const buyGrams = Math.max(0, item.totalGrams - invGrams);
     const price = shop.prices[k] || {};
-    let pkgGrams = 0;
-    if (price.unit === 'kg') pkgGrams = (parseFloat(price.qty)||0) * 1000;
-    else if (price.unit === 'unidad' && food.gramos_por_unidad) pkgGrams = (parseFloat(price.qty)||0) * food.gramos_por_unidad;
-    else pkgGrams = parseFloat(price.qty)||0;
-    if (parseFloat(price.price) > 0 && pkgGrams > 0) {
-      total += (parseFloat(price.price) / pkgGrams) * buyGrams;
-      if (buyGrams > 0) withPrice++;
+    const pkgGrams = unitToGrams(price.qty, price.unit, food);
+    const hasPrice = parseFloat(price.price) > 0 && pkgGrams > 0;
+    const pricePerG = hasPrice ? (parseFloat(price.price) / pkgGrams) : 0;
+    const store = getFoodStore(k);
+    if (hasPrice && buyGrams > 0) withPrice++;
+    if (invGrams > 0 && pricePerG > 0) ahorro += pricePerG * invGrams;
+    if (buyGrams > 0 && pricePerG > 0) {
+      const c = pricePerG * buyGrams;
+      costoReceta += c;
+      if (store) storeTotalsReceta[store] = (storeTotalsReceta[store]||0) + c;
+    }
+    if (shop.purchased && shop.purchased[k] && store && parseFloat(price.price) > 0) {
+      costoCarrito += parseFloat(price.price);
+      storeTotalsPkg[store] = (storeTotalsPkg[store]||0) + parseFloat(price.price);
     }
   });
-  document.getElementById('totalEstimado').textContent = fmtMoney(total);
-  document.getElementById('itemsConPrecio').textContent = `${withPrice} / ${keys.length}`;
+
+  // Resumen HTML: lo construimos en totalEstimado para mostrar todo
+  const totalEl = document.getElementById('totalEstimado');
+  const itemsEl = document.getElementById('itemsConPrecio');
+  if (totalEl) {
+    const storeNames = Array.from(new Set([...Object.keys(storeTotalsPkg), ...Object.keys(storeTotalsReceta)])).sort();
+    const storesHtml = storeNames.map(s => `
+      <div class="lc-total-row">
+        <span>🏪 ${escapeHtml(s)}</span>
+        <span>${storeTotalsPkg[s]?fmtMoney(storeTotalsPkg[s]):'<span class="lc-sub">$0</span>'}
+          <span class="lc-sub">· receta ${fmtMoney(storeTotalsReceta[s]||0)}</span>
+        </span>
+      </div>`).join('');
+    totalEl.innerHTML = `
+      ${storesHtml}
+      <div class="lc-total-row lc-total-grand"><span>Pagado total</span><span>${fmtMoney(costoCarrito)}</span></div>
+      <div class="lc-total-row"><span class="lc-sub">Costo por receta</span><span class="lc-sub">${fmtMoney(costoReceta)}</span></div>
+      ${ahorro>0?`<div class="lc-total-row"><span class="lc-sub" style="color:var(--green)">Ahorro de alacena</span><span class="lc-sub" style="color:var(--green)">${fmtMoney(ahorro)}</span></div>`:''}
+    `;
+  }
+  if (itemsEl) itemsEl.textContent = `${withPrice} / ${keys.length}`;
 }
 
 // ─── CERRAR SEMANA ───────────────────────────────────────────────────────────
@@ -670,15 +820,10 @@ function closeWeek() {
     const food = item.food;
     const itemStore = getFoodStore(k) || '(sin tienda)';
     const inv = shop.inventory[k] || {qty:0, unit:'g'};
-    let invGrams = 0;
-    if (inv.unit === 'unidad' && food.gramos_por_unidad) invGrams = (parseFloat(inv.qty)||0) * food.gramos_por_unidad;
-    else invGrams = parseFloat(inv.qty)||0;
+    const invGrams = unitToGrams(inv.qty, inv.unit, food);
     const buyGrams = Math.max(0, item.totalGrams - invGrams);
     const price = shop.prices[k] || {};
-    let pkgGrams = 0;
-    if (price.unit === 'kg') pkgGrams = (parseFloat(price.qty)||0) * 1000;
-    else if (price.unit === 'unidad' && food.gramos_por_unidad) pkgGrams = (parseFloat(price.qty)||0) * food.gramos_por_unidad;
-    else pkgGrams = parseFloat(price.qty)||0;
+    const pkgGrams = unitToGrams(price.qty, price.unit, food);
     let costo = 0;
     let pricePer100g = null;
     if (parseFloat(price.price) > 0 && pkgGrams > 0) {
@@ -699,6 +844,7 @@ function closeWeek() {
       unitPackage: price.unit || 'g',
       costo: Math.round(costo*100)/100,
       pricePer100g: pricePer100g != null ? Math.round(pricePer100g*100)/100 : null,
+      inCart: !!(shop.purchased && shop.purchased[k]),
     });
     if (pricePer100g != null && getFoodStore(k)) {
       const storeForDb = getFoodStore(k);
@@ -732,6 +878,7 @@ function closeWeek() {
     recipes: [],
     inventory: {},
     prices: {},
+    purchased: {},
     weekStart: plusDays(shop.weekStart, 7),
   };
   shopSet(newShop);
@@ -745,6 +892,7 @@ function clearAll() {
   s.recipes = [];
   s.inventory = {};
   s.prices = {};
+  s.purchased = {};
   shopSet(s);
   renderAll();
 }
@@ -762,11 +910,9 @@ function renderHistory() {
     const storeChips = w.storeTotals
       ? Object.entries(w.storeTotals).map(([s,t]) => '<span class="lc-tag-store">' + escapeHtml(s) + ' ' + fmtMoney(t) + '</span>').join(' ')
       : (w.store ? '<span class="lc-tag-store">' + escapeHtml(w.store) + '</span>' : '');
-    return '<details class="lc-history">' +
-      '<summary>' +
-        '<div><strong>' + fmtDate(w.weekStart) + ' - ' + fmtDate(w.weekEnd) + '</strong> ' + storeChips + '</div>' +
-        '<div class="lc-history-total">' + fmtMoney(w.total) + '</div>' +
-      '</summary>' +
+    return '<details class="lc-history"><summary>' +
+      '<div><strong>' + fmtDate(w.weekStart) + ' - ' + fmtDate(w.weekEnd) + '</strong> ' + storeChips + '</div>' +
+      '<div class="lc-history-total">' + fmtMoney(w.total) + '</div></summary>' +
       '<div class="lc-history-body">' +
         '<div class="lc-sub" style="margin-bottom:8px">' + w.recipes.length + ' recetas - ' + w.items.length + ' productos</div>' +
         '<table class="lc-table lc-table-compact">' +
@@ -779,11 +925,9 @@ function renderHistory() {
               '<td>' + (i.pricePer100g!=null?fmtMoney(i.pricePer100g):'-') + '</td>' +
               '<td>' + fmtMoney(i.costo) + '</td></tr>'
             ).join('') +
-          '</tbody>' +
-        '</table>' +
+          '</tbody></table>' +
         '<div style="margin-top:10px"><button class="btn-cancel" onclick="deleteWeek(\'' + w.id + '\')">Eliminar esta semana</button></div>' +
-      '</div>' +
-    '</details>';
+      '</div></details>';
   }).join('');
 }
 

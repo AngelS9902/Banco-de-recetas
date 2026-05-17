@@ -964,6 +964,82 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .lc-row-done .lc-prod-name{text-decoration:line-through;opacity:.55}
 .lc-row-done .lc-prod-sub{opacity:.5}
 .lc-row-done td{opacity:.85}
+
+/* Costo tachado + ahorro */
+.lc-cost-done{text-decoration:line-through;color:var(--muted);font-weight:400;font-size:13px}
+.lc-cost-saved{font-size:10px;color:var(--green);margin-top:2px;font-weight:500}
+
+/* Hint de precio histórico */
+.lc-price-from-hist::placeholder{color:var(--accent);opacity:.55;font-style:italic}
+.lc-hist-hint{
+  font-size:10px;color:var(--muted);margin-top:4px;line-height:1.3;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+}
+.lc-apply-hist{
+  font-size:10px;background:transparent;border:1px solid var(--border);
+  color:var(--accent);padding:1px 6px;border-radius:6px;cursor:pointer;
+  font-family:inherit;
+}
+.lc-apply-hist:hover{background:var(--accent);color:white;border-color:var(--accent)}
+
+/* Grupos de tienda en la lista */
+.lc-store-group{margin-bottom:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface);overflow:hidden}
+.lc-store-group-dashed{border-style:dashed;background:transparent}
+.lc-store-group-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--border);
+}
+.lc-store-group-dashed .lc-store-group-head{background:transparent}
+.lc-store-group-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px}
+.lc-store-unassigned .lc-store-group-title{color:var(--muted);font-weight:500}
+.lc-store-group-stats{font-size:11px;color:var(--muted)}
+.lc-store-group .lc-table-wrap{border:none;border-radius:0}
+.lc-store-group .lc-table{border-radius:0}
+
+/* Badge de tienda en cada fila */
+.lc-prod-store{margin-top:6px}
+.lc-store-badge,.lc-store-assign{
+  font-family:inherit;font-size:10px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--muted);padding:2px 8px;border-radius:8px;cursor:pointer;
+}
+.lc-store-badge{color:var(--accent);border-color:var(--accent)}
+.lc-store-badge:hover,.lc-store-assign:hover{background:var(--bg);color:var(--text)}
+.lc-store-assign{border-style:dashed}
+
+/* Menú flotante de tienda */
+.lc-store-menu{
+  position:absolute;z-index:1000;
+  background:white;border:1px solid var(--border);border-radius:10px;
+  padding:8px;min-width:200px;max-width:240px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  display:flex;flex-direction:column;gap:2px;
+}
+.lc-store-menu-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:4px 6px 6px}
+.lc-store-menu-opt{
+  font-family:inherit;font-size:13px;text-align:left;
+  background:transparent;border:none;color:var(--text);
+  padding:7px 10px;border-radius:6px;cursor:pointer;
+}
+.lc-store-menu-opt:hover{background:var(--bg)}
+.lc-store-menu-active{background:var(--bg);font-weight:600;color:var(--accent)}
+.lc-store-menu-sep{height:1px;background:var(--border);margin:4px 0}
+.lc-store-menu-new{display:flex;gap:4px}
+.lc-store-menu-input{
+  flex:1;font-family:inherit;font-size:12px;
+  border:1px solid var(--border);border-radius:6px;padding:6px 8px;
+}
+.lc-store-menu-add{
+  font-family:inherit;font-weight:600;font-size:14px;
+  background:var(--accent);color:white;border:none;border-radius:6px;
+  width:30px;cursor:pointer;
+}
+.lc-store-menu-clear{
+  font-family:inherit;font-size:11px;text-align:left;
+  background:transparent;border:none;color:var(--red,#c44);
+  padding:6px 10px;border-radius:6px;cursor:pointer;margin-top:4px;
+}
+.lc-store-menu-clear:hover{background:#fdeaea}
 .lc-cost{font-weight:600;font-size:13px;color:var(--accent);text-align:right}
 
 .lc-inv-row,.lc-price-row{display:flex;align-items:center;gap:4px}

@@ -91,12 +91,54 @@ function historySet(h) { cloudSet('shop_history', h); }
 function priceDbGet() { return cloudGet('price_db', {}) || {}; }
 function priceDbSet(db) { cloudSet('price_db', db); }
 
+// Devuelve el snapshot de precio más reciente para un alimento.
+// Si preferStore se pasa, prioriza esa tienda; sino busca cualquiera.
+// Retorna { pricePer100g, store, date, fromPreferredStore } o null.
+function lastHistoricalPrice(food_id, preferStore) {
+  const db = priceDbGet();
+  if (!db[food_id]) return null;
+  // Tienda preferida primero
+  if (preferStore && db[food_id][preferStore] && db[food_id][preferStore].length) {
+    const arr = db[food_id][preferStore].slice().sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    const s = arr[0];
+    return { pricePer100g: s.pricePer100g, price: s.price, qty: s.qty, unit: s.unit, store: preferStore, date: s.date, fromPreferredStore: true };
+  }
+  // Cualquier tienda — más reciente global
+  let best = null;
+  for (const store in db[food_id]) {
+    (db[food_id][store]||[]).forEach(s => {
+      if (!best || (s.date||'') > (best.date||'')) best = { ...s, store };
+    });
+  }
+  if (best) return { pricePer100g: best.pricePer100g, price: best.price, qty: best.qty, unit: best.unit, store: best.store, date: best.date, fromPreferredStore: false };
+  return null;
+}
+
 function storesGet() {
   const s = cloudGet('stores', null);
   if (Array.isArray(s) && s.length) return s;
   return DEFAULT_STORES.slice();
 }
 function storesSet(arr) { cloudSet('stores', arr); }
+
+// Mapeo persistente: food_id -> tienda asignada
+function foodStoresGet() { return cloudGet('food_stores', {}) || {}; }
+function foodStoresSet(m) { cloudSet('food_stores', m); }
+function getFoodStore(food_id) {
+  const m = foodStoresGet();
+  return m[food_id] || null;
+}
+function assignFoodStore(food_id, store) {
+  const m = foodStoresGet();
+  if (!store) delete m[food_id]; else m[food_id] = store;
+  foodStoresSet(m);
+  // Si la tienda no existe en la lista global, agrégala
+  if (store) {
+    const stores = storesGet();
+    if (!stores.includes(store)) { stores.push(store); storesSet(stores); }
+  }
+  renderAll();
+}
 
 // ─── AGGREGATION ─────────────────────────────────────────────────────────────
 function aggregateIngredients() {
@@ -145,47 +187,30 @@ function chooseDisplayUnit(item) {
   return {unit:'g', qty: item.totalGrams};
 }
 
-// ─── RENDER: HEADER + STORE ──────────────────────────────────────────────────
+// ─── RENDER: HEADER ──────────────────────────────────────────────────────────
 function renderHeader() {
   const shop = shopGet();
   // Asegura weekStart inicializado
   if (!shop.weekStart) { shop.weekStart = mondayOf(todayISO()); shopSet(shop); }
   const weekEnd = plusDays(shop.weekStart, 6);
   document.getElementById('weekLabel').textContent = `${fmtDate(shop.weekStart)} – ${fmtDate(weekEnd)}`;
-  document.getElementById('storeLabel').textContent = shop.store ? '🏪 ' + shop.store : 'Sin tienda';
-  document.getElementById('weekStartInput').value = shop.weekStart;
-
-  const sel = document.getElementById('storeSelect');
   const stores = storesGet();
-  sel.innerHTML = `<option value="">— Selecciona —</option>` +
-    stores.map(s => `<option value="${escapeHtml(s)}" ${s===shop.store?'selected':''}>${escapeHtml(s)}</option>`).join('');
-  sel.onchange = () => {
-    const s = shopGet();
-    s.store = sel.value;
-    shopSet(s);
-    renderHeader();
-  };
-
-  document.getElementById('weekStartInput').onchange = (e) => {
-    const s = shopGet();
-    s.weekStart = mondayOf(e.target.value);
-    shopSet(s);
-    renderHeader();
-  };
+  const storeLabel = document.getElementById('storeLabel');
+  if (storeLabel) storeLabel.textContent = `${stores.length} tienda${stores.length===1?'':'s'}`;
+  const wsInput = document.getElementById('weekStartInput');
+  if (wsInput) {
+    wsInput.value = shop.weekStart;
+    wsInput.onchange = (e) => {
+      const s = shopGet();
+      s.weekStart = mondayOf(e.target.value);
+      shopSet(s);
+      renderHeader();
+    };
+  }
 }
 
-function addStore() {
-  const input = document.getElementById('storeNew');
-  const v = input.value.trim();
-  if (!v) return;
-  const stores = storesGet();
-  if (!stores.includes(v)) { stores.push(v); storesSet(stores); }
-  input.value = '';
-  const s = shopGet();
-  s.store = v;
-  shopSet(s);
-  renderHeader();
-}
+// addStore() — ya no se usa desde header pero la dejamos por si HTML legacy
+function addStore() { /* deprecated — usar openStoreMenu por item */ }
 
 // ─── RENDER: RECETAS CHIPS ───────────────────────────────────────────────────
 function renderRecipes() {
@@ -254,7 +279,7 @@ function removeRecipe(id) {
   renderAll();
 }
 
-// ─── RENDER: TABLA DE INGREDIENTES ───────────────────────────────────────────
+// ─── RENDER: TABLA DE INGREDIENTES AGRUPADA POR TIENDA ───────────────────────
 function renderIngredients() {
   const { agg, legacy } = aggregateIngredients();
   const shop = shopGet();
@@ -266,26 +291,76 @@ function renderIngredients() {
   if (keys.length === 0) {
     wrap.innerHTML = `<div class="empty-state" style="padding:1rem">Sin ingredientes para sumar. Agrega recetas con ingredientes estructurados.</div>`;
   } else {
-    wrap.innerHTML = `
-      <div class="lc-table-wrap">
-      <table class="lc-table">
-        <thead>
-          <tr>
-            <th class="lc-th-check" title="Marcar como completo">✓</th>
-            <th>Producto</th>
-            <th>Necesito</th>
-            <th>Ya tengo<br><span class="lc-th-sub">refri / alacena</span></th>
-            <th>A comprar</th>
-            <th>Precio paquete<br><span class="lc-th-sub">$ por cantidad</span></th>
-            <th>Costo</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${keys.map(k => renderIngrRow(agg[k], shop)).join('')}
-        </tbody>
-      </table>
-      </div>
-    `;
+    // Agrupar food_ids por tienda asignada
+    const groups = {}; // store -> [food_ids]
+    const UNASSIGNED = '__unassigned__';
+    keys.forEach(k => {
+      const store = getFoodStore(k) || UNASSIGNED;
+      if (!groups[store]) groups[store] = [];
+      groups[store].push(k);
+    });
+    // Orden: tiendas alfabéticas, "sin asignar" al final
+    const storeNames = Object.keys(groups).filter(s => s !== UNASSIGNED).sort((a,b) => a.localeCompare(b));
+    if (groups[UNASSIGNED]) storeNames.push(UNASSIGNED);
+
+    wrap.innerHTML = storeNames.map(storeName => {
+      const isUnassigned = storeName === UNASSIGNED;
+      const itemKeys = groups[storeName];
+      // Stats por grupo
+      let groupTotal = 0;
+      let doneCount = 0;
+      itemKeys.forEach(k => {
+        const it = agg[k];
+        const inv = shop.inventory[k] || {qty:0, unit:'g'};
+        let invG = inv.unit === 'unidad' && it.food.gramos_por_unidad
+          ? (parseFloat(inv.qty)||0)*it.food.gramos_por_unidad : (parseFloat(inv.qty)||0);
+        const buyG = Math.max(0, it.totalGrams - invG);
+        if (buyG === 0 && it.totalGrams > 0) doneCount++;
+        const price = shop.prices[k] || {};
+        let pkgG = 0;
+        if (price.unit === 'kg') pkgG = (parseFloat(price.qty)||0)*1000;
+        else if (price.unit === 'unidad' && it.food.gramos_por_unidad) pkgG = (parseFloat(price.qty)||0)*it.food.gramos_por_unidad;
+        else pkgG = parseFloat(price.qty)||0;
+        if (parseFloat(price.price)>0 && pkgG>0) groupTotal += (parseFloat(price.price)/pkgG)*buyG;
+      });
+      const statsTxt = `${itemKeys.length} producto${itemKeys.length===1?'':'s'}` +
+        (doneCount>0?` · ${doneCount} ya tienes`:'') +
+        (groupTotal>0?` · ${fmtMoney(groupTotal)}`:'');
+
+      const headHtml = isUnassigned
+        ? `<div class="lc-store-group-head lc-store-unassigned">
+             <div class="lc-store-group-title">📦 Sin tienda asignada</div>
+             <div class="lc-store-group-stats">${statsTxt}</div>
+           </div>`
+        : `<div class="lc-store-group-head">
+             <div class="lc-store-group-title">🏪 ${escapeHtml(storeName)}</div>
+             <div class="lc-store-group-stats">${statsTxt}</div>
+           </div>`;
+
+      return `
+        <div class="lc-store-group ${isUnassigned?'lc-store-group-dashed':''}">
+          ${headHtml}
+          <div class="lc-table-wrap">
+          <table class="lc-table">
+            <thead>
+              <tr>
+                <th class="lc-th-check" title="Marcar como completo">✓</th>
+                <th>Producto</th>
+                <th>Necesito</th>
+                <th>Ya tengo<br><span class="lc-th-sub">refri / alacena</span></th>
+                <th>A comprar</th>
+                <th>Precio paquete<br><span class="lc-th-sub">$ por cantidad</span></th>
+                <th>Costo</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemKeys.map(k => renderIngrRow(agg[k], shop, isUnassigned ? null : storeName)).join('')}
+            </tbody>
+          </table>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   // Legacy
@@ -308,7 +383,7 @@ function renderIngredients() {
   updateTotals();
 }
 
-function renderIngrRow(item, shop) {
+function renderIngrRow(item, shop, assignedStore) {
   const { food, totalGrams } = item;
   const display = chooseDisplayUnit(item);
   const inv = shop.inventory[item.food_id] || {qty:0, unit: display.unit};
@@ -341,6 +416,18 @@ function renderIngrRow(item, shop) {
     costo = (parseFloat(price.price) / pkgGrams) * buyGrams;
   }
 
+  // Fallback histórico: si no hay precio actual, buscamos el último guardado
+  // (priorizando la tienda asignada al producto). Usamos esto para mostrar
+  // costo "tachado" de lo que ya tienes, y como placeholder en los inputs.
+  const histPrice = (parseFloat(price.price) > 0) ? null : lastHistoricalPrice(item.food_id, assignedStore);
+  // Costo total estimado (lo que costaría todo el necesario, no solo a comprar)
+  let costoTotalRef = null;
+  if (parseFloat(price.price) > 0 && pkgGrams > 0) {
+    costoTotalRef = (parseFloat(price.price) / pkgGrams) * totalGrams;
+  } else if (histPrice && histPrice.pricePer100g) {
+    costoTotalRef = (histPrice.pricePer100g / 100) * totalGrams;
+  }
+
   const unitLabel = display.unit === 'unidad' ? 'u' : 'g';
   const displayQtyFmt = display.unit === 'unidad'
     ? (display.qty % 1 === 0 ? display.qty.toFixed(0) : display.qty.toFixed(1))
@@ -363,6 +450,9 @@ function renderIngrRow(item, shop) {
       <td>
         <div class="lc-prod-name">${escapeHtml(food.nombre)}</div>
         <div class="lc-prod-sub" title="${escapeHtml(sourcesTxt)}">${escapeHtml(sourcesTxt)}</div>
+        ${assignedStore
+          ? `<div class="lc-prod-store"><button class="lc-store-badge" onclick="openStoreMenu('${item.food_id}', this)" title="Cambiar tienda">🏪 ${escapeHtml(assignedStore)} ▾</button></div>`
+          : `<div class="lc-prod-store"><button class="lc-store-assign" onclick="openStoreMenu('${item.food_id}', this)">+ asignar tienda</button></div>`}
       </td>
       <td class="lc-need">
         <strong>${displayQtyFmt}${unitLabel}</strong>
@@ -386,23 +476,91 @@ function renderIngrRow(item, shop) {
       </td>
       <td>
         <div class="lc-price-row">
-          $<input type="number" min="0" step="0.01" value="${price.price||''}" placeholder="0"
+          $<input type="number" min="0" step="0.01" value="${price.price||''}" placeholder="${histPrice?histPrice.price:'0'}"
                   onchange="setPrice('${item.food_id}', 'price', this.value)"
-                  class="lc-price-input">
+                  class="lc-price-input ${histPrice?'lc-price-from-hist':''}">
           /
-          <input type="number" min="0" step="0.1" value="${price.qty||''}" placeholder="0"
+          <input type="number" min="0" step="0.1" value="${price.qty||''}" placeholder="${histPrice?histPrice.qty:'0'}"
                  onchange="setPrice('${item.food_id}', 'qty', this.value)"
-                 class="lc-price-qty">
+                 class="lc-price-qty ${histPrice?'lc-price-from-hist':''}">
           <select onchange="setPrice('${item.food_id}', 'unit', this.value)" class="lc-price-unit">
-            <option value="g" ${price.unit==='g'?'selected':''}>g</option>
-            <option value="kg" ${price.unit==='kg'?'selected':''}>kg</option>
-            ${showUnitToggle ? `<option value="unidad" ${price.unit==='unidad'?'selected':''}>u</option>` : ''}
+            <option value="g" ${(price.unit||(histPrice&&histPrice.unit))==='g'?'selected':''}>g</option>
+            <option value="kg" ${(price.unit||(histPrice&&histPrice.unit))==='kg'?'selected':''}>kg</option>
+            ${showUnitToggle ? `<option value="unidad" ${(price.unit||(histPrice&&histPrice.unit))==='unidad'?'selected':''}>u</option>` : ''}
           </select>
         </div>
+        ${histPrice ? `<div class="lc-hist-hint">Último: $${histPrice.price}/${histPrice.qty}${histPrice.unit} · ${escapeHtml(histPrice.store)}${histPrice.fromCurrentStore?'':' (otra tienda)'} <button class="lc-apply-hist" onclick="applyHistPrice('${item.food_id}')">aplicar</button></div>`:''}
       </td>
-      <td class="lc-cost">${costo!=null?fmtMoney(costo):'—'}</td>
+      <td class="lc-cost">
+        ${costo!=null && costo>0 ? fmtMoney(costo) : (
+          isDone && costoTotalRef!=null
+            ? `<div class="lc-cost-done">${fmtMoney(costoTotalRef)}</div><div class="lc-cost-saved">ahorro ${histPrice?'(hist.)':''}</div>`
+            : '—'
+        )}
+      </td>
     </tr>
   `;
+}
+
+// ─── MENÚ FLOTANTE DE ASIGNACIÓN DE TIENDA ───────────────────────────────────
+function openStoreMenu(food_id, btn) {
+  closeStoreMenu();
+  const stores = storesGet();
+  const current = getFoodStore(food_id) || '';
+  const menu = document.createElement('div');
+  menu.className = 'lc-store-menu';
+  menu.id = '__lc_store_menu__';
+  menu.innerHTML = `
+    <div class="lc-store-menu-title">Asignar tienda</div>
+    ${stores.map(s => `
+      <button class="lc-store-menu-opt ${s===current?'lc-store-menu-active':''}" onclick="assignFoodStore('${food_id}','${escapeHtml(s).replace(/'/g,"\\'")}');closeStoreMenu()">${escapeHtml(s)}${s===current?' ✓':''}</button>
+    `).join('')}
+    <div class="lc-store-menu-sep"></div>
+    <div class="lc-store-menu-new">
+      <input type="text" id="__lc_new_store__" placeholder="Nueva tienda…" class="lc-store-menu-input">
+      <button class="lc-store-menu-add" onclick="addStoreFromMenu('${food_id}')">＋</button>
+    </div>
+    ${current ? `<button class="lc-store-menu-clear" onclick="assignFoodStore('${food_id}','');closeStoreMenu()">🗑 Quitar asignación</button>` : ''}
+  `;
+  document.body.appendChild(menu);
+  // Posicionar bajo el botón
+  const r = btn.getBoundingClientRect();
+  menu.style.left = Math.min(r.left, window.innerWidth - 240) + 'px';
+  menu.style.top = (r.bottom + window.scrollY + 4) + 'px';
+  // Click fuera cierra
+  setTimeout(() => {
+    document.addEventListener('click', outsideStoreMenuClick, { once: false });
+  }, 0);
+}
+function outsideStoreMenuClick(e) {
+  const menu = document.getElementById('__lc_store_menu__');
+  if (menu && !menu.contains(e.target) && !e.target.closest('.lc-store-badge') && !e.target.closest('.lc-store-assign')) {
+    closeStoreMenu();
+  }
+}
+function closeStoreMenu() {
+  const m = document.getElementById('__lc_store_menu__');
+  if (m) m.remove();
+  document.removeEventListener('click', outsideStoreMenuClick);
+}
+function addStoreFromMenu(food_id) {
+  const inp = document.getElementById('__lc_new_store__');
+  if (!inp) return;
+  const v = inp.value.trim();
+  if (!v) return;
+  assignFoodStore(food_id, v);
+  closeStoreMenu();
+}
+
+function applyHistPrice(food_id) {
+  const s = shopGet();
+  const assigned = getFoodStore(food_id);
+  const hp = lastHistoricalPrice(food_id, assigned);
+  if (!hp) return;
+  if (!s.prices) s.prices = {};
+  s.prices[food_id] = { price: hp.price, qty: hp.qty, unit: hp.unit || 'g' };
+  shopSet(s);
+  renderIngredients();
 }
 
 function toggleItemDone(food_id, checked) {
@@ -492,15 +650,25 @@ function updateTotals() {
 function closeWeek() {
   const shop = shopGet();
   if (shop.recipes.length === 0) { alert('La lista está vacía.'); return; }
-  if (!shop.store) { alert('Selecciona o agrega una tienda primero.'); return; }
-  if (!confirm(`¿Cerrar la semana del ${fmtDate(shop.weekStart)} en ${shop.store}?\n\nSe guarda en historial y se vacía la lista actual.`)) return;
 
   const { agg } = aggregateIngredients();
+  const keys = Object.keys(agg);
+  // Avisar si hay items sin tienda asignada (no bloquea)
+  const unassigned = keys.filter(k => !getFoodStore(k));
+  if (unassigned.length > 0) {
+    const msg = 'Hay ' + unassigned.length + ' producto(s) sin tienda asignada. No quedara registro de tienda para ellos.\n\nCerrar la semana del ' + fmtDate(shop.weekStart) + ' de todos modos?';
+    if (!confirm(msg)) return;
+  } else {
+    if (!confirm('Cerrar la semana del ' + fmtDate(shop.weekStart) + '?\n\nSe guarda en historial y se vacia la lista actual.')) return;
+  }
+
   const items = [];
   let total = 0;
-  Object.keys(agg).forEach(k => {
+  const storeTotals = {};
+  keys.forEach(k => {
     const item = agg[k];
     const food = item.food;
+    const itemStore = getFoodStore(k) || '(sin tienda)';
     const inv = shop.inventory[k] || {qty:0, unit:'g'};
     let invGrams = 0;
     if (inv.unit === 'unidad' && food.gramos_por_unidad) invGrams = (parseFloat(inv.qty)||0) * food.gramos_por_unidad;
@@ -518,10 +686,12 @@ function closeWeek() {
       costo = pricePerG * buyGrams;
       pricePer100g = pricePerG * 100;
       total += costo;
+      storeTotals[itemStore] = (storeTotals[itemStore]||0) + costo;
     }
     items.push({
       food_id: k,
       name: food.nombre,
+      store: itemStore,
       needGrams: Math.round(item.totalGrams),
       buyGrams: Math.round(buyGrams),
       pricePackage: parseFloat(price.price) || 0,
@@ -530,12 +700,12 @@ function closeWeek() {
       costo: Math.round(costo*100)/100,
       pricePer100g: pricePer100g != null ? Math.round(pricePer100g*100)/100 : null,
     });
-    // Guardar snapshot en priceDb
-    if (pricePer100g != null) {
+    if (pricePer100g != null && getFoodStore(k)) {
+      const storeForDb = getFoodStore(k);
       const db = priceDbGet();
       if (!db[k]) db[k] = {};
-      if (!db[k][shop.store]) db[k][shop.store] = [];
-      db[k][shop.store].push({
+      if (!db[k][storeForDb]) db[k][storeForDb] = [];
+      db[k][storeForDb].push({
         date: shop.weekStart,
         price: parseFloat(price.price),
         qty: parseFloat(price.qty),
@@ -551,28 +721,26 @@ function closeWeek() {
     id: 'w' + Date.now(),
     weekStart: shop.weekStart,
     weekEnd: plusDays(shop.weekStart, 6),
-    store: shop.store,
     total: Math.round(total*100)/100,
+    storeTotals: Object.fromEntries(Object.entries(storeTotals).map(([k,v]) => [k, Math.round(v*100)/100])),
     recipes: shop.recipes.map(r => r.name),
     items,
   });
   historySet(history);
 
-  // Vacía la lista (mantiene tienda como sugerencia, avanza semana)
   const newShop = {
     recipes: [],
     inventory: {},
     prices: {},
-    store: shop.store,
     weekStart: plusDays(shop.weekStart, 7),
   };
   shopSet(newShop);
-  alert(`✓ Semana guardada · Total: ${fmtMoney(total)}`);
+  alert('Semana guardada. Total: ' + fmtMoney(total));
   renderAll();
 }
 
 function clearAll() {
-  if (!confirm('¿Vaciar la lista actual? (no se guarda en historial)')) return;
+  if (!confirm('Vaciar la lista actual? (no se guarda en historial)')) return;
   const s = shopGet();
   s.recipes = [];
   s.inventory = {};
@@ -581,59 +749,60 @@ function clearAll() {
   renderAll();
 }
 
-// ─── HISTORIAL ───────────────────────────────────────────────────────────────
+// HISTORIAL
 function renderHistory() {
   const history = historyGet().slice().sort((a,b) => b.weekStart.localeCompare(a.weekStart));
-  document.getElementById('historyCount').textContent = `${history.length} semana${history.length===1?'':'s'}`;
+  document.getElementById('historyCount').textContent = history.length + ' semana' + (history.length===1?'':'s');
   const cont = document.getElementById('historyList');
   if (history.length === 0) {
-    cont.innerHTML = `<div class="empty-state" style="padding:1rem">Sin historial. Cierra una semana para empezar a comparar.</div>`;
+    cont.innerHTML = '<div class="empty-state" style="padding:1rem">Sin historial. Cierra una semana para empezar a comparar.</div>';
     return;
   }
-  cont.innerHTML = history.map(w => `
-    <details class="lc-history">
-      <summary>
-        <div>
-          <strong>${fmtDate(w.weekStart)} – ${fmtDate(w.weekEnd)}</strong>
-          <span class="lc-tag-store">${escapeHtml(w.store)}</span>
-        </div>
-        <div class="lc-history-total">${fmtMoney(w.total)}</div>
-      </summary>
-      <div class="lc-history-body">
-        <div class="lc-sub" style="margin-bottom:8px">${w.recipes.length} recetas · ${w.items.length} productos</div>
-        <table class="lc-table lc-table-compact">
-          <thead><tr><th>Producto</th><th>Compra</th><th>$/100g</th><th>Costo</th></tr></thead>
-          <tbody>
-            ${w.items.map(i => `
-              <tr>
-                <td>${escapeHtml(i.name)}</td>
-                <td>${i.buyGrams}g</td>
-                <td>${i.pricePer100g!=null?fmtMoney(i.pricePer100g):'—'}</td>
-                <td>${fmtMoney(i.costo)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-        <div style="margin-top:10px">
-          <button class="btn-cancel" onclick="deleteWeek('${w.id}')">🗑 Eliminar esta semana</button>
-        </div>
-      </div>
-    </details>
-  `).join('');
+  cont.innerHTML = history.map(w => {
+    const storeChips = w.storeTotals
+      ? Object.entries(w.storeTotals).map(([s,t]) => '<span class="lc-tag-store">' + escapeHtml(s) + ' ' + fmtMoney(t) + '</span>').join(' ')
+      : (w.store ? '<span class="lc-tag-store">' + escapeHtml(w.store) + '</span>' : '');
+    return '<details class="lc-history">' +
+      '<summary>' +
+        '<div><strong>' + fmtDate(w.weekStart) + ' - ' + fmtDate(w.weekEnd) + '</strong> ' + storeChips + '</div>' +
+        '<div class="lc-history-total">' + fmtMoney(w.total) + '</div>' +
+      '</summary>' +
+      '<div class="lc-history-body">' +
+        '<div class="lc-sub" style="margin-bottom:8px">' + w.recipes.length + ' recetas - ' + w.items.length + ' productos</div>' +
+        '<table class="lc-table lc-table-compact">' +
+          '<thead><tr><th>Producto</th><th>Tienda</th><th>Compra</th><th>$/100g</th><th>Costo</th></tr></thead>' +
+          '<tbody>' +
+            w.items.map(i =>
+              '<tr><td>' + escapeHtml(i.name) + '</td>' +
+              '<td>' + escapeHtml(i.store || w.store || '-') + '</td>' +
+              '<td>' + i.buyGrams + 'g</td>' +
+              '<td>' + (i.pricePer100g!=null?fmtMoney(i.pricePer100g):'-') + '</td>' +
+              '<td>' + fmtMoney(i.costo) + '</td></tr>'
+            ).join('') +
+          '</tbody>' +
+        '</table>' +
+        '<div style="margin-top:10px"><button class="btn-cancel" onclick="deleteWeek(\'' + w.id + '\')">Eliminar esta semana</button></div>' +
+      '</div>' +
+    '</details>';
+  }).join('');
 }
 
 function deleteWeek(id) {
-  if (!confirm('¿Eliminar esta semana del historial? (También se borran sus precios del comparador)')) return;
+  if (!confirm('Eliminar esta semana del historial? (Tambien se borran sus precios del comparador)')) return;
   const history = historyGet();
   const w = history.find(x => x.id === id);
   historySet(history.filter(x => x.id !== id));
-  // Quitar snapshots de priceDb que coincidan con esta semana+tienda
   if (w) {
     const db = priceDbGet();
+    const storesToClean = new Set();
+    if (w.store) storesToClean.add(w.store);
+    (w.items||[]).forEach(it => { if (it.store) storesToClean.add(it.store); });
     Object.keys(db).forEach(fid => {
-      if (!db[fid][w.store]) return;
-      db[fid][w.store] = db[fid][w.store].filter(s => s.date !== w.weekStart);
-      if (db[fid][w.store].length === 0) delete db[fid][w.store];
+      storesToClean.forEach(st => {
+        if (!db[fid][st]) return;
+        db[fid][st] = db[fid][st].filter(s => s.date !== w.weekStart);
+        if (db[fid][st].length === 0) delete db[fid][st];
+      });
       if (Object.keys(db[fid]).length === 0) delete db[fid];
     });
     priceDbSet(db);
@@ -641,21 +810,18 @@ function deleteWeek(id) {
   renderAll();
 }
 
-// ─── COMPARADOR DE PRECIOS ───────────────────────────────────────────────────
+// COMPARADOR
 function renderComparator() {
   const db = priceDbGet();
   const foodIds = Object.keys(db);
   const cont = document.getElementById('comparatorWrap');
   if (foodIds.length === 0) {
-    cont.innerHTML = `<div class="empty-state" style="padding:1rem">Sin datos. Cierra al menos una semana con precios para empezar a comparar.</div>`;
+    cont.innerHTML = '<div class="empty-state" style="padding:1rem">Sin datos. Cierra al menos una semana con precios para empezar a comparar.</div>';
     return;
   }
-  // Recopila todas las tiendas
   const storesSet = new Set();
   foodIds.forEach(fid => Object.keys(db[fid]).forEach(s => storesSet.add(s)));
   const stores = Array.from(storesSet).sort();
-
-  // Para cada producto: min/avg/last por tienda
   const rows = foodIds.map(fid => {
     const food = FOODS_BY_ID[fid];
     const name = food ? food.nombre : fid;
@@ -666,47 +832,29 @@ function renderComparator() {
       if (snaps.length === 0) { perStore[s] = null; return; }
       const prices = snaps.map(x => x.pricePer100g);
       const min = Math.min(...prices);
-      const avg = prices.reduce((a,b)=>a+b,0)/prices.length;
       const last = snaps[snaps.length-1].pricePer100g;
-      perStore[s] = {min, avg, last, n: snaps.length};
+      perStore[s] = {min, last, n: snaps.length};
       if (min < bestPrice) { bestPrice = min; bestStore = s; }
     });
-    return {fid, name, perStore, bestStore, bestPrice};
+    return {fid, name, perStore, bestStore};
   }).sort((a,b) => a.name.localeCompare(b.name));
-
-  cont.innerHTML = `
-    <div class="lc-table-wrap">
-    <table class="lc-table lc-table-compact">
-      <thead>
-        <tr>
-          <th>Producto</th>
-          ${stores.map(s => `<th>${escapeHtml(s)}<br><span class="lc-th-sub">$/100g (mín · últ)</span></th>`).join('')}
-          <th>Mejor</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows.map(r => `
-          <tr>
-            <td><strong>${escapeHtml(r.name)}</strong></td>
-            ${stores.map(s => {
-              const p = r.perStore[s];
-              if (!p) return `<td class="lc-comp-empty">—</td>`;
-              const isBest = s === r.bestStore;
-              return `<td class="${isBest?'lc-comp-best':''}">
-                <div>${fmtMoney(p.min)}</div>
-                <div class="lc-sub">últ ${fmtMoney(p.last)} · n=${p.n}</div>
-              </td>`;
-            }).join('')}
-            <td><span class="lc-tag-best">${escapeHtml(r.bestStore || '—')}</span></td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-    </div>
-  `;
+  cont.innerHTML = '<div class="lc-table-wrap"><table class="lc-table lc-table-compact"><thead><tr><th>Producto</th>' +
+    stores.map(s => '<th>' + escapeHtml(s) + '<br><span class="lc-th-sub">$/100g (min - ult)</span></th>').join('') +
+    '<th>Mejor</th></tr></thead><tbody>' +
+    rows.map(r =>
+      '<tr><td><strong>' + escapeHtml(r.name) + '</strong></td>' +
+      stores.map(s => {
+        const p = r.perStore[s];
+        if (!p) return '<td class="lc-comp-empty">-</td>';
+        const isBest = s === r.bestStore;
+        return '<td class="' + (isBest?'lc-comp-best':'') + '"><div>' + fmtMoney(p.min) + '</div><div class="lc-sub">ult ' + fmtMoney(p.last) + ' - n=' + p.n + '</div></td>';
+      }).join('') +
+      '<td><span class="lc-tag-best">' + escapeHtml(r.bestStore || '-') + '</span></td></tr>'
+    ).join('') +
+    '</tbody></table></div>';
 }
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
+// INIT
 function renderAll() {
   renderHeader();
   renderRecipes();
@@ -714,4 +862,3 @@ function renderAll() {
   renderHistory();
   renderComparator();
 }
-// NOTA: La página llama initLista() después de cargar cloudStorage

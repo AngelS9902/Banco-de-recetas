@@ -22,26 +22,17 @@
 
 <div class="container">
 
-  <!-- Tienda + semana -->
+  <!-- Semana -->
   <div class="section">
     <div class="section-header">
-      <div class="section-icon" style="background:#FAE8DC">🏪</div>
-      <div class="section-title">Tienda y semana</div>
+      <div class="section-icon" style="background:#FAE8DC">📅</div>
+      <div class="section-title">Semana</div>
     </div>
-    <div class="lc-store-grid">
-      <div class="form-group">
-        <label>Tienda</label>
-        <div class="lc-store-row">
-          <select id="storeSelect"></select>
-          <input type="text" id="storeNew" placeholder="+ Nueva tienda">
-          <button class="btn-add-ingr" type="button" onclick="addStore()">＋</button>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Semana (inicio)</label>
-        <input type="date" id="weekStartInput">
-      </div>
+    <div class="form-group">
+      <label>Inicio</label>
+      <input type="date" id="weekStartInput">
     </div>
+    <div class="lc-help" style="margin-top:8px">Cada producto se asigna a su propia tienda (mercado, carnicería, super, etc.) desde la tabla de abajo.</div>
   </div>
 
   <!-- Recetas agregadas -->

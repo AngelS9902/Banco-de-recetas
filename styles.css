@@ -1060,9 +1060,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .lc-cost-pkg-active::before{content:'✓ '}
 
 /* Resumen de gastos (totalEstimado se vuelve container) */
-#totalEstimado{font-size:14px;font-weight:400;line-height:1.5;display:block}
-.lc-total-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px}
-.lc-total-grand{font-weight:600;font-size:16px;border-top:1px solid var(--border);padding-top:8px;margin-top:6px;color:var(--accent)}
+#totalEstimado{font-size:15px;font-weight:400;line-height:1.6;display:block}
+.lc-total-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;font-size:14px;color:white;opacity:.92}
+.lc-total-row .lc-sub{font-size:11px;opacity:.6;color:white}
+.lc-total-grand{
+  font-weight:700;font-size:22px;
+  border-top:1px solid rgba(255,255,255,.18);padding-top:10px;margin-top:8px;
+  color:var(--accent);opacity:1;
+}
 .lc-cost{font-weight:600;font-size:13px;color:var(--accent);text-align:right}
 
 .lc-inv-row,.lc-price-row{display:flex;align-items:center;gap:4px}
@@ -1089,12 +1094,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 /* Resumen */
 .lc-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:1rem}
+.lc-summary-single{grid-template-columns:1fr}
 .lc-summary-card{
   background:var(--text);color:white;border-radius:14px;
-  padding:1rem 1.25rem;text-align:center;
+  padding:1.25rem 1.5rem;
 }
-.lc-summary-lbl{font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:.05em}
-.lc-summary-val{font-size:28px;font-weight:600;font-family:'DM Serif Display',serif;margin-top:4px}
+.lc-summary-card-wide{text-align:left}
+.lc-summary-lbl{
+  font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:.05em;
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+}
+.lc-items-pill{
+  background:rgba(255,255,255,.15);padding:2px 8px;border-radius:10px;
+  font-size:10px;font-weight:600;letter-spacing:0;text-transform:none;
+}
+.lc-summary-val{font-size:16px;line-height:1.5}
 .lc-summary-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 
 /* Historial */
